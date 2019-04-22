@@ -10,11 +10,12 @@ import com.comphenix.protocol.reflect.FieldAccessException;
 import com.comphenix.protocol.reflect.StructureModifier;
 import com.doctordark.hcf.HCF;
 import com.doctordark.hcf.util.NmsUtils;
-import net.minecraft.server.v1_7_R4.EntityPlayer;
+import net.minecraft.server.v1_8_R3.BlockPosition;
+import net.minecraft.server.v1_8_R3.EntityPlayer;
 import org.bukkit.GameMode;
 import org.bukkit.Location;
 import org.bukkit.Material;
-import org.bukkit.craftbukkit.v1_7_R4.entity.CraftPlayer;
+import org.bukkit.craftbukkit.v1_8_R3.entity.CraftPlayer;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
 
@@ -99,7 +100,7 @@ public final class ProtocolLibHook {
                                 player.sendBlockChange(location, data.getBlockType(), data.getData());
                             } else if (status == STARTED_DIGGING) { // we check this because Blocks that broke pretty much straight away do not send a FINISHED for some weird reason.
                                 EntityPlayer entityPlayer = ((CraftPlayer) player).getHandle();
-                                if (player.getGameMode() == GameMode.CREATIVE || entityPlayer.world.getType(x, y, z).getDamage(entityPlayer, entityPlayer.world, x, y, z) >= 1.0F) {
+                                if (player.getGameMode() == GameMode.CREATIVE || entityPlayer.world.getType(new BlockPosition(x, y, z)).getBlock().getDamage(entityPlayer, entityPlayer.world, new BlockPosition( x, y, z)) >= 1.0F) {
                                     player.sendBlockChange(location, data.getBlockType(), data.getData());
                                 }
                             }

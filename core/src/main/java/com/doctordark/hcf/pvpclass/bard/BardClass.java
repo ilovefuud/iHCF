@@ -4,7 +4,7 @@ import com.doctordark.hcf.HCF;
 import com.doctordark.hcf.faction.type.Faction;
 import com.doctordark.hcf.faction.type.PlayerFaction;
 import com.doctordark.hcf.pvpclass.PvpClass;
-import com.doctordark.util.BukkitUtils;
+import com.doctordark.hcf.util.BukkitUtils;
 import com.doctordark.hcf.util.DurationFormatter;
 import com.doctordark.util.chat.Lang;
 import gnu.trove.map.TObjectLongMap;
@@ -27,11 +27,7 @@ import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 import org.bukkit.scheduler.BukkitRunnable;
 
-import java.util.Collection;
-import java.util.EnumMap;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.UUID;
+import java.util.*;
 import java.util.concurrent.TimeUnit;
 
 public class BardClass extends PvpClass implements Listener {
@@ -184,7 +180,7 @@ public class BardClass extends PvpClass implements Listener {
         }
     }
 
-    @EventHandler(ignoreCancelled = false, priority = EventPriority.MONITOR)
+    @EventHandler(priority = EventPriority.MONITOR)
     public void onPlayerInteract(PlayerInteractEvent event) {
         if (!event.hasItem()) return;
 

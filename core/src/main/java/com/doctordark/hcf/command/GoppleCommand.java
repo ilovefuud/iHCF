@@ -5,10 +5,9 @@ import com.doctordark.hcf.timer.PlayerTimer;
 import com.doctordark.hcf.util.DurationFormatter;
 import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
-import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
-import org.bukkit.command.TabCompleter;
 import org.bukkit.entity.Player;
+import us.lemin.core.commands.PlayerCommand;
 
 import java.util.Collections;
 import java.util.List;
@@ -16,12 +15,19 @@ import java.util.List;
 /**
  * Command used to check remaining Notch Apple cooldown time for {@link Player}.
  */
-public class GoppleCommand implements CommandExecutor, TabCompleter {
+public class GoppleCommand extends PlayerCommand {
 
     private final HCF plugin;
 
     public GoppleCommand(HCF plugin) {
+        super("gopple");
         this.plugin = plugin;
+        this.setAliases("gapple");
+    }
+
+    @Override
+    public void execute(Player player, String[] strings) {
+
     }
 
     @Override

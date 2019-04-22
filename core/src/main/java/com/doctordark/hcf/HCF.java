@@ -1,29 +1,11 @@
 package com.doctordark.hcf;
 
 import com.doctordark.hcf.combatlog.CombatLogListener;
-import com.doctordark.hcf.command.AngleCommand;
-import com.doctordark.hcf.command.GoppleCommand;
-import com.doctordark.hcf.command.LocationCommand;
-import com.doctordark.hcf.command.LogoutCommand;
-import com.doctordark.hcf.command.MapKitCommand;
-import com.doctordark.hcf.command.PvpTimerCommand;
-import com.doctordark.hcf.command.RegenCommand;
-import com.doctordark.hcf.command.ServerTimeCommand;
-import com.doctordark.hcf.command.SpawnCannonCommand;
-import com.doctordark.hcf.command.ToggleCapzoneEntryCommand;
-import com.doctordark.hcf.command.ToggleLightningCommand;
-import com.doctordark.hcf.command.ToggleSidebarCommand;
-import com.doctordark.hcf.deathban.Deathban;
-import com.doctordark.hcf.deathban.DeathbanListener;
-import com.doctordark.hcf.deathban.DeathbanManager;
-import com.doctordark.hcf.deathban.FlatFileDeathbanManager;
-import com.doctordark.hcf.deathban.StaffReviveCommand;
+import com.doctordark.hcf.command.*;
+import com.doctordark.hcf.command.sotw.SotwCommand;
+import com.doctordark.hcf.deathban.*;
 import com.doctordark.hcf.deathban.lives.LivesExecutor;
-import com.doctordark.hcf.economy.EconomyCommand;
-import com.doctordark.hcf.economy.EconomyManager;
-import com.doctordark.hcf.economy.FlatFileEconomyManager;
-import com.doctordark.hcf.economy.PayCommand;
-import com.doctordark.hcf.economy.ShopSignListener;
+import com.doctordark.hcf.economy.*;
 import com.doctordark.hcf.eventgame.CaptureZone;
 import com.doctordark.hcf.eventgame.EventExecutor;
 import com.doctordark.hcf.eventgame.EventScheduler;
@@ -41,47 +23,13 @@ import com.doctordark.hcf.faction.FactionExecutor;
 import com.doctordark.hcf.faction.FactionManager;
 import com.doctordark.hcf.faction.FactionMember;
 import com.doctordark.hcf.faction.FlatFileFactionManager;
-import com.doctordark.hcf.faction.claim.Claim;
-import com.doctordark.hcf.faction.claim.ClaimHandler;
-import com.doctordark.hcf.faction.claim.ClaimWandListener;
-import com.doctordark.hcf.faction.claim.Subclaim;
-import com.doctordark.hcf.faction.claim.SubclaimWandListener;
-import com.doctordark.hcf.faction.type.ClaimableFaction;
-import com.doctordark.hcf.faction.type.EndPortalFaction;
-import com.doctordark.hcf.faction.type.Faction;
-import com.doctordark.hcf.faction.type.PlayerFaction;
-import com.doctordark.hcf.faction.type.RoadFaction;
-import com.doctordark.hcf.faction.type.SpawnFaction;
-import com.doctordark.hcf.listener.BookDisenchantListener;
-import com.doctordark.hcf.listener.BottledExpListener;
-import com.doctordark.hcf.listener.ChatListener;
-import com.doctordark.hcf.listener.CoreListener;
-import com.doctordark.hcf.listener.CrowbarListener;
-import com.doctordark.hcf.listener.DeathListener;
-import com.doctordark.hcf.listener.EnchantLimitListener;
-import com.doctordark.hcf.listener.EntityLimitListener;
-import com.doctordark.hcf.listener.EventSignListener;
-import com.doctordark.hcf.listener.ExpMultiplierListener;
-import com.doctordark.hcf.listener.FactionListener;
-import com.doctordark.hcf.listener.FurnaceSmeltSpeedListener;
-import com.doctordark.hcf.listener.PortalListener;
-import com.doctordark.hcf.listener.PotionLimitListener;
-import com.doctordark.hcf.listener.ProtectionListener;
-import com.doctordark.hcf.listener.SignSubclaimListener;
-import com.doctordark.hcf.listener.SkullListener;
-import com.doctordark.hcf.listener.WorldListener;
-import com.doctordark.hcf.listener.fixes.BeaconStrengthFixListener;
-import com.doctordark.hcf.listener.fixes.BlockHitFixListener;
-import com.doctordark.hcf.listener.fixes.BlockJumpGlitchFixListener;
-import com.doctordark.hcf.listener.fixes.BoatGlitchFixListener;
-import com.doctordark.hcf.listener.fixes.EnderChestRemovalListener;
-import com.doctordark.hcf.listener.fixes.InfinityArrowFixListener;
-import com.doctordark.hcf.listener.fixes.PearlGlitchListener;
-import com.doctordark.hcf.listener.fixes.VoidGlitchFixListener;
+import com.doctordark.hcf.faction.claim.*;
+import com.doctordark.hcf.faction.type.*;
+import com.doctordark.hcf.listener.*;
+import com.doctordark.hcf.listener.fixes.*;
 import com.doctordark.hcf.pvpclass.PvpClassManager;
 import com.doctordark.hcf.pvpclass.bard.EffectRestorer;
 import com.doctordark.hcf.scoreboard.ScoreboardHandler;
-import com.doctordark.hcf.sotw.SotwCommand;
 import com.doctordark.hcf.sotw.SotwListener;
 import com.doctordark.hcf.sotw.SotwTimer;
 import com.doctordark.hcf.timer.TimerExecutor;
@@ -95,6 +43,8 @@ import com.google.common.base.Joiner;
 import com.sk89q.worldedit.bukkit.WorldEditPlugin;
 import lombok.Getter;
 import org.bukkit.ChatColor;
+import org.bukkit.command.Command;
+import org.bukkit.command.CommandMap;
 import org.bukkit.command.PluginCommand;
 import org.bukkit.configuration.InvalidConfigurationException;
 import org.bukkit.configuration.serialization.ConfigurationSerialization;
@@ -102,10 +52,11 @@ import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scheduler.BukkitRunnable;
-import org.bukkit.scoreboard.Team;
 
 import java.io.File;
 import java.io.IOException;
+import java.lang.reflect.Field;
+import java.util.Arrays;
 import java.util.Map;
 import java.util.Random;
 import java.util.concurrent.TimeUnit;
@@ -198,6 +149,9 @@ public class HCF extends JavaPlugin {
 
         registerSerialization();
         registerCommands();
+        registerCommands(
+                new AngleCommand()
+        );
         registerManagers();
         registerListeners();
 
@@ -335,6 +289,7 @@ public class HCF extends JavaPlugin {
         manager.registerEvents(new WorldListener(), this);
     }
 
+
     private void registerCommands() {
         getCommand("angle").setExecutor(new AngleCommand());
         getCommand("conquest").setExecutor(new ConquestExecutor(this));
@@ -384,5 +339,37 @@ public class HCF extends JavaPlugin {
         scoreboardHandler = new ScoreboardHandler(this);
         userManager = new UserManager(this);
         visualiseHandler = new VisualiseHandler();
+    }
+
+    private void registerCommands(Command... commands) {
+
+        try {
+
+            final Field commandMapField = getServer().getClass().getDeclaredField("commandMap");
+
+            final boolean accessible = commandMapField.isAccessible();
+
+
+
+            commandMapField.setAccessible(true);
+
+
+
+            final CommandMap commandMap = (CommandMap) commandMapField.get(getServer());
+
+
+
+            Arrays.stream(commands).forEach(command -> commandMap.register(command.getName(), getName(), command));
+
+
+
+            commandMapField.setAccessible(accessible);
+
+        } catch (NoSuchFieldException | IllegalAccessException e) {
+
+            throw new RuntimeException("An error occurred while registering commands", e);
+
+        }
+
     }
 }

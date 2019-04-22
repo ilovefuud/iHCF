@@ -3,7 +3,7 @@ package com.doctordark.hcf.pvpclass.type;
 import com.doctordark.hcf.HCF;
 import com.doctordark.hcf.pvpclass.PvpClass;
 import com.doctordark.hcf.pvpclass.event.PvpClassEquipEvent;
-import com.doctordark.util.BukkitUtils;
+import com.doctordark.hcf.util.BukkitUtils;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.Material;

@@ -1,6 +1,6 @@
 package com.doctordark.hcf.listener.fixes;
 
-import com.doctordark.util.BukkitUtils;
+import com.doctordark.hcf.util.BukkitUtils;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Sets;
 import gnu.trove.map.TObjectLongMap;

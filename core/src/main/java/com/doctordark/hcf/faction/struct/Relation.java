@@ -2,7 +2,7 @@ package com.doctordark.hcf.faction.struct;
 
 import com.doctordark.hcf.HCF;
 import com.doctordark.hcf.faction.type.Faction;
-import com.doctordark.util.BukkitUtils;
+import com.doctordark.hcf.util.BukkitUtils;
 import org.bukkit.ChatColor;
 import org.bukkit.DyeColor;
 

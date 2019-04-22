@@ -2,10 +2,10 @@ package com.doctordark.hcf.timer.type;
 
 import com.doctordark.hcf.timer.PlayerTimer;
 import com.doctordark.hcf.timer.TimerCooldown;
-import com.doctordark.util.Config;
 import com.doctordark.hcf.util.DurationFormatter;
 import com.doctordark.hcf.util.NmsUtils;
-import net.minecraft.server.v1_7_R4.ItemEnderPearl;
+import com.doctordark.util.Config;
+import net.minecraft.server.v1_8_R3.ItemEnderPearl;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.entity.EnderPearl;
@@ -113,7 +113,7 @@ public class EnderPearlTimer extends PlayerTimer implements Listener {
         PearlNameFaker pearlNameFaker = itemNameFakes.get(player.getUniqueId());
         if (pearlNameFaker != null) {
             int previousSlot = event.getPreviousSlot();
-            net.minecraft.server.v1_7_R4.ItemStack stack = NmsUtils.getCleanItem(player, previousSlot);
+            net.minecraft.server.v1_8_R3.ItemStack stack = NmsUtils.getCleanItem(player, previousSlot);
             if (stack != null && stack.getItem() instanceof ItemEnderPearl) {
                 NmsUtils.sendItemPacketAtSlot(player, stack, previousSlot);
             }
@@ -158,7 +158,7 @@ public class EnderPearlTimer extends PlayerTimer implements Listener {
 
         @Override
         public void run() {
-            net.minecraft.server.v1_7_R4.ItemStack stack = NmsUtils.getCleanHeldItem(player);
+            net.minecraft.server.v1_8_R3.ItemStack stack = NmsUtils.getCleanHeldItem(player);
             if (stack != null && stack.getItem() instanceof ItemEnderPearl) {
                 stack = stack.cloneItemStack();
                 stack.c(ChatColor.GOLD + "Enderpearl Cooldown: " + ChatColor.RED +

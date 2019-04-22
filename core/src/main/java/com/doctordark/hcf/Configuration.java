@@ -1,15 +1,15 @@
 package com.doctordark.hcf;
 
 import com.doctordark.util.PersistableLocation;
+import gnu.trove.impl.Constants;
+import gnu.trove.map.TObjectIntMap;
+import gnu.trove.map.hash.TObjectIntHashMap;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.Setter;
-import net.minecraft.util.gnu.trove.impl.Constants;
-import net.minecraft.util.gnu.trove.map.TObjectIntMap;
-import net.minecraft.util.gnu.trove.map.hash.TObjectIntHashMap;
-import net.minecraft.util.org.apache.commons.lang3.time.DurationFormatUtils;
 import net.techcable.techutils.config.AnnotationConfig;
 import net.techcable.techutils.config.Setting;
+import org.apache.commons.lang3.time.DurationFormatUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.enchantments.Enchantment;

@@ -94,6 +94,11 @@
             <scope>provided</scope>
         </dependency>
         <dependency>
+            <groupId>us.lemin.core</groupId>
+            <artifactId>core</artifactId>
+            <version>1.0.0</version>
+        </dependency>
+        <dependency>
             <groupId>org.ipvp</groupId>
             <artifactId>ibase-base</artifactId>
             <version>1.0.0-SNAPSHOT</version>
@@ -122,6 +127,15 @@
             <artifactId>techutils</artifactId>
             <version>1.1.2-SNAPSHOT</version>
             <scope>compile</scope>
+        </dependency>
+        <dependency>
+            <groupId>protocolsupport</groupId>
+            <artifactId>protocolsupport</artifactId>
+            <version>4.23</version>
+            <scope>system</scope>
+            <systemPath>
+                C:/Users/Jaden/Desktop/ass/plugins/ProtocolSupport.jar
+            </systemPath>
         </dependency>
     </dependencies>
 
