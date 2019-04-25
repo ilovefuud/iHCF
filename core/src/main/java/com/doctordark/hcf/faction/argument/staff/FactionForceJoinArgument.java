@@ -27,7 +27,7 @@ public class FactionForceJoinArgument extends CommandArgument {
     public FactionForceJoinArgument(HCF plugin) {
         super("forcejoin", "Forcefully join a faction.");
         this.plugin = plugin;
-        this.permission = "hcf.command.faction.argument." + getName();
+        this.permission = "hcf.oldcommands.faction.argument." + getName();
     }
 
     @Override

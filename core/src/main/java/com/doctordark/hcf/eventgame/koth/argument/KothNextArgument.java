@@ -24,7 +24,7 @@ public class KothNextArgument extends CommandArgument {
     public KothNextArgument(HCF plugin) {
         super("next", "View the next scheduled KOTH");
         this.plugin = plugin;
-        this.permission = "hcf.command.koth.argument." + getName();
+        this.permission = "hcf.oldcommands.koth.argument." + getName();
     }
 
     @Override

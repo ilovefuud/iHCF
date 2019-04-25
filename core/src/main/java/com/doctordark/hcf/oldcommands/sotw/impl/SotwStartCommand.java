@@ -1,4 +1,4 @@
-package com.doctordark.hcf.command.sotw.impl;
+package com.doctordark.hcf.oldcommands.sotw.impl;
 
 import com.doctordark.hcf.HCF;
 import com.doctordark.hcf.sotw.SotwTimer;

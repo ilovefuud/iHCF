@@ -27,7 +27,7 @@ public class FactionClaimForArgument extends CommandArgument {
     public FactionClaimForArgument(HCF plugin) {
         super("claimfor", "Claims land for another faction.");
         this.plugin = plugin;
-        this.permission = "hcf.command.faction.argument." + getName();
+        this.permission = "hcf.oldcommands.faction.argument." + getName();
     }
 
     @Override
@@ -38,7 +38,7 @@ public class FactionClaimForArgument extends CommandArgument {
     @Override
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
         if (!(sender instanceof Player)) {
-            sender.sendMessage(ChatColor.RED + "This command is only executable by players.");
+            sender.sendMessage(ChatColor.RED + "This oldcommands is only executable by players.");
             return true;
         }
 

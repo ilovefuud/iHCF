@@ -16,7 +16,7 @@ public class ConquestSetpointsArgument extends CommandArgument {
     private final HCF plugin;
 
     public ConquestSetpointsArgument(HCF plugin) {
-        super("setpoints", "Sets the points of a faction in the Conquest event", "hcf.command.conquest.argument.setpoints");
+        super("setpoints", "Sets the points of a faction in the Conquest event", "hcf.oldcommands.conquest.argument.setpoints");
         this.plugin = plugin;
     }
 

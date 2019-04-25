@@ -29,7 +29,7 @@ public class LivesCheckDeathbanArgument extends CommandArgument {
     public LivesCheckDeathbanArgument(HCF plugin) {
         super("checkdeathban", "Check the deathban cause of player");
         this.plugin = plugin;
-        this.permission = "hcf.command.lives.argument." + getName();
+        this.permission = "hcf.oldcommands.lives.argument." + getName();
     }
 
     @Override

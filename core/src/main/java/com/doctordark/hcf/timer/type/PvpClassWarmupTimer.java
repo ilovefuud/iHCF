@@ -57,7 +57,7 @@ public class PvpClassWarmupTimer extends PlayerTimer implements Listener {
 
     @Override
     public String getScoreboardPrefix() {
-        return ChatColor.AQUA + ChatColor.BOLD.toString();
+        return plugin.getConfiguration().getScoreboardSidebarTimerClassWarmupPrefix();
     }
 
     @Override

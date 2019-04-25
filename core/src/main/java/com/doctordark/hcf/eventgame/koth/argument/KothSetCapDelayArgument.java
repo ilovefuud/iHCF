@@ -27,7 +27,7 @@ public class KothSetCapDelayArgument extends CommandArgument {
         super("setcapdelay", "Sets the cap delay of a KOTH");
         this.plugin = plugin;
         this.aliases = new String[]{"setcapturedelay"};
-        this.permission = "hcf.command.koth.argument." + getName();
+        this.permission = "hcf.oldcommands.koth.argument." + getName();
     }
 
     @Override

@@ -37,7 +37,7 @@ public class FactionSubclaimDelMemberArgument extends CommandArgument {
     @Override
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
         if (!(sender instanceof Player)) {
-            sender.sendMessage(ChatColor.RED + "This command is only executable by players.");
+            sender.sendMessage(ChatColor.RED + "This oldcommands is only executable by players.");
             return true;
         }
 

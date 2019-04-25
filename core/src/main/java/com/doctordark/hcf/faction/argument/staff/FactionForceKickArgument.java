@@ -19,7 +19,7 @@ public class FactionForceKickArgument extends CommandArgument {
     public FactionForceKickArgument(HCF plugin) {
         super("forcekick", "Forcefully kick a player from their faction.");
         this.plugin = plugin;
-        this.permission = "hcf.command.faction.argument." + getName();
+        this.permission = "hcf.oldcommands.faction.argument." + getName();
     }
 
     @Override

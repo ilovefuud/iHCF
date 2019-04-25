@@ -38,7 +38,7 @@ public class EventSetCapzoneArgument extends CommandArgument {
         super("setcapzone", "Sets the capture zone of an event");
         this.plugin = plugin;
         this.aliases = new String[]{"setcapturezone", "setcap", "setcappoint", "setcapturepoint", "setcappoint"};
-        this.permission = "hcf.command.event.argument." + getName();
+        this.permission = "hcf.oldcommands.event.argument." + getName();
     }
 
     @Override

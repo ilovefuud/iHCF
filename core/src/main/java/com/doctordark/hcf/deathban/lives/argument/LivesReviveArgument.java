@@ -35,7 +35,7 @@ public class LivesReviveArgument extends CommandArgument {
     public LivesReviveArgument(HCF plugin) {
         super("revive", "Revive a death-banned player");
         this.plugin = plugin;
-        this.permission = "hcf.command.lives.argument." + getName();
+        this.permission = "hcf.oldcommands.lives.argument." + getName();
         plugin.getServer().getMessenger().registerOutgoingPluginChannel(plugin, PROXY_CHANNEL_NAME);
     }
 

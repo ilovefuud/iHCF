@@ -1,8 +1,8 @@
-package com.doctordark.hcf.command.sotw;
+package com.doctordark.hcf.oldcommands.sotw;
 
 import com.doctordark.hcf.HCF;
-import com.doctordark.hcf.command.sotw.impl.SotwEndCommand;
-import com.doctordark.hcf.command.sotw.impl.SotwStartCommand;
+import com.doctordark.hcf.oldcommands.sotw.impl.SotwEndCommand;
+import com.doctordark.hcf.oldcommands.sotw.impl.SotwStartCommand;
 import com.doctordark.hcf.util.BukkitUtils;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;

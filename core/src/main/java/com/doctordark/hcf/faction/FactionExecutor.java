@@ -54,7 +54,7 @@ import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 
 /**
- * Class to handle the command and tab completion for the faction command.
+ * Class to handle the oldcommands and tab completion for the faction oldcommands.
  */
 public class FactionExecutor extends ArgumentExecutor {
 

@@ -19,7 +19,7 @@ public class LivesClearDeathbansArgument extends CommandArgument {
         super("cleardeathbans", "Clears the global deathbans");
         this.plugin = plugin;
         this.aliases = new String[]{"resetdeathbans"};
-        this.permission = "hcf.command.lives.argument." + getName();
+        this.permission = "hcf.oldcommands.lives.argument." + getName();
     }
 
     @Override

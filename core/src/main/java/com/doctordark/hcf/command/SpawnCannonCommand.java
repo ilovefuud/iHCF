@@ -25,7 +25,6 @@ import org.bukkit.potion.PotionEffectType;
 import java.util.Collections;
 import java.util.List;
 import java.util.Random;
-import java.util.concurrent.ThreadLocalRandom;
 
 /**
  * Command used to launch or aim at a position within the Warzone.
@@ -103,7 +102,7 @@ public class SpawnCannonCommand implements CommandExecutor, TabCompleter {
             int min = ConfigurationService.SPAWN_RADIUS_MAP.get(world.getEnvironment());
             int max = plugin.getConfiguration().getWarzoneRadiusOverworld();
             int maxCannonDistance = getMaxCannonDistance(sender);
-            ThreadLocalRandom random = ThreadLocalRandom.current();
+            Random random = plugin.getRandom();
 
             int x = Math.max(random.nextInt(Math.min(max, maxCannonDistance)), min);
             if (random.nextBoolean()) x = -x;

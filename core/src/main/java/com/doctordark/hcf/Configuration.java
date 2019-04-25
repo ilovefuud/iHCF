@@ -134,13 +134,13 @@ public class Configuration extends AnnotationConfig {
     private String scoreboardSidebarConquestLineOne = "  &c%redRemaining%&r &e%yellowRemaining%";
 
     @Setting("scoreboard.sidebar.conquest.lineTwo")
-    private String scoreboardSidebarConquestLineTwo = "  &2%greenRemaining%&r &b%blueRemaining%";
+    private String scoreboardSidebarConquestLineTwo = "  &a%greenRemaining%&r &b%blueRemaining%";
 
     @Setting("scoreboard.sidebar.conquest.topThree")
     private String scoreboardSidebarConquestTopThree = "&d&l%factionName%&7: &e%score%";
 
     @Setting("scoreboard.sidebar.pvpClass.activeClass")
-    private String scoreboardSidebarPvpClassActiveClass = "&eActive Class&7: &2%className%";
+    private String scoreboardSidebarPvpClassActiveClass = "&eActive Class&7: &a%className%";
 
     @Setting("scoreboard.sidebar.pvpClass.bard.energy")
     private String scoreboardSidebarPvpClassBardEnergy = " &5\u00bb &dEnergy&7: &6%energy%";
@@ -149,7 +149,7 @@ public class Configuration extends AnnotationConfig {
     private String scoreboardSidebarPvpClassBardBuffDelay = " &5\u00bb &dBuff Delay&7: &6%buffDelay%";
 
     @Setting("scoreboard.sidebar.pvpClass.archer.markColorLevel.one")
-    private String scoreboardSidebarPvpClassMarkColorLevelOne = "&2";
+    private String scoreboardSidebarPvpClassMarkColorLevelOne = "&a";
 
     @Setting("scoreboard.sidebar.pvpClass.archer.markColorLevel.two")
     private String scoreboardSidebarPvpClassMarkColorLevelTwo = "&c";
@@ -171,6 +171,30 @@ public class Configuration extends AnnotationConfig {
 
     @Setting("scoreboard.sidebar.timer")
     private String scoreboardSidebarTimer = "&b%timer%&7: &6%remaining%";
+
+    @Setting("scoreboard.sidebar.timer.gapplePrefix")
+    private String scoreboardSidebarTimerGapplePrefix = "&e&l";
+
+    @Setting("scoreboard.sidebar.timer.combatPrefix")
+    private String scoreboardSidebarTimerCombatPrefix = "&4&l";
+
+    @Setting("scoreboard.sidebar.timer.pearlPrefix")
+    private String scoreboardSidebarTimerPearlPrefix = "&d&l";
+
+    @Setting("scoreboard.sidebar.timer.invincibilityPrefix")
+    private String scoreboardSidebarTimerInvincibilityPrefix = "&2&l";
+
+    @Setting("scoreboard.sidebar.timer.logoutPrefix")
+    private String scoreboardSidebarTimerLogoutPrefix = "&c&l";
+
+    @Setting("scoreboard.sidebar.timer.classWarmupPrefix")
+    private String scoreboardSidebarTimerClassWarmupPrefix = "&b&l";
+
+    @Setting("scoreboard.sidebar.timer.stuckPrefix")
+    private String scoreboardSidebarTimerStuckPrefix = "&3&l";
+
+    @Setting("scoreboard.sidebar.timer.teleportPrefix")
+    private String scoreboardSidebarTimerTeleportPrefix = "&3&l";
 
     @Setting("scoreboard.tablist.title")
     private String scoreboardTablistTitle = "&a&lHCF";

@@ -30,7 +30,7 @@ public class FactionCreateArgument extends CommandArgument {
     @Override
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
         if (!(sender instanceof Player)) {
-            sender.sendMessage(ChatColor.RED + "This command may only be executed by players.");
+            sender.sendMessage(ChatColor.RED + "This oldcommands may only be executed by players.");
             return true;
         }
 

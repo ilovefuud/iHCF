@@ -23,7 +23,7 @@ public class EventRenameArgument extends CommandArgument {
     public EventRenameArgument(HCF plugin) {
         super("rename", "Renames an event");
         this.plugin = plugin;
-        this.permission = "hcf.command.event.argument." + getName();
+        this.permission = "hcf.oldcommands.event.argument." + getName();
     }
 
     @Override

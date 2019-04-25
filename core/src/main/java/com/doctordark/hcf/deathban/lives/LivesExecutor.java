@@ -11,7 +11,7 @@ import com.doctordark.hcf.deathban.lives.argument.LivesSetDeathbanTimeArgument;
 import com.doctordark.util.command.ArgumentExecutor;
 
 /**
- * Handles the execution and tab completion of the lives command.
+ * Handles the execution and tab completion of the lives oldcommands.
  */
 public class LivesExecutor extends ArgumentExecutor {
 

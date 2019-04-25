@@ -32,7 +32,7 @@ public class FactionClearClaimsArgument extends CommandArgument {
     public FactionClearClaimsArgument(final HCF plugin) {
         super("clearclaims", "Clears the claims of a faction.");
         this.plugin = plugin;
-        this.permission = "hcf.command.faction.argument." + getName();
+        this.permission = "hcf.oldcommands.faction.argument." + getName();
 
         this.factory = new ConversationFactory(plugin).
                 withFirstPrompt(new ClaimClearAllPrompt(plugin)).
@@ -56,7 +56,7 @@ public class FactionClearClaimsArgument extends CommandArgument {
 
         if (args[1].equalsIgnoreCase("all")) {
             if (!(sender instanceof ConsoleCommandSender)) {
-                sender.sendMessage(ChatColor.RED + "This command can be only executed from console.");
+                sender.sendMessage(ChatColor.RED + "This oldcommands can be only executed from console.");
                 return true;
             }
 

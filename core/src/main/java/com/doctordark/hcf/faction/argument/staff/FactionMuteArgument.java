@@ -22,7 +22,7 @@ public class FactionMuteArgument extends CommandArgument {
     public FactionMuteArgument(HCF plugin) {
         super("mute", "Mutes every member in this faction.");
         this.plugin = plugin;
-        this.permission = "hcf.command.faction.argument." + getName();
+        this.permission = "hcf.oldcommands.faction.argument." + getName();
     }
 
     @Override

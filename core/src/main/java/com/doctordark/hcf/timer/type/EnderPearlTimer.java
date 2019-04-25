@@ -1,5 +1,6 @@
 package com.doctordark.hcf.timer.type;
 
+import com.doctordark.hcf.HCF;
 import com.doctordark.hcf.timer.PlayerTimer;
 import com.doctordark.hcf.timer.TimerCooldown;
 import com.doctordark.hcf.util.DurationFormatter;
@@ -39,16 +40,16 @@ public class EnderPearlTimer extends PlayerTimer implements Listener {
     private static final long REFRESH_DELAY_TICKS_18 = 20L;  // time in ticks it will update the remaining time on the Enderpearl for a 1.8 client.
 
     private final Map<UUID, PearlNameFaker> itemNameFakes = new HashMap<>();
-    private final JavaPlugin plugin;
+    private final HCF plugin;
 
-    public EnderPearlTimer(JavaPlugin plugin) {
+    public EnderPearlTimer(HCF plugin) {
         super("Enderpearl", TimeUnit.SECONDS.toMillis(15L));
         this.plugin = plugin;
     }
 
     @Override
     public String getScoreboardPrefix() {
-        return ChatColor.LIGHT_PURPLE.toString() + ChatColor.BOLD;
+        return plugin.getConfiguration().getScoreboardSidebarTimerPearlPrefix();
     }
 
     @Override
@@ -100,8 +101,7 @@ public class EnderPearlTimer extends PlayerTimer implements Listener {
                 if (setCooldown(shooter, shooter.getUniqueId(), defaultCooldown, true)) {
                     PearlNameFaker pearlNameFaker = new PearlNameFaker(this, shooter);
                     itemNameFakes.put(shooter.getUniqueId(), pearlNameFaker);
-                    long ticks = NmsUtils.getProtocolVersion(shooter) >= 47 ? REFRESH_DELAY_TICKS_18 : REFRESH_DELAY_TICKS;
-                    pearlNameFaker.runTaskTimerAsynchronously(plugin, ticks, ticks);
+                    pearlNameFaker.runTaskTimerAsynchronously(plugin, 20, 20);
                 }
             }
         }
@@ -158,7 +158,7 @@ public class EnderPearlTimer extends PlayerTimer implements Listener {
 
         @Override
         public void run() {
-            net.minecraft.server.v1_7_R4.ItemStack stack = NmsUtils.getCleanHeldItem(player);
+            net.minecraft.server.v1_8_R3.ItemStack stack = NmsUtils.getCleanHeldItem(player);
             if (stack != null && stack.getItem() instanceof ItemEnderPearl) {
                 stack = stack.cloneItemStack();
                 stack.c(ChatColor.GOLD + "Enderpearl Cooldown: " + ChatColor.RED +

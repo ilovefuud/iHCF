@@ -23,13 +23,16 @@ import java.util.concurrent.TimeUnit;
 
 public class LogoutTimer extends PlayerTimer implements Listener {
 
-    public LogoutTimer() {
+    private final HCF plugin;
+
+    public LogoutTimer(HCF plugin) {
         super("Logout", TimeUnit.SECONDS.toMillis(30L), false);
+        this.plugin = plugin;
     }
 
     @Override
     public String getScoreboardPrefix() {
-        return ChatColor.RED.toString() + ChatColor.BOLD;
+        return plugin.getConfiguration().getScoreboardSidebarTimerLogoutPrefix();
     }
 
     @EventHandler(ignoreCancelled = true, priority = EventPriority.MONITOR)

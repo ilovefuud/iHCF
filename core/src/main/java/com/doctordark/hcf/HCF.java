@@ -2,8 +2,6 @@ package com.doctordark.hcf;
 
 import com.doctordark.hcf.combatlog.CombatLogListener;
 import com.doctordark.hcf.command.*;
-import com.doctordark.hcf.command.pvptimer.PvpTimerCommand;
-import com.doctordark.hcf.command.sotw.SotwCommand;
 import com.doctordark.hcf.deathban.*;
 import com.doctordark.hcf.deathban.lives.LivesExecutor;
 import com.doctordark.hcf.economy.*;
@@ -60,7 +58,6 @@ import java.io.IOException;
 import java.lang.reflect.Field;
 import java.util.Arrays;
 import java.util.Map;
-import java.util.Random;
 import java.util.concurrent.ThreadLocalRandom;
 import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
@@ -155,9 +152,6 @@ public class HCF extends JavaPlugin {
 
         registerSerialization();
         registerCommands();
-        registerCommands(
-                new AngleCommand()
-        );
         registerManagers();
         registerListeners();
 
@@ -324,7 +318,7 @@ public class HCF extends JavaPlugin {
         Map<String, Map<String, Object>> map = getDescription().getCommands();
         for (Map.Entry<String, Map<String, Object>> entry : map.entrySet()) {
             PluginCommand command = getCommand(entry.getKey());
-            command.setPermission("hcf.command." + entry.getKey());
+            command.setPermission("hcf.oldcommands." + entry.getKey());
             command.setPermissionMessage(ChatColor.RED + "You do not have permission for this command.");
         }
     }

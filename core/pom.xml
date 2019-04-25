@@ -39,7 +39,7 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-shade-plugin</artifactId>
-                <version>2.4.2</version>
+                <version>3.1.1</version>
                 <executions>
                     <execution>
                         <phase>package</phase>
@@ -101,12 +101,13 @@
             <groupId>us.lemin.core</groupId>
             <artifactId>core</artifactId>
             <version>1.0.0</version>
+            <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>org.ipvp</groupId>
             <artifactId>ibase-base</artifactId>
             <version>1.0.0-SNAPSHOT</version>
-            <scope>provided</scope>
+            <scope>compile</scope>
         </dependency>
         <dependency>
             <groupId>com.sk89q</groupId>
@@ -140,6 +141,12 @@
             <systemPath>
                 /Users/jaden/.m2/repository/org/github/ProtocolSupport/ProtocolSupport/4.23dev/ProtocolSupport-4.23dev.jar
             </systemPath>
+        </dependency>
+        <dependency>
+            <groupId>org.projectlombok</groupId>
+            <artifactId>lombok</artifactId>
+            <version>1.16.20</version>
+            <scope>compile</scope>
         </dependency>
     </dependencies>
 

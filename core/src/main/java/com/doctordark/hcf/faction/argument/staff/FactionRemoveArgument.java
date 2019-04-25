@@ -31,7 +31,7 @@ public class FactionRemoveArgument extends CommandArgument {
         super("remove", "Remove a faction.");
         this.plugin = plugin;
         this.aliases = new String[]{"delete", "forcedisband", "forceremove"};
-        this.permission = "hcf.command.faction.argument." + getName();
+        this.permission = "hcf.oldcommands.faction.argument." + getName();
         this.factory = new ConversationFactory(plugin).
                 withFirstPrompt(new RemoveAllPrompt(plugin)).
                 withEscapeSequence("/no").
@@ -54,7 +54,7 @@ public class FactionRemoveArgument extends CommandArgument {
 
         if (args[1].equalsIgnoreCase("all")) {
             if (!(sender instanceof ConsoleCommandSender)) {
-                sender.sendMessage(ChatColor.RED + "This command can be only executed from console.");
+                sender.sendMessage(ChatColor.RED + "This oldcommands can be only executed from console.");
                 return true;
             }
 

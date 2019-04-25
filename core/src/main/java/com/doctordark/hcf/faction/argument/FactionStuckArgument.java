@@ -30,14 +30,14 @@ public class FactionStuckArgument extends CommandArgument {
     @Override
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
         if (!(sender instanceof Player)) {
-            sender.sendMessage(ChatColor.RED + "This command is only executable by players.");
+            sender.sendMessage(ChatColor.RED + "This oldcommands is only executable by players.");
             return true;
         }
 
         Player player = (Player) sender;
 
         if (player.getWorld().getEnvironment() != World.Environment.NORMAL) {
-            sender.sendMessage(ChatColor.RED + "You can only use this command from the overworld.");
+            sender.sendMessage(ChatColor.RED + "You can only use this oldcommands from the overworld.");
             return true;
         }
 

@@ -117,7 +117,7 @@ public class ChatListener implements Listener {
                     continue;
                 }
 
-                // Player is faking a command
+                // Player is faking a oldcommands
                 if (character == '/') {
                     return false;
                 }

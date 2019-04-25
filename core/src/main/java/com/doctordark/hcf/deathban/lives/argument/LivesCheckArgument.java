@@ -22,7 +22,7 @@ public class LivesCheckArgument extends CommandArgument {
     public LivesCheckArgument(HCF plugin) {
         super("check", "Check how much lives a player has");
         this.plugin = plugin;
-        this.permission = "hcf.command.lives.argument." + getName();
+        this.permission = "hcf.oldcommands.lives.argument." + getName();
     }
 
     @Override

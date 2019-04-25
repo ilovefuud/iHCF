@@ -21,7 +21,7 @@ public class LivesSetDeathbanTimeArgument extends CommandArgument {
 
     public LivesSetDeathbanTimeArgument(HCF plugin) {
         super("setdeathbantime", "Sets the base deathban time");
-        this.permission = "hcf.command.lives.argument." + getName();
+        this.permission = "hcf.oldcommands.lives.argument." + getName();
         this.plugin = plugin;
     }
 

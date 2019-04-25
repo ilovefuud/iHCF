@@ -59,7 +59,7 @@ public class TeleportTimer extends PlayerTimer implements Listener {
 
     @Override
     public String getScoreboardPrefix() {
-        return ChatColor.DARK_AQUA.toString() + ChatColor.BOLD;
+        return plugin.getConfiguration().getScoreboardSidebarTimerTeleportPrefix();
     }
 
     @Override

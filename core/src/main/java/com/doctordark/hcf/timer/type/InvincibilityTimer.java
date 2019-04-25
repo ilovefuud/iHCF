@@ -74,7 +74,7 @@ public class InvincibilityTimer extends PlayerTimer implements Listener {
 
     @Override
     public String getScoreboardPrefix() {
-        return ChatColor.DARK_GREEN.toString() + ChatColor.BOLD;
+        return plugin.getConfiguration().getScoreboardSidebarTimerInvincibilityPrefix();
     }
 
     @Override

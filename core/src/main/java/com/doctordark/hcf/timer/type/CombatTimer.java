@@ -40,7 +40,7 @@ public class CombatTimer extends PlayerTimer implements Listener {
 
     @Override
     public String getScoreboardPrefix() {
-        return ChatColor.DARK_RED.toString() + ChatColor.BOLD;
+        return plugin.getConfiguration().getScoreboardSidebarTimerCombatPrefix();
     }
 
     @Override

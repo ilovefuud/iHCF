@@ -24,7 +24,7 @@ public class FactionSetDtrRegenArgument extends CommandArgument {
     public FactionSetDtrRegenArgument(HCF plugin) {
         super("setdtrregen", "Sets the DTR cooldown of a faction.", new String[]{"setdtrregeneration"});
         this.plugin = plugin;
-        this.permission = "hcf.command.faction.argument." + getName();
+        this.permission = "hcf.oldcommands.faction.argument." + getName();
     }
 
     @Override

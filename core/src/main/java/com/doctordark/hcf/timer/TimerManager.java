@@ -59,9 +59,9 @@ public class TimerManager implements Listener {
         this.plugin = plugin;
         plugin.getServer().getPluginManager().registerEvents(this, plugin);
         registerTimer(enderPearlTimer = new EnderPearlTimer(plugin));
-        registerTimer(logoutTimer = new LogoutTimer());
+        registerTimer(logoutTimer = new LogoutTimer(plugin));
         registerTimer(gappleTimer = new GappleTimer(plugin));
-        registerTimer(stuckTimer = new StuckTimer());
+        registerTimer(stuckTimer = new StuckTimer(plugin));
         registerTimer(invincibilityTimer = new InvincibilityTimer(plugin));
         registerTimer(combatTimer = new CombatTimer(plugin));
         registerTimer(teleportTimer = new TeleportTimer(plugin));

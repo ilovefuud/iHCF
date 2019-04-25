@@ -6,7 +6,7 @@ import com.doctordark.hcf.timer.argument.TimerSetArgument;
 import com.doctordark.util.command.ArgumentExecutor;
 
 /**
- * Handles the execution and tab completion of the timer command.
+ * Handles the execution and tab completion of the timer oldcommands.
  */
 public class TimerExecutor extends ArgumentExecutor {
 

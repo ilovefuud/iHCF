@@ -20,7 +20,7 @@ public class EventUptimeArgument extends CommandArgument {
     public EventUptimeArgument(HCF plugin) {
         super("uptime", "Check the uptime of an event");
         this.plugin = plugin;
-        this.permission = "hcf.command.event.argument." + getName();
+        this.permission = "hcf.oldcommands.event.argument." + getName();
     }
 
     @Override

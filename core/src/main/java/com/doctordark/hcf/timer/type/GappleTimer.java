@@ -24,10 +24,14 @@ import java.util.function.Predicate;
  */
 public class GappleTimer extends PlayerTimer implements Listener {
 
+    private final HCF plugin;
+
     private ImageMessage goppleArtMessage;
 
     public GappleTimer(HCF plugin) {
         super("Gapple", TimeUnit.HOURS.toMillis(6L));
+
+        this.plugin = plugin;
 
         if (plugin.getImageFolder().getGopple() != null) {
             goppleArtMessage = ImageMessage.newInstance(plugin.getImageFolder().getGopple(), 8, ImageChar.BLOCK.getChar()).appendText("", "",
@@ -41,7 +45,7 @@ public class GappleTimer extends PlayerTimer implements Listener {
 
     @Override
     public String getScoreboardPrefix() {
-        return ChatColor.YELLOW.toString() + ChatColor.BOLD;
+        return plugin.getConfiguration().getScoreboardSidebarTimerGapplePrefix();
     }
 
     @EventHandler(ignoreCancelled = true, priority = EventPriority.MONITOR)

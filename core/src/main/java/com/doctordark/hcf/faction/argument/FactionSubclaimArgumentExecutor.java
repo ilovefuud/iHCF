@@ -34,7 +34,7 @@ public class FactionSubclaimArgumentExecutor extends CommandArgument {
         this.arguments.add(new FactionSubclaimMembersArgument(plugin));
         this.arguments.add(new FactionSubclaimRenameArgument(plugin));
         this.arguments.add(new FactionSubclaimStartArgument());
-        this.permission = "hcf.command.faction.argument." + getName();
+        this.permission = "hcf.oldcommands.faction.argument." + getName();
     }
 
     @Override
@@ -61,7 +61,7 @@ public class FactionSubclaimArgumentExecutor extends CommandArgument {
         String permission = (argument == null) ? null : argument.getPermission();
 
         if (argument == null || (permission != null && !sender.hasPermission(permission))) {
-            sender.sendMessage(ChatColor.RED + "Faction subclaim sub-command " + args[1] + " not found.");
+            sender.sendMessage(ChatColor.RED + "Faction subclaim sub-oldcommands " + args[1] + " not found.");
             return true;
         }
 

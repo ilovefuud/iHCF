@@ -24,7 +24,7 @@ public class LivesGiveArgument extends CommandArgument {
         super("give", "Give lives to a player");
         this.plugin = plugin;
         this.aliases = new String[]{"transfer", "send", "pay", "add"};
-        this.permission = "hcf.command.lives.argument." + getName();
+        this.permission = "hcf.oldcommands.lives.argument." + getName();
     }
 
     @Override

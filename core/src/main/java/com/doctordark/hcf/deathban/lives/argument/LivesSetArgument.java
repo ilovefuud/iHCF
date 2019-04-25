@@ -24,7 +24,7 @@ public class LivesSetArgument extends CommandArgument {
     public LivesSetArgument(HCF plugin) {
         super("set", "Set how much lives a player has");
         this.plugin = plugin;
-        this.permission = "hcf.command.lives.argument." + getName();
+        this.permission = "hcf.oldcommands.lives.argument." + getName();
     }
 
     @Override

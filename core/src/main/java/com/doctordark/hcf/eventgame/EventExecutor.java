@@ -15,7 +15,7 @@ import com.doctordark.hcf.eventgame.argument.EventUptimeArgument;
 import com.doctordark.util.command.ArgumentExecutor;
 
 /**
- * Handles the execution and tab completion of the event command.
+ * Handles the execution and tab completion of the event oldcommands.
  */
 public class EventExecutor extends ArgumentExecutor {
 

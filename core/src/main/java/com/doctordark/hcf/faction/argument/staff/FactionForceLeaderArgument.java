@@ -19,7 +19,7 @@ public class FactionForceLeaderArgument extends CommandArgument {
     public FactionForceLeaderArgument(HCF plugin) {
         super("forceleader", "Forces the leader of a faction.");
         this.plugin = plugin;
-        this.permission = "hcf.command.faction.argument." + getName();
+        this.permission = "hcf.oldcommands.faction.argument." + getName();
     }
 
     @Override

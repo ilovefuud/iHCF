@@ -24,14 +24,13 @@ import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.potion.Potion;
 import org.bukkit.potion.PotionType;
-import us.lemin.core.commands.PlayerCommand;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 
-public class MapKitCommand extends PlayerCommand implements Listener {
+public class MapKitCommand implements CommandExecutor, TabCompleter, Listener {
 
     //private static final String SEPARATOR_LINE = ChatColor.GRAY.toString() + ChatColor.STRIKETHROUGH.toString() + ChatColor.BOLD.toString() + Strings.repeat('-', 16);
 
@@ -40,7 +39,6 @@ public class MapKitCommand extends PlayerCommand implements Listener {
     private final HCF plugin;
 
     public MapKitCommand(HCF plugin) {
-        super("mapkit");
         this.plugin = plugin;
         plugin.getServer().getPluginManager().registerEvents(this, plugin);
         reloadMapKitInventory();
@@ -72,13 +70,18 @@ public class MapKitCommand extends PlayerCommand implements Listener {
     }
 
     @Override
-    public void execute(Player player, String[] strings) {
-        player.openInventory(mapkitInventory);
+    public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
+        if (!(sender instanceof Player)) {
+            sender.sendMessage(ChatColor.RED + "This oldcommands is only executable by players.");
+            return true;
+        }
+
+        ((Player) sender).openInventory(mapkitInventory);
+        return true;
     }
 
-
     @Override
-    public List<String> tabComplete(CommandSender sender, String alias, String[] args) throws IllegalArgumentException {
+    public List<String> onTabComplete(CommandSender sender, Command command, String label, String[] args) {
         return Collections.emptyList();
     }
 

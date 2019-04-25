@@ -26,7 +26,7 @@ public class EventSetLootArgument extends CommandArgument {
         super("setloottable", "Sets the loot table of an event key at a specific slot");
         this.plugin = plugin;
         this.aliases = new String[]{"setloot"};
-        this.permission = "hcf.command.event.argument." + getName();
+        this.permission = "hcf.oldcommands.event.argument." + getName();
     }
 
     @Override
@@ -37,7 +37,7 @@ public class EventSetLootArgument extends CommandArgument {
     @Override
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
         if (!(sender instanceof Player)) {
-            sender.sendMessage(ChatColor.RED + "This command is only executable by players.");
+            sender.sendMessage(ChatColor.RED + "This oldcommands is only executable by players.");
             return true;
         }
 

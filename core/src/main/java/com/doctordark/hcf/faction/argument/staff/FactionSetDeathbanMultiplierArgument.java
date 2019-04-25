@@ -24,7 +24,7 @@ public class FactionSetDeathbanMultiplierArgument extends CommandArgument {
     public FactionSetDeathbanMultiplierArgument(HCF plugin) {
         super("setdeathbanmultiplier", "Sets the deathban multiplier of a faction.");
         this.plugin = plugin;
-        this.permission = "hcf.command.faction.argument." + getName();
+        this.permission = "hcf.oldcommands.faction.argument." + getName();
     }
 
     @Override

@@ -37,7 +37,7 @@ public class KothScheduleArgument extends CommandArgument {
 
         this.plugin = plugin;
         this.aliases = new String[]{"info", "i", "time"};
-        this.permission = "hcf.command.koth.argument." + getName();
+        this.permission = "hcf.oldcommands.koth.argument." + getName();
 
         TimeZone timeZone = plugin.getConfiguration().getServerTimeZone();
         this.headingTimeFormat = FastDateFormat.getInstance("EEE FF h:mma (z)", timeZone, Locale.ENGLISH);

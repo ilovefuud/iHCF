@@ -19,7 +19,7 @@ public class EventCancelArgument extends CommandArgument {
     public EventCancelArgument(HCF plugin) {
         super("cancel", "Cancels a running event", new String[]{"stop", "end"});
         this.plugin = plugin;
-        this.permission = "hcf.command.event.argument." + getName();
+        this.permission = "hcf.oldcommands.event.argument." + getName();
     }
 
     @Override

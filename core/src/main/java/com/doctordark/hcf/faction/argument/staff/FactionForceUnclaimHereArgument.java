@@ -18,7 +18,7 @@ public class FactionForceUnclaimHereArgument extends CommandArgument {
     public FactionForceUnclaimHereArgument(HCF plugin) {
         super("forceunclaimhere", "Forces land unclaim where you are standing.");
         this.plugin = plugin;
-        this.permission = "hcf.command.faction.argument." + getName();
+        this.permission = "hcf.oldcommands.faction.argument." + getName();
     }
 
     @Override

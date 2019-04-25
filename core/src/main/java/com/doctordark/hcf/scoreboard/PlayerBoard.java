@@ -19,10 +19,6 @@ public class PlayerBoard {
     @Getter
     private boolean sidebarVisible = false;
 
-    private SidebarProvider defaultProvider;
-    private SidebarProvider temporaryProvider;
-    private BukkitRunnable runnable;
-
     private final AtomicBoolean removed = new AtomicBoolean(false);
     private final Team members;
     private final Team neutrals;

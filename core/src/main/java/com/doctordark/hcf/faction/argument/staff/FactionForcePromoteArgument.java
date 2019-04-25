@@ -19,7 +19,7 @@ public class FactionForcePromoteArgument extends CommandArgument {
     public FactionForcePromoteArgument(HCF plugin) {
         super("forcepromote", "Forces the promotion status of a player.");
         this.plugin = plugin;
-        this.permission = "hcf.command.faction.argument." + getName();
+        this.permission = "hcf.oldcommands.faction.argument." + getName();
     }
 
     @Override

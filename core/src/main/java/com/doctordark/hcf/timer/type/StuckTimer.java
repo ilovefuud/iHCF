@@ -33,13 +33,16 @@ public class StuckTimer extends PlayerTimer implements Listener {
 
     private final Map<UUID, Location> startedLocations = new HashMap<>();
 
-    public StuckTimer() {
+    private final HCF plugin;
+
+    public StuckTimer(HCF plugin) {
         super("Stuck", TimeUnit.MINUTES.toMillis(2L) + TimeUnit.SECONDS.toMillis(45L), false);
+        this.plugin = plugin;
     }
 
     @Override
     public String getScoreboardPrefix() {
-        return ChatColor.DARK_AQUA.toString() + ChatColor.BOLD;
+        return plugin.getConfiguration().getScoreboardSidebarTimerStuckPrefix();
     }
 
     @Override

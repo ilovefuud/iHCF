@@ -25,7 +25,7 @@ public class FactionSetDtrArgument extends CommandArgument {
     public FactionSetDtrArgument(HCF plugin) {
         super("setdtr", "Sets the DTR of a faction.", new String[]{"dtr"});
         this.plugin = plugin;
-        this.permission = "hcf.command.faction.argument." + getName();
+        this.permission = "hcf.oldcommands.faction.argument." + getName();
     }
 
     @Override
