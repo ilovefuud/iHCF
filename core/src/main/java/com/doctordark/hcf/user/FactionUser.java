@@ -25,6 +25,7 @@ public class FactionUser implements ConfigurationSerializable {
     private boolean capzoneEntryAlerts;
     private boolean showClaimMap;
     private boolean showLightning = true;
+    private boolean showScoreboard = true;
     private Deathban deathban;
     private long lastFactionLeaveMillis;
     private int kills;
@@ -40,6 +41,7 @@ public class FactionUser implements ConfigurationSerializable {
         this.capzoneEntryAlerts = (Boolean) map.get("capzoneEntryAlerts");
         //this.showClaimMap = (Boolean) map.get("showClaimMap");
         this.showLightning = (Boolean) map.get("showLightning");
+        this.showScoreboard = (boolean) map.get("showScoreboard");
         this.deathban = (Deathban) map.get("deathban");
         this.lastFactionLeaveMillis = Long.parseLong((String) map.get("lastFactionLeaveMillis"));
         this.kills = (Integer) map.get("kills");
@@ -54,6 +56,7 @@ public class FactionUser implements ConfigurationSerializable {
         map.put("capzoneEntryAlerts", capzoneEntryAlerts);
         map.put("showClaimMap", showClaimMap);
         map.put("showLightning", showLightning);
+        map.put("showScoreboard", showScoreboard);
         map.put("deathban", deathban);
         map.put("lastFactionLeaveMillis", Long.toString(lastFactionLeaveMillis));
         map.put("kills", kills);

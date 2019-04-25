@@ -1,7 +1,7 @@
 package com.doctordark.hcf.listener.fixes;
 
 import com.doctordark.hcf.HCF;
-import org.bukkit.craftbukkit.v1_7_R4.entity.CraftArrow;
+import org.bukkit.craftbukkit.v1_8_R3.entity.CraftArrow;
 import org.bukkit.entity.Arrow;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;

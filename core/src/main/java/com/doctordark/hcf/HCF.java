@@ -2,6 +2,7 @@ package com.doctordark.hcf;
 
 import com.doctordark.hcf.combatlog.CombatLogListener;
 import com.doctordark.hcf.command.*;
+import com.doctordark.hcf.command.pvptimer.PvpTimerCommand;
 import com.doctordark.hcf.command.sotw.SotwCommand;
 import com.doctordark.hcf.deathban.*;
 import com.doctordark.hcf.deathban.lives.LivesExecutor;
@@ -41,6 +42,7 @@ import com.doctordark.hcf.visualise.VisualiseHandler;
 import com.doctordark.hcf.visualise.WallBorderListener;
 import com.google.common.base.Joiner;
 import com.sk89q.worldedit.bukkit.WorldEditPlugin;
+import land.pvp.sokudotab.tab.TabHandler;
 import lombok.Getter;
 import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
@@ -59,6 +61,7 @@ import java.lang.reflect.Field;
 import java.util.Arrays;
 import java.util.Map;
 import java.util.Random;
+import java.util.concurrent.ThreadLocalRandom;
 import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
 
@@ -71,7 +74,7 @@ public class HCF extends JavaPlugin {
     private static HCF plugin;
 
     @Getter
-    private Random random = new Random();
+    private ThreadLocalRandom random = ThreadLocalRandom.current();
 
     @Getter
     private Configuration configuration;
@@ -126,6 +129,9 @@ public class HCF extends JavaPlugin {
 
     @Getter
     private WorldEditPlugin worldEdit;
+
+    @Getter
+    private TabHandler tabHandler;
 
     @Getter
     private boolean paperPatch;
@@ -339,36 +345,23 @@ public class HCF extends JavaPlugin {
         scoreboardHandler = new ScoreboardHandler(this);
         userManager = new UserManager(this);
         visualiseHandler = new VisualiseHandler();
+        tabHandler = new TabHandler(this, configuration.getScoreboardTablistUpdateRate());
     }
 
     private void registerCommands(Command... commands) {
-
         try {
-
             final Field commandMapField = getServer().getClass().getDeclaredField("commandMap");
-
             final boolean accessible = commandMapField.isAccessible();
-
-
 
             commandMapField.setAccessible(true);
 
-
-
             final CommandMap commandMap = (CommandMap) commandMapField.get(getServer());
-
-
 
             Arrays.stream(commands).forEach(command -> commandMap.register(command.getName(), getName(), command));
 
-
-
             commandMapField.setAccessible(accessible);
-
         } catch (NoSuchFieldException | IllegalAccessException e) {
-
             throw new RuntimeException("An error occurred while registering commands", e);
-
         }
 
     }

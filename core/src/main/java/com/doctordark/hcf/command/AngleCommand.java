@@ -18,7 +18,7 @@ public class AngleCommand extends PlayerCommand {
 
     @Override
     public void execute(Player player, String[] strings) {
-        Location location = ((Player) player).getLocation();
+        Location location = player.getLocation();
         player.sendMessage(CC.GOLD + location.getYaw() + " yaw" + CC.WHITE + ", " + CC.GOLD
                 + location.getPitch() + " pitch");
     }

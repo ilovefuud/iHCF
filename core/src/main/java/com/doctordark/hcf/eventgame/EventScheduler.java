@@ -42,7 +42,7 @@ public class EventScheduler implements IEventScheduler {
             String lastPicked = null;
             while (scheduleMap.size() < 6) {
                 String kothName = kothNames.get(plugin.getRandom().nextInt(kothNames.size()));
-                if (lastPicked == null || !kothName.equals(lastPicked)) {
+                if (!kothName.equals(lastPicked)) {
                     assigned++;
                     lastPicked = kothName;
 

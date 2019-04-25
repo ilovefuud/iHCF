@@ -9,15 +9,11 @@ import org.bukkit.craftbukkit.v1_8_R3.inventory.CraftItemStack;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
-import protocolsupport.api.ProtocolSupportAPI;
 
 import java.lang.reflect.Field;
 
 public class NmsUtils {
 
-    public static int getProtocolVersion(Player player) {
-        return ProtocolSupportAPI.getProtocolVersion(player).getId();
-    }
 
     public static void resendHeldItemPacket(Player player) {
         sendItemPacketAtHeldSlot(player, NmsUtils.getCleanHeldItem(player));

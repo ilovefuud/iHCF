@@ -4,7 +4,7 @@ import com.doctordark.hcf.HCF;
 import com.doctordark.hcf.eventgame.EventType;
 import com.doctordark.hcf.eventgame.crate.EventKey;
 import com.doctordark.util.command.CommandArgument;
-import net.minecraft.util.com.google.common.primitives.Ints;
+import com.google.common.primitives.Ints;
 import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;

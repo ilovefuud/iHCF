@@ -50,7 +50,7 @@ public class ChatListener implements Listener {
         Set<Player> recipients = event.getRecipients();
         if (chatChannel == ChatChannel.FACTION || chatChannel == ChatChannel.ALLIANCE) {
             if (isGlobalChannel(message)) { // allow players to use '!' to bypass friendly chat.
-                message = message.substring(1, message.length()).trim();
+                message = message.substring(1).trim();
                 event.setMessage(message);
             } else {
                 Collection<Player> online = playerFaction.getOnlinePlayers();

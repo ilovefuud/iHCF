@@ -40,7 +40,7 @@ public class KothNextArgument extends CommandArgument {
         Map<LocalDateTime, String> scheduleMap = plugin.getEventScheduler().getScheduleMap();
 
         if (scheduleMap.isEmpty()) {
-            sender.sendMessage(ChatColor.RED + "There is not an event schedule for after now.");
+            sender.sendMessage(ChatColor.RED + "There is no event currently scheduled.");
             return true;
         }
 
@@ -61,7 +61,7 @@ public class KothNextArgument extends CommandArgument {
             return true;
         }
 
-        sender.sendMessage(ChatColor.RED + "There is not an event scheduled after now.");
+        sender.sendMessage(ChatColor.RED + "There is no event currently scheduled.");
         return true;
     }
 }

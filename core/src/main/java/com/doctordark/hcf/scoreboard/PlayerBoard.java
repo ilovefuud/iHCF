@@ -28,8 +28,6 @@ public class PlayerBoard {
     private final Team neutrals;
     private final Team allies;
 
-    private final BufferedObjective bufferedObjective;
-
     @Getter
     private final Scoreboard scoreboard;
 
@@ -38,14 +36,13 @@ public class PlayerBoard {
 
     private final HCF plugin;
 
-    public PlayerBoard(HCF plugin, Player player) {
+    public PlayerBoard(HCF plugin, Player player, boolean createNewScoreboard) {
         this.plugin = plugin;
         this.player = player;
 
         Configuration configuration = plugin.getConfiguration();
 
-        this.scoreboard = plugin.getServer().getScoreboardManager().getNewScoreboard();
-        this.bufferedObjective = new BufferedObjective(scoreboard, configuration.getScoreboardSidebarTitle());
+        this.scoreboard = !createNewScoreboard ? player.getScoreboard() : plugin.getServer().getScoreboardManager().getNewScoreboard();
 
         this.members = scoreboard.registerNewTeam("members");
         this.members.setPrefix(configuration.getRelationColourTeammate().toString());
@@ -75,75 +72,6 @@ public class PlayerBoard {
         }
     }
 
-    public void setSidebarVisible(boolean visible) {
-        this.sidebarVisible = visible;
-        this.bufferedObjective.setDisplaySlot(visible ? DisplaySlot.SIDEBAR : null);
-    }
-
-    public void setDefaultSidebar(final SidebarProvider provider, long updateInterval) {
-        if (provider != this.defaultProvider) {
-            this.defaultProvider = provider;
-            if (this.runnable != null) {
-                this.runnable.cancel();
-            }
-
-            if (provider == null) {
-                this.scoreboard.clearSlot(DisplaySlot.SIDEBAR);
-                return;
-            }
-
-            (this.runnable = new BukkitRunnable() {
-                @Override
-                public void run() {
-                    if (removed.get()) {
-                        cancel();
-                        return;
-                    }
-
-                    if (provider == defaultProvider) {
-                        updateObjective();
-                    }
-                }
-            }).runTaskTimerAsynchronously(plugin, updateInterval, updateInterval);
-        }
-    }
-
-    public void setTemporarySidebar(final SidebarProvider provider, final long expiration) {
-        if (this.removed.get()) {
-            throw new IllegalStateException("Cannot update whilst board is removed");
-        }
-
-        this.temporaryProvider = provider;
-        this.updateObjective();
-        new BukkitRunnable() {
-            @Override
-            public void run() {
-                if (removed.get()) {
-                    cancel();
-                    return;
-                }
-
-                if (temporaryProvider == provider) {
-                    temporaryProvider = null;
-                    updateObjective();
-                }
-            }
-        }.runTaskLaterAsynchronously(plugin, expiration);
-    }
-
-    private void updateObjective() {
-        if (this.removed.get()) {
-            throw new IllegalStateException("Cannot update whilst board is removed");
-        }
-
-        SidebarProvider provider = this.temporaryProvider != null ? this.temporaryProvider : this.defaultProvider;
-        if (provider == null) {
-            this.bufferedObjective.setVisible(false);
-        } else {
-            this.bufferedObjective.setAllLines(provider.getLines(player));
-            this.bufferedObjective.flip();
-        }
-    }
 
     public void addUpdate(Player target) {
         this.addUpdates(Collections.singleton(target));
@@ -169,25 +97,25 @@ public class PlayerBoard {
 
                 for (Player update : updates) {
                     if (player.equals(update)) {
-                        members.addPlayer(update);
+                        members.addEntry(update.getName());;
                         continue;
                     }
 
                     if (!firstExecute) {
-                        playerFaction = plugin.getFactionManager().getPlayerFaction(player);
+                        playerFaction = plugin.getFactionManager().getPlayerFaction(player.getUniqueId());
                         firstExecute = true;
                     }
 
                     // Lazy loading for performance increase.
                     PlayerFaction targetFaction;
-                    if (playerFaction == null || (targetFaction = plugin.getFactionManager().getPlayerFaction(update)) == null) {
-                        neutrals.addPlayer(update);
+                    if (playerFaction == null || (targetFaction = plugin.getFactionManager().getPlayerFaction(update.getUniqueId())) == null) {
+                        neutrals.addEntry(update.getName());
                     } else if (playerFaction == targetFaction) {
-                        members.addPlayer(update);
+                        members.addEntry(update.getName());
                     } else if (playerFaction.getAllied().contains(targetFaction.getUniqueID())) {
-                        allies.addPlayer(update);
+                        allies.addEntry(update.getName());
                     } else {
-                        neutrals.addPlayer(update);
+                        neutrals.addEntry(update.getName());
                     }
                 }
             }

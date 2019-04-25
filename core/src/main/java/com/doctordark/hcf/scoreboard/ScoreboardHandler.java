@@ -5,7 +5,6 @@ import com.doctordark.hcf.faction.event.FactionRelationCreateEvent;
 import com.doctordark.hcf.faction.event.FactionRelationRemoveEvent;
 import com.doctordark.hcf.faction.event.PlayerJoinedFactionEvent;
 import com.doctordark.hcf.faction.event.PlayerLeftFactionEvent;
-import com.doctordark.hcf.scoreboard.provider.TimerSidebarProvider;
 import com.google.common.collect.Iterables;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
@@ -14,6 +13,7 @@ import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
+import us.lemin.core.api.scoreboardapi.ScoreboardApi;
 
 import java.util.Collection;
 import java.util.HashMap;
@@ -24,17 +24,17 @@ import java.util.UUID;
 
 public class ScoreboardHandler implements Listener {
 
-    private static final long UPDATE_TICK_INTERVAL = 2L;
-
     private final Map<UUID, PlayerBoard> playerBoards = new HashMap<>();
-    private final TimerSidebarProvider timerSidebarProvider;
+    private ScoreboardApi scoreboardApi;
     private final HCF plugin;
 
     public ScoreboardHandler(HCF plugin) {
         this.plugin = plugin;
 
         plugin.getServer().getPluginManager().registerEvents(this, plugin);
-        timerSidebarProvider = new TimerSidebarProvider(plugin);
+        if (plugin.getConfiguration().isScoreboardSidebarEnabled()) {
+            scoreboardApi = new ScoreboardApi(plugin, new HCFAdapter(plugin), false);
+        }
 
         // Give all online players a scoreboard.
         Collection<? extends Player> players = Bukkit.getOnlinePlayers();
@@ -117,14 +117,12 @@ public class ScoreboardHandler implements Listener {
     }
 
     public PlayerBoard applyBoard(Player player) {
-        PlayerBoard board = new PlayerBoard(plugin, player);
+        PlayerBoard board = new PlayerBoard(plugin, player, scoreboardApi == null);
         PlayerBoard previous = playerBoards.put(player.getUniqueId(), board);
         if (previous != null) {
             previous.remove();
         }
 
-        board.setSidebarVisible(true);
-        board.setDefaultSidebar(timerSidebarProvider, UPDATE_TICK_INTERVAL);
         return board;
     }
 

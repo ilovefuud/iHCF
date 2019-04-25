@@ -6,15 +6,10 @@ import com.doctordark.hcf.packetwrapper.WrapperPlayServerMultiBlockChange;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.HashBasedTable;
 import com.google.common.collect.Table;
-import net.minecraft.server.v1_7_R4.ChunkCoordIntPair;
-import net.minecraft.server.v1_7_R4.PacketPlayOutMultiBlockChange;
 import org.bukkit.Chunk;
 import org.bukkit.Location;
-import org.bukkit.craftbukkit.v1_7_R4.CraftChunk;
-import org.bukkit.craftbukkit.v1_7_R4.entity.CraftPlayer;
 import org.bukkit.entity.Player;
 import org.bukkit.material.MaterialData;
-import org.spigotmc.SpigotDebreakifier;
 
 import java.io.ByteArrayOutputStream;
 import java.io.DataOutputStream;

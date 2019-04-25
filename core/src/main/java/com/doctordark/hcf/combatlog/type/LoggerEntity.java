@@ -1,7 +1,7 @@
 package com.doctordark.hcf.combatlog.type;
 
 import com.doctordark.hcf.HCF;
-import org.bukkit.craftbukkit.v1_7_R4.entity.CraftPlayer;
+import org.bukkit.craftbukkit.v1_8_R3.entity.CraftPlayer;
 
 import java.util.UUID;
 

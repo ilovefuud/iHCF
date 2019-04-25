@@ -16,8 +16,8 @@ import com.doctordark.hcf.util.DurationFormatter;
 import com.doctordark.hcf.util.ReflectionUtils;
 import com.doctordark.hcf.visualise.VisualType;
 import com.doctordark.util.BukkitUtils;
-import net.minecraft.util.gnu.trove.map.TObjectLongMap;
-import net.minecraft.util.gnu.trove.map.hash.TObjectLongHashMap;
+import gnu.trove.map.TObjectLongMap;
+import gnu.trove.map.hash.TObjectLongHashMap;
 import org.apache.commons.lang3.time.DurationFormatUtils;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
@@ -57,7 +57,7 @@ import java.util.function.Predicate;
 public class InvincibilityTimer extends PlayerTimer implements Listener {
 
     //TODO: Future proof
-    private static final String PVP_COMMAND = "/pvp enable";
+    private static final String PVP_COMMAND = "/land.pvp enable";
 
     // The PlayerPickupItemEvent spams if cancelled, needs a delay between messages to look clean.
     private static final long ITEM_PICKUP_DELAY = TimeUnit.SECONDS.toMillis(30L);
@@ -291,7 +291,7 @@ public class InvincibilityTimer extends PlayerTimer implements Listener {
             if ((remaining = getRemaining(attacker)) > 0L) {
                 event.setCancelled(true);
                 attacker.sendMessage(ChatColor.RED + "You cannot attack players whilst your " + getDisplayName() + ChatColor.RED + " timer is active [" +
-                        ChatColor.BOLD + DurationFormatter.getRemaining(remaining, true, false) + ChatColor.RED + " remaining]. Use '" + ChatColor.GOLD + PVP_COMMAND + ChatColor.RED + "' to allow pvp.");
+                        ChatColor.BOLD + DurationFormatter.getRemaining(remaining, true, false) + ChatColor.RED + " remaining]. Use '" + ChatColor.GOLD + PVP_COMMAND + ChatColor.RED + "' to allow land.pvp.");
             }
         }
     }

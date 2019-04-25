@@ -2,11 +2,7 @@ package com.doctordark.hcf.listener;
 
 import com.doctordark.hcf.HCF;
 import com.google.common.collect.ImmutableMap;
-import net.minecraft.server.v1_7_R4.EnumArmorMaterial;
-import net.minecraft.server.v1_7_R4.EnumToolMaterial;
-import net.minecraft.server.v1_7_R4.ItemArmor;
-import net.minecraft.server.v1_7_R4.ItemSword;
-import net.minecraft.server.v1_7_R4.ItemTool;
+import net.minecraft.server.v1_8_R3.ItemArmor;
 import org.bukkit.Material;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Entity;
@@ -23,6 +19,7 @@ import org.bukkit.event.player.PlayerFishEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.EnchantmentStorageMeta;
 import org.bukkit.inventory.meta.ItemMeta;
+import us.lemin.spigot.constant.EnumToolMaterial;
 
 import java.util.Iterator;
 import java.util.Map;
@@ -36,13 +33,13 @@ public class EnchantLimitListener implements Listener {
     private final ImmutableMap<Material, EnumToolMaterial> ITEM_TOOL_MAPPING = /*TODO:Maps.immutableEnumMap*/(ImmutableMap.of(
             Material.IRON_INGOT, EnumToolMaterial.IRON,
             Material.GOLD_INGOT, EnumToolMaterial.GOLD,
-            Material.DIAMOND, EnumToolMaterial.DIAMOND
+            Material.DIAMOND, EnumToolMaterial.EMERALD
     ));
 
-    private final ImmutableMap<Material, EnumArmorMaterial> ITEM_ARMOUR_MAPPING = /*TODO:Maps.immutableEnumMap*/(ImmutableMap.of(
-            Material.IRON_INGOT, EnumArmorMaterial.IRON,
-            Material.GOLD_INGOT, EnumArmorMaterial.GOLD,
-            Material.DIAMOND, EnumArmorMaterial.DIAMOND
+    private final ImmutableMap<Material, ItemArmor.EnumArmorMaterial> ITEM_ARMOUR_MAPPING = /*TODO:Maps.immutableEnumMap*/(ImmutableMap.of(
+            Material.IRON_INGOT, ItemArmor.EnumArmorMaterial.IRON,
+            Material.GOLD_INGOT, ItemArmor.EnumArmorMaterial.GOLD,
+            Material.DIAMOND, ItemArmor.EnumArmorMaterial.DIAMOND
     ));
 
     private final HCF plugin;

@@ -32,7 +32,7 @@ import org.bukkit.World;
 import org.bukkit.block.Block;
 import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.MemorySection;
-import org.bukkit.craftbukkit.v1_7_R4.util.LongHash;
+import org.bukkit.craftbukkit.v1_8_R3.util.LongHash;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;

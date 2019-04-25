@@ -47,7 +47,7 @@
                             <goal>shade</goal>
                         </goals>
                         <configuration>
-                           <relocations>
+                            <relocations>
                                 <relocation>
                                     <pattern>net.techcable.techutils</pattern>
                                     <shadedPattern>com.doctordark.internal.net.techcable.techutils</shadedPattern>
@@ -78,19 +78,23 @@
             <id>techcable-repo</id>
             <url>https://repo.techcable.net/content/groups/public/</url>
         </repository>
+        <repository>
+            <id>jitpack.io</id>
+            <url>https://jitpack.io</url>
+        </repository>
     </repositories>
 
     <dependencies>
         <dependency>
-            <groupId>org.github.paperspigot</groupId>
-            <artifactId>paperspigot-api</artifactId>
-            <version>1.7.10-R0.1-SNAPSHOT</version>
+            <groupId>us.lemin.spigot</groupId>
+            <artifactId>leminspigot-api</artifactId>
+            <version>1.8.8-R0.1-SNAPSHOT</version>
             <scope>provided</scope>
         </dependency>
         <dependency>
-            <groupId>org.github.paperspigot</groupId>
-            <artifactId>paperspigot</artifactId>
-            <version>1.7.10-R0.1-SNAPSHOT</version>
+            <groupId>us.lemin.spigot</groupId>
+            <artifactId>leminspigot</artifactId>
+            <version>1.8.8-R0.1-SNAPSHOT</version>
             <scope>provided</scope>
         </dependency>
         <dependency>
@@ -129,12 +133,12 @@
             <scope>compile</scope>
         </dependency>
         <dependency>
-            <groupId>protocolsupport</groupId>
-            <artifactId>protocolsupport</artifactId>
-            <version>4.23</version>
+            <groupId>com.github.ProtocolSupport</groupId>
+            <artifactId>ProtocolSupport</artifactId>
+            <version>4.23dev</version>
             <scope>system</scope>
             <systemPath>
-                C:/Users/Jaden/Desktop/ass/plugins/ProtocolSupport.jar
+                /Users/jaden/.m2/repository/org/github/ProtocolSupport/ProtocolSupport/4.23dev/ProtocolSupport-4.23dev.jar
             </systemPath>
         </dependency>
     </dependencies>

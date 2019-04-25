@@ -68,7 +68,7 @@ public class FactionListener implements Listener {
         Faction faction = event.getFaction();
         if (faction instanceof PlayerFaction) {
             CommandSender sender = event.getSender();
-            Bukkit.broadcastMessage(String.format("§eFaction §f%s §ehas been §cdisbanded §eby §f%s§e.",
+            plugin.getServer().broadcastMessage(String.format("§eFaction §f%s §ehas been §cdisbanded §eby §f%s§e.",
                     faction.getName(), sender.getName()));
         }
     }
@@ -183,7 +183,7 @@ public class FactionListener implements Listener {
     @EventHandler(ignoreCancelled = true, priority = EventPriority.MONITOR)
     public void onPlayerJoin(PlayerJoinEvent event) {
         Player player = event.getPlayer();
-        PlayerFaction playerFaction = plugin.getFactionManager().getPlayerFaction(player);
+        PlayerFaction playerFaction = plugin.getFactionManager().getPlayerFaction(player.getUniqueId());
         if (playerFaction != null) {
             playerFaction.printDetails(player);
             playerFaction.broadcast(ChatColor.GOLD + "Member Online: " + ChatColor.GREEN + playerFaction.getMember(player).getRole().getAstrix() + player.getName() + ChatColor.GOLD + '.',
@@ -195,7 +195,7 @@ public class FactionListener implements Listener {
     @EventHandler(ignoreCancelled = true, priority = EventPriority.MONITOR)
     public void onPlayerQuit(PlayerQuitEvent event) {
         Player player = event.getPlayer();
-        PlayerFaction playerFaction = plugin.getFactionManager().getPlayerFaction(player);
+        PlayerFaction playerFaction = plugin.getFactionManager().getPlayerFaction(player.getUniqueId());
         if (playerFaction != null) {
             playerFaction.broadcast(ChatColor.GOLD + "Member Offline: " + ChatColor.GREEN + playerFaction.getMember(player).getRole().getAstrix() + player.getName() + ChatColor.GOLD + '.');
         }

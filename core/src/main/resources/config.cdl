@@ -89,6 +89,21 @@ scoreboard {
 
         // If this plugin utilises the sidebar.
         enabled = true
+
+        // All scoreboard entries must be below 48 characters,
+        // including color codes (-> &e15 characters <-).  Please
+        // keep note of your maximum faction character limit.
+        eotw {
+
+        }
+    }
+
+    tablist {
+        // Custom Tablist
+        title = "&a&lHCF"
+
+        // If this plugin utilizes the custom tablist.
+        enabled = true
     }
 
     nametags {
@@ -258,7 +273,8 @@ enchantmentLimits = [
     "FIRE_ASPECT = 1",
     "LOOT_BONUS_MOBS = 3",
     "LUCK = 3",
-    "LURE = 3"
+    "LURE = 3",
+    "DEPTH_STRIDER = 0"
 ]
 
 // The maximum levels a potion can be brewed to.

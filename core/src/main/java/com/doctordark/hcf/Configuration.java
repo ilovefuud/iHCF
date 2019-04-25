@@ -112,6 +112,75 @@ public class Configuration extends AnnotationConfig {
     @Setting("scoreboard.sidebar.enabled")
     private boolean scoreboardSidebarEnabled = true;
 
+    @Setting("scoreboard.sidebar.updateRate")
+    private int scoreboardSidebarUpdateRate = 10;
+
+    @Setting("scoreboard.sidebar.eotw.countdown")
+    private String scoreboardSidebarEotwCountdown = "&4&lEOTW &cstarts in &l%remaining%";
+
+    @Setting("scoreboard.sidebar.eotw.cappable")
+    private String scoreboardSidebarEotwCappable = "&4&lEOTW &ccappable in &l%remaining%";
+
+    @Setting("scoreboard.sidebar.sotw")
+    private String scoreboardSidebarSotw = "&2&lSOTW&7: &6%remaining%";
+
+    @Setting("scoreboard.sidebar.activeKoth")
+    private String scoreboardSidebarActiveKoth = "&a%kothName%&7: &6%remaining%";
+
+    @Setting("scoreboard.sidebar.conquest.activeConquest")
+    private String scoreboardSidebarConquestActiveConquest = "&9&l%conquestName%&7:";
+
+    @Setting("scoreboard.sidebar.conquest.lineOne")
+    private String scoreboardSidebarConquestLineOne = "  &c%redRemaining%&r &e%yellowRemaining%";
+
+    @Setting("scoreboard.sidebar.conquest.lineTwo")
+    private String scoreboardSidebarConquestLineTwo = "  &2%greenRemaining%&r &b%blueRemaining%";
+
+    @Setting("scoreboard.sidebar.conquest.topThree")
+    private String scoreboardSidebarConquestTopThree = "&d&l%factionName%&7: &e%score%";
+
+    @Setting("scoreboard.sidebar.pvpClass.activeClass")
+    private String scoreboardSidebarPvpClassActiveClass = "&eActive Class&7: &2%className%";
+
+    @Setting("scoreboard.sidebar.pvpClass.bard.energy")
+    private String scoreboardSidebarPvpClassBardEnergy = " &5\u00bb &dEnergy&7: &6%energy%";
+
+    @Setting("scoreboard.sidebar.pvpClass.bard.buffDelay")
+    private String scoreboardSidebarPvpClassBardBuffDelay = " &5\u00bb &dBuff Delay&7: &6%buffDelay%";
+
+    @Setting("scoreboard.sidebar.pvpClass.archer.markColorLevel.one")
+    private String scoreboardSidebarPvpClassMarkColorLevelOne = "&2";
+
+    @Setting("scoreboard.sidebar.pvpClass.archer.markColorLevel.two")
+    private String scoreboardSidebarPvpClassMarkColorLevelTwo = "&c";
+
+    @Setting("scoreboard.sidebar.pvpClass.archer.markColorLevel.three")
+    private String scoreboardSidebarPvpClassMarkColorLevelThree = "&e";
+
+    @Setting("scoreboard.sidebar.pvpClass.archer.archerMark")
+    private String scoreboardSidebarPvpClassArcherMark = " &d\u00bb&c %targetName% %levelColor%[Mark %markLevel%]";
+
+    @Setting("scoreboard.sidebar.pvpClass.miner.invisibility.enabled")
+    private String scoreboardSidebarPvpClassMinerInvisibilityEnabled = "&aEnabled";
+
+    @Setting("scoreboard.sidebar.pvpClass.miner.invisibility.disabled")
+    private String scoreboardSidebarPvpClassMinerInvisibilityDisabled = "&cDisabled";
+
+    @Setting("scoreboard.sidebar.pvpClass.miner.invisibility.status")
+    private String scoreboardSidebarPvpClassMinerInvisibilityStatus = " &5\u00bb &dInvisibility&7: %invisibility%";
+
+    @Setting("scoreboard.sidebar.timer")
+    private String scoreboardSidebarTimer = "&b%timer%&7: &6%remaining%";
+
+    @Setting("scoreboard.tablist.title")
+    private String scoreboardTablistTitle = "&a&lHCF";
+
+    @Setting("scoreboard.tablist.updateRate")
+    private int scoreboardTablistUpdateRate = 20;
+
+    @Setting("scoreboard.tablist.enabled")
+    private boolean scoreboardTablistEnabled = true;
+
     @Setting("scoreboard.nametags.enabled")
     private boolean scoreboardNametagsEnabled = true;
 

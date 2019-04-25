@@ -158,7 +158,7 @@ public class EnderPearlTimer extends PlayerTimer implements Listener {
 
         @Override
         public void run() {
-            net.minecraft.server.v1_8_R3.ItemStack stack = NmsUtils.getCleanHeldItem(player);
+            net.minecraft.server.v1_7_R4.ItemStack stack = NmsUtils.getCleanHeldItem(player);
             if (stack != null && stack.getItem() instanceof ItemEnderPearl) {
                 stack = stack.cloneItemStack();
                 stack.c(ChatColor.GOLD + "Enderpearl Cooldown: " + ChatColor.RED +

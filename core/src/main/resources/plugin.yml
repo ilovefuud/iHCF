@@ -48,8 +48,8 @@ commands:
     aliases: [p2p]
     description: Allow players to pay money.
   pvptimer:
-    aliases: [pvp]
-    description: Command to enable or disable pvp timer protection.
+    aliases: [land.pvp]
+    description: Command to enable or disable land.pvp timer protection.
   regen:
     description: Check ETA until a faction is able to regenerate DTR.
   servertime:

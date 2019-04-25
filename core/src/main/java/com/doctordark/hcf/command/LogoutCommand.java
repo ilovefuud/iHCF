@@ -8,39 +8,35 @@ import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.TabCompleter;
 import org.bukkit.entity.Player;
+import us.lemin.core.commands.PlayerCommand;
 
+import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 
-public class LogoutCommand implements CommandExecutor, TabCompleter {
+public class LogoutCommand extends PlayerCommand {
 
     private final HCF plugin;
 
     public LogoutCommand(HCF plugin) {
+        super("logout");
+        setAliases("log", "disconnect");
         this.plugin = plugin;
     }
-
     @Override
-    public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
-        if (!(sender instanceof Player)) {
-            sender.sendMessage(ChatColor.RED + "This command is only executable by players.");
-            return true;
-        }
-
-        Player player = (Player) sender;
-        LogoutTimer logoutTimer = plugin.getTimerManager().getLogoutTimer();
-
-        if (!logoutTimer.setCooldown(player, player.getUniqueId())) {
-            sender.sendMessage(ChatColor.RED + "Your " + logoutTimer.getName() + ChatColor.RED + " timer is already active.");
-            return true;
-        }
-
-        sender.sendMessage(ChatColor.RED + "Your " + logoutTimer.getName() + ChatColor.RED + " timer has started.");
-        return true;
-    }
-
-    @Override
-    public List<String> onTabComplete(CommandSender sender, Command command, String label, String[] args) {
+    public List<String> tabComplete(CommandSender sender, String alias, String[] args) throws IllegalArgumentException {
         return Collections.emptyList();
     }
+
+    @Override
+    public void execute(Player player, String[] strings) {
+            LogoutTimer logoutTimer = plugin.getTimerManager().getLogoutTimer();
+
+            if (!logoutTimer.setCooldown(player, player.getUniqueId())) {
+                player.sendMessage(ChatColor.RED + "Your " + logoutTimer.getName() + ChatColor.RED + " timer is already active.");
+                return;
+            }
+
+            player.sendMessage(ChatColor.RED + "Your " + logoutTimer.getName() + ChatColor.RED + " timer has started.");
+        }
 }

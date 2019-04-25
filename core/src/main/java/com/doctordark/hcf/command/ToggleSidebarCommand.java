@@ -2,6 +2,7 @@ package com.doctordark.hcf.command;
 
 import com.doctordark.hcf.HCF;
 import com.doctordark.hcf.scoreboard.PlayerBoard;
+import com.doctordark.hcf.user.FactionUser;
 import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -30,11 +31,13 @@ public class ToggleSidebarCommand implements CommandExecutor, TabExecutor {
             return true;
         }
 
-        PlayerBoard playerBoard = plugin.getScoreboardHandler().getPlayerBoard(((Player) sender).getUniqueId());
-        boolean newVisibile = !playerBoard.isSidebarVisible();
-        playerBoard.setSidebarVisible(newVisibile);
+        FactionUser user = plugin.getUserManager().getUser(((Player) sender).getUniqueId());
+        boolean newVisible = user.isShowScoreboard();
 
-        sender.sendMessage(ChatColor.YELLOW + "Scoreboard sidebar is " + (newVisibile ? ChatColor.GREEN + "now" : ChatColor.RED + "no longer") + ChatColor.YELLOW + " visible.");
+        user.setShowScoreboard(newVisible);
+
+
+        sender.sendMessage(ChatColor.YELLOW + "Scoreboard sidebar is " + (newVisible ? ChatColor.GREEN + "now" : ChatColor.RED + "no longer") + ChatColor.YELLOW + " visible.");
         return true;
     }
 
