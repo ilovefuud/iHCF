@@ -401,6 +401,11 @@ public class PlayerFaction extends ClaimableFaction implements Raidable {
         return deathsUntilRaidable <= 0;
     }
 
+
+    public boolean isOnTeam(UUID uuid) { return members.containsKey(uuid); }
+
+    public boolean isOnTeam(Player player) { return isOnTeam(player.getUniqueId()); }
+
     @Override
     public double getDeathsUntilRaidable() {
         return this.getDeathsUntilRaidable(true);

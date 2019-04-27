@@ -112,7 +112,7 @@ public interface FactionManager {
      * @return the {@link PlayerFaction} containing {@link org.bukkit.entity.Player}
      * @deprecated use of {@link org.bukkit.Bukkit#getOfflinePlayer(UUID)} in main thread
      */
-    @Deprecated
+
     PlayerFaction getPlayerFaction(Player player);
 
     /**

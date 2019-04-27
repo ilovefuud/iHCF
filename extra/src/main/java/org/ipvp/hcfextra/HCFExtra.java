@@ -27,15 +27,15 @@ public class HCFExtra extends JavaPlugin {
         InventoryRestoreHandler inventoryRestoreHandler = new InventoryRestoreHandler();
         this.getServer().getPluginManager().registerEvents(inventoryRestoreHandler, this);
         (temp = this.getCommand("inv")).setExecutor(inventoryRestoreHandler);
-        temp.setPermission("ihcfextra.command.inv");
+        temp.setPermission("ihcfextra.oldcommands.inv");
 
         EndportalHandler endportalHandler = new EndportalHandler();
         this.getServer().getPluginManager().registerEvents(endportalHandler, this);
         (temp = this.getCommand("endportal")).setExecutor(endportalHandler);
-        temp.setPermission("ihcfextra.command.endportal");
+        temp.setPermission("ihcfextra.oldcommands.endportal");
 
         (temp = this.getCommand("hcfextra")).setExecutor(new HCFExtraCommand(this));
-        temp.setPermission("ihcfextra.command.hcfextra");
+        temp.setPermission("ihcfextra.oldcommands.hcfextra");
 
         this.getCommand("coords").setExecutor(new CoordsCommand(this));
         this.getCommand("help").setExecutor(new HelpCommand(this));

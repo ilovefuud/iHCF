@@ -7,6 +7,7 @@ import com.doctordark.hcf.faction.type.Faction;
 import com.doctordark.hcf.faction.type.RoadFaction;
 import com.doctordark.hcf.timer.Timer;
 import com.doctordark.util.cuboid.Cuboid;
+import net.minecraft.server.v1_8_R3.PacketPlayInFlying;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.World;
@@ -19,6 +20,7 @@ import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.event.player.PlayerTeleportEvent;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.util.Vector;
+import us.lemin.spigot.handler.MovementHandler;
 
 import java.util.Collection;
 import java.util.HashSet;
@@ -46,21 +48,21 @@ public class WallBorderListener implements Listener {
     @EventHandler(ignoreCancelled = true, priority = EventPriority.MONITOR)
     public void onPlayerJoin(PlayerJoinEvent event) {
         Player player = event.getPlayer();
+        Location location = player.getLocation();
 
         // For some reason, sending the packet on the initial join doesn't display the visual
         // blocks due to an error on Mojangs end, well at least with 1.7.10 so we have to send
         // it a little later.
-        Location now = player.getLocation().clone();
-        new BukkitRunnable() {
-            @Override
-            public void run() {
-                Location location = player.getLocation();
-                if (now.equals(location)) {
-                    handlePositionChanged(player, location.getWorld(),
-                            location.getBlockX(), location.getBlockY(), location.getBlockZ());
-                }
-            }
-        }.runTaskLater(plugin, 4L);
+        //
+        // Allowing it to send on join because 1.8.8 based, if it does not work I will revert
+        //
+        //
+        // Location now = player.getLocation().clone();
+        handlePositionChanged(player,
+                player.getWorld(),
+                location.getBlockX(),
+                location.getBlockY(),
+                location.getBlockZ());
     }
 
     @EventHandler(ignoreCancelled = true, priority = EventPriority.MONITOR)
@@ -85,7 +87,7 @@ public class WallBorderListener implements Listener {
         final VisualType visualType;
         final Timer relevantTimer;
 
-        boolean flag; // TRUE is is in combat, FALSE is has invincibility timer
+        boolean flag; // TRUE if is in combat, FALSE if has invincibility timer
         if (flag = (plugin.getTimerManager().getCombatTimer().getRemaining(player) > 0L)) {
             visualType = VisualType.SPAWN_BORDER;
             relevantTimer = plugin.getTimerManager().getCombatTimer();
@@ -97,15 +99,12 @@ public class WallBorderListener implements Listener {
         }
 
         // Clear any visualises that are no longer within distance.
-        plugin.getVisualiseHandler().clearVisualBlocks(player, visualType, new Predicate<VisualBlock>() {
-            @Override
-            public boolean test(VisualBlock visualBlock) {
-                Location other = visualBlock.getLocation();
-                return other.getWorld().equals(toWorld) && (
-                        Math.abs(toX - other.getBlockX()) > WALL_BORDER_HORIZONTAL_DISTANCE ||
-                                Math.abs(toY - other.getBlockY()) > WALL_BORDER_HEIGHT_ABOVE_DIFF ||
-                                Math.abs(toZ - other.getBlockZ()) > WALL_BORDER_HORIZONTAL_DISTANCE);
-            }
+        plugin.getVisualiseHandler().clearVisualBlocks(player, visualType, visualBlock -> {
+            Location other = visualBlock.getLocation();
+            return other.getWorld().equals(toWorld) && (
+                    Math.abs(toX - other.getBlockX()) > WALL_BORDER_HORIZONTAL_DISTANCE ||
+                            Math.abs(toY - other.getBlockY()) > WALL_BORDER_HEIGHT_ABOVE_DIFF ||
+                            Math.abs(toZ - other.getBlockZ()) > WALL_BORDER_HORIZONTAL_DISTANCE);
         });
 
         // Values used to calculate the new visual cuboid height.

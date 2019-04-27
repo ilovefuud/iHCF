@@ -2,6 +2,8 @@ package com.doctordark.hcf.deathban;
 
 import com.doctordark.hcf.HCF;
 import com.doctordark.hcf.user.FactionUser;
+import com.doctordark.hcf.util.profile.ProfileLookupCallback;
+import com.doctordark.hcf.util.profile.ProfileUtil;
 import com.doctordark.util.BukkitUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -31,26 +33,25 @@ public class StaffReviveCommand implements CommandExecutor, TabCompleter {
             return true;
         }
 
-        OfflinePlayer target = Bukkit.getOfflinePlayer(args[0]); //TODO: breaking
+        ProfileUtil.lookupProfileAsync(plugin, args[0], (result, success) -> {
+            if (success) {
+                UUID targetUUID = result.getId();
+                FactionUser factionTarget = HCF.getPlugin().getUserManager().getUser(targetUUID);
+                Deathban deathban = factionTarget.getDeathban();
 
-        if (!target.hasPlayedBefore() && !target.isOnline()) {
-            sender.sendMessage(ChatColor.GOLD + "Player '" + ChatColor.WHITE + args[0] + ChatColor.GOLD + "' not found.");
-            return true;
-        }
+                if (deathban == null || !deathban.isActive()) {
+                    sender.sendMessage(ChatColor.RED + result.getName() + " is not death-banned.");
+                    return;
+                }
 
-        UUID targetUUID = target.getUniqueId();
-        FactionUser factionTarget = HCF.getPlugin().getUserManager().getUser(targetUUID);
-        Deathban deathban = factionTarget.getDeathban();
+                factionTarget.removeDeathban();
+                Command.broadcastCommandMessage(sender, ChatColor.YELLOW + "Staff revived " + result.getName() + ".");
+            } else {
+                sender.sendMessage(ChatColor.GOLD + "Player '" + ChatColor.WHITE + args[0] + ChatColor.GOLD + "' not found.");
+            }
+        });
 
-        if (deathban == null || !deathban.isActive()) {
-            sender.sendMessage(ChatColor.RED + target.getName() + " is not death-banned.");
-            return true;
-        }
-
-        factionTarget.removeDeathban();
-        Command.broadcastCommandMessage(sender, ChatColor.YELLOW + "Staff revived " + target.getName() + ".");
-
-        return false;
+        return true;
     }
 
     @Override
@@ -60,16 +61,19 @@ public class StaffReviveCommand implements CommandExecutor, TabCompleter {
         }
 
         List<String> results = new ArrayList<>();
-        for (FactionUser factionUser : plugin.getUserManager().getUsers().values()) {
-            Deathban deathban = factionUser.getDeathban();
-            if (deathban != null && deathban.isActive()) {
-                OfflinePlayer offlinePlayer = Bukkit.getOfflinePlayer(factionUser.getUserUUID());
-                String name = offlinePlayer.getName();
-                if (name != null) {
-                    results.add(name);
+        plugin.getServer().getScheduler().runTaskAsynchronously(plugin, () -> {
+            for (FactionUser factionUser : plugin.getUserManager().getUsers().values()) {
+                Deathban deathban = factionUser.getDeathban();
+                if (deathban != null && deathban.isActive()) {
+                    ProfileUtil.MojangProfile profile = ProfileUtil.lookupProfile(factionUser.getUserUUID());
+                    String name = profile != null ? profile.getName() : null;
+                    if (name != null) {
+                        results.add(name);
+                    }
                 }
             }
-        }
+        });
+
 
         return BukkitUtils.getCompletions(args, results);
     }

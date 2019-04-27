@@ -4,17 +4,7 @@ import com.doctordark.hcf.HCF;
 import com.doctordark.hcf.combatlog.event.LoggerDeathEvent;
 import com.doctordark.hcf.combatlog.event.LoggerRemovedEvent;
 import com.mojang.authlib.GameProfile;
-import net.minecraft.server.v1_8_R3.DamageSource;
-import net.minecraft.server.v1_8_R3.Entity;
-import net.minecraft.server.v1_8_R3.EntityHuman;
-import net.minecraft.server.v1_8_R3.EntityPlayer;
-import net.minecraft.server.v1_8_R3.MinecraftServer;
-import net.minecraft.server.v1_8_R3.NetworkManager;
-import net.minecraft.server.v1_8_R3.Packet;
-import net.minecraft.server.v1_8_R3.PacketPlayOutPlayerInfo;
-import net.minecraft.server.v1_8_R3.PlayerConnection;
-import net.minecraft.server.v1_8_R3.PlayerInteractManager;
-import net.minecraft.server.v1_8_R3.WorldServer;
+import net.minecraft.server.v1_8_R3.*;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
@@ -109,7 +99,7 @@ public class LoggerEntityHuman extends EntityPlayer implements LoggerEntity {
     private static class FakeNetworkManager extends NetworkManager {
 
         private FakeNetworkManager() {
-            super(false);
+            super(EnumProtocolDirection.SERVERBOUND);
         }
 
         @Override

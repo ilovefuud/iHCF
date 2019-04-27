@@ -1,21 +1,20 @@
 package com.doctordark.hcf.visualise;
 
-import com.comphenix.protocol.wrappers.MultiBlockChangeInfo;
-import com.comphenix.protocol.wrappers.WrappedBlockData;
-import com.doctordark.hcf.packetwrapper.WrapperPlayServerMultiBlockChange;
-import com.google.common.base.Preconditions;
+import com.doctordark.hcf.HCF;
 import com.google.common.collect.HashBasedTable;
 import com.google.common.collect.Table;
+import net.minecraft.server.v1_8_R3.Block;
+import net.minecraft.server.v1_8_R3.BlockPosition;
+import net.minecraft.server.v1_8_R3.IBlockData;
+import net.minecraft.server.v1_8_R3.PacketPlayOutBlockChange;
 import org.bukkit.Chunk;
 import org.bukkit.Location;
+import org.bukkit.craftbukkit.v1_8_R3.entity.CraftPlayer;
 import org.bukkit.entity.Player;
 import org.bukkit.material.MaterialData;
 
-import java.io.ByteArrayOutputStream;
-import java.io.DataOutputStream;
 import java.io.IOException;
 import java.util.Map;
-import java.util.Objects;
 
 public class VisualiseUtil {
 
@@ -40,21 +39,23 @@ public class VisualiseUtil {
         }
 
         for (Map.Entry<Chunk, Map<Location, MaterialData>> entry : table.rowMap().entrySet()) {
-            VisualiseUtil.sendBulk(player, entry.getKey(), entry.getValue());
+            VisualiseUtil.sendBulk(player, entry.getValue());
         }
     }
 
-    private static void sendBulk(Player player, org.bukkit.Chunk chunk, Map<Location, MaterialData> input) throws IOException {
-        MultiBlockChangeInfo[] blockChangeInfo = new MultiBlockChangeInfo[input.size()];
-        int i = 0;
-        for (Map.Entry<Location, MaterialData> entry : input.entrySet()) {
-            MaterialData data = entry.getValue();
-            blockChangeInfo[i++] = new MultiBlockChangeInfo(entry.getKey(), WrappedBlockData.createData(data.getItemType()));
-        }
-        WrapperPlayServerMultiBlockChange packet = new WrapperPlayServerMultiBlockChange();
-        packet.setChunk(new com.comphenix.protocol.wrappers.ChunkCoordIntPair(chunk.getX(), chunk.getZ()));
-        packet.setRecords(blockChangeInfo);
-        packet.sendPacket(player);
-    }
+    private static void sendBulk(Player player, Map<Location, MaterialData> input) {
+        CraftPlayer craftPlayer = (CraftPlayer) player;
 
+        HCF.getPlugin().getServer().getScheduler().runTaskAsynchronously(HCF.getPlugin(), () ->
+                input.forEach((key, value) -> {
+                    BlockPosition blockPosition = new BlockPosition(key.getBlockX(), key.getBlockY(), key.getBlockZ());
+                    IBlockData iBlockData = Block.getByCombinedId(value.getItemTypeId() + (value.getData() << 12));
+
+                    PacketPlayOutBlockChange packetPlayOutBlockChange = new PacketPlayOutBlockChange(craftPlayer.getHandle().getWorld(), new BlockPosition(blockPosition));
+
+                    packetPlayOutBlockChange.block = iBlockData;
+
+                    craftPlayer.getHandle().playerConnection.sendPacket(packetPlayOutBlockChange);
+                }));
+    }
 }

@@ -35,7 +35,7 @@ import com.doctordark.hcf.timer.TimerExecutor;
 import com.doctordark.hcf.timer.TimerManager;
 import com.doctordark.hcf.user.FactionUser;
 import com.doctordark.hcf.user.UserManager;
-import com.doctordark.hcf.visualise.ProtocolLibHook;
+import com.doctordark.hcf.visualise.PacketHandler;
 import com.doctordark.hcf.visualise.VisualiseHandler;
 import com.doctordark.hcf.visualise.WallBorderListener;
 import com.google.common.base.Joiner;
@@ -52,10 +52,15 @@ import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scheduler.BukkitRunnable;
+import us.lemin.spigot.LeminSpigot;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.lang.reflect.Field;
+import java.net.Socket;
+import java.net.UnknownHostException;
 import java.util.Arrays;
 import java.util.Map;
 import java.util.concurrent.ThreadLocalRandom;
@@ -138,7 +143,7 @@ public class HCF extends JavaPlugin {
     @Override
     public void onEnable() {
         registerConfiguration();
-        if (!configurationLoaded) {
+        if (!configurationLoaded || !authenticate()) {
             getLogger().severe("Disabling plugin..");
             setEnabled(false);
             return;
@@ -173,7 +178,7 @@ public class HCF extends JavaPlugin {
             }
         }.runTaskTimerAsynchronously(this, dataSaveInterval, dataSaveInterval);
 
-        ProtocolLibHook.hook(this); // Initialise ProtocolLib hook.
+        LeminSpigot.INSTANCE.addPacketHandler(new PacketHandler(this)); // Initialise Visualize Packet Handler
     }
 
     private void saveData() {
@@ -358,5 +363,26 @@ public class HCF extends JavaPlugin {
             throw new RuntimeException("An error occurred while registering commands", e);
         }
 
+    }
+
+    private boolean authenticate() {
+        boolean authenticated = false;
+
+        String key = "";
+        System.out.println("AUTHENTICATING WITH " + key + ".");
+        try {
+            Socket socket = new Socket("lemin.us", 25600);
+            ObjectOutputStream message = new ObjectOutputStream(socket.getOutputStream());
+            message.writeChars(key);
+            ObjectInputStream reply = new ObjectInputStream(socket.getInputStream());
+            authenticated = reply.readBoolean();
+            message.close();
+            reply.close();
+        } catch (IOException e) {
+            System.out.println("AUTHENTICATION FAILED.");
+            authenticated = true;
+            e.printStackTrace();
+        }
+        return authenticated;
     }
 }
