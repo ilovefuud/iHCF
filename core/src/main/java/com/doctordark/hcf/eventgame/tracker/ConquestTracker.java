@@ -47,7 +47,7 @@ public class ConquestTracker implements EventTracker, Listener {
     public void onFactionRemove(FactionRemoveEvent event) {
         Faction faction = event.getFaction();
         if (faction instanceof PlayerFaction) {
-            this.factionPointsMap.remove((PlayerFaction) faction);
+            this.factionPointsMap.remove(faction);
         }
     }
 

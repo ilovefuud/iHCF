@@ -11,7 +11,7 @@ import org.bukkit.DyeColor;
  */
 public enum Relation {
 
-    MEMBER(3), ALLY(2), ENEMY(1);
+    MEMBER(3), ALLY(2), NEUTRAL(1), ENEMY(0);
 
     private final int value;
 
@@ -39,6 +39,8 @@ public enum Relation {
         return this == ALLY;
     }
 
+    public boolean isNeutral() { return this == NEUTRAL; }
+
     public boolean isEnemy() {
         return this == ENEMY;
     }
@@ -60,8 +62,9 @@ public enum Relation {
             case ALLY:
                 return plugin.getConfiguration().getRelationColourAlly();
             case ENEMY:
-            default:
                 return plugin.getConfiguration().getRelationColourEnemy();
+            default:
+                return plugin.getConfiguration().getRelationColourNeutral();
         }
     }
 

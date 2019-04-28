@@ -6,7 +6,6 @@ import com.doctordark.hcf.faction.type.PlayerFaction;
 import lombok.Getter;
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
-import org.bukkit.scoreboard.DisplaySlot;
 import org.bukkit.scoreboard.Objective;
 import org.bukkit.scoreboard.Scoreboard;
 import org.bukkit.scoreboard.Team;
@@ -22,7 +21,9 @@ public class PlayerBoard {
     private final AtomicBoolean removed = new AtomicBoolean(false);
     private final Team members;
     private final Team neutrals;
+    private final Team enemies;
     private final Team allies;
+    private final Team focus;
 
     @Getter
     private final Scoreboard scoreboard;
@@ -38,17 +39,23 @@ public class PlayerBoard {
 
         Configuration configuration = plugin.getConfiguration();
 
-        this.scoreboard = !createNewScoreboard ? player.getScoreboard() : plugin.getServer().getScoreboardManager().getNewScoreboard();
+        this.scoreboard = createNewScoreboard ? plugin.getServer().getScoreboardManager().getNewScoreboard() : player.getScoreboard();
 
         this.members = scoreboard.registerNewTeam("members");
         this.members.setPrefix(configuration.getRelationColourTeammate().toString());
         this.members.setCanSeeFriendlyInvisibles(true);
 
         this.neutrals = scoreboard.registerNewTeam("neutrals");
-        this.neutrals.setPrefix(configuration.getRelationColourEnemy().toString());
+        this.neutrals.setPrefix(configuration.getRelationColourNeutral().toString());
+
+        this.enemies = scoreboard.registerNewTeam("enemies");
+        this.enemies.setPrefix(configuration.getRelationColourEnemy().toString());
 
         this.allies = scoreboard.registerNewTeam("allies");
         this.allies.setPrefix(configuration.getRelationColourAlly().toString());
+
+        this.focus = scoreboard.registerNewTeam("focus");
+        this.focus.setPrefix(configuration.getRelationColourFocus().toString());
 
         player.setScoreboard(this.scoreboard);
     }
@@ -93,7 +100,8 @@ public class PlayerBoard {
 
                 for (Player update : updates) {
                     if (player.equals(update)) {
-                        members.addEntry(update.getName());;
+                        members.addEntry(update.getName());
+                        ;
                         continue;
                     }
 
@@ -110,6 +118,10 @@ public class PlayerBoard {
                         members.addEntry(update.getName());
                     } else if (playerFaction.getAllied().contains(targetFaction.getUniqueID())) {
                         allies.addEntry(update.getName());
+                    } else if (playerFaction.getFocusedName().equalsIgnoreCase(update.getName())) {
+                        focus.addEntry(update.getName());
+                    } else if (playerFaction.getEnemied().contains(targetFaction.getUniqueID())) {
+                        enemies.addEntry(update.getName());
                     } else {
                         neutrals.addEntry(update.getName());
                     }

@@ -24,9 +24,13 @@ public class DeathListener implements Listener {
     @EventHandler(ignoreCancelled = true, priority = EventPriority.LOWEST)
     public void onPlayerDeathKillIncrement(PlayerDeathEvent event) {
         Player killer = event.getEntity().getKiller();
+        FactionUser victimUser = plugin.getUserManager().getUser(event.getEntity().getUniqueId());
+        victimUser.setDeaths(victimUser.getDeaths() + 1);
+        victimUser.setKillstreak(0);
         if (killer != null) {
-            FactionUser user = plugin.getUserManager().getUser(killer.getUniqueId());
-            user.setKills(user.getKills() + 1);
+            FactionUser killerUser = plugin.getUserManager().getUser(killer.getUniqueId());
+            killerUser.setKills(killerUser.getKills() + 1);
+            killerUser.setKillstreak(killerUser.getKillstreak() + 1);
         }
     }
 

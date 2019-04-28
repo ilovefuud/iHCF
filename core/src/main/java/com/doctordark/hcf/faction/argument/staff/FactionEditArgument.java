@@ -19,12 +19,12 @@ import java.util.List;
 /**
  * Used to claim land for other {@link ClaimableFaction}s.
  */
-public class FactionClaimForArgument extends CommandArgument {
+public class FactionEditArgument extends CommandArgument {
 
     private final HCF plugin;
 
-    public FactionClaimForArgument(HCF plugin) {
-        super("claimfor", "Claims land for another faction.");
+    public FactionEditArgument(HCF plugin) {
+        super("edit", "Edit the land of another nonplayer faction.");
         this.plugin = plugin;
         this.permission = "hcf.oldcommands.faction.argument." + getName();
     }
@@ -37,11 +37,11 @@ public class FactionClaimForArgument extends CommandArgument {
     @Override
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
         if (!(sender instanceof Player)) {
-            sender.sendMessage(ChatColor.RED + "This oldcommands is only executable by players.");
+            sender.sendMessage(ChatColor.RED + "This command is only executable by players.");
             return true;
         }
 
-        if (args.length < 2) {
+        if (args.length < 1) {
             sender.sendMessage(ChatColor.RED + "Usage: " + getUsage(label));
             return true;
         }

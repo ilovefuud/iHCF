@@ -4,33 +4,14 @@ package com.doctordark.hcf.combatlog;
 
 import com.doctordark.hcf.HCF;
 import com.doctordark.hcf.combatlog.event.LoggerRemovedEvent;
-import com.doctordark.hcf.combatlog.event.LoggerSpawnEvent;
 import com.doctordark.hcf.combatlog.type.LoggerEntity;
-import com.doctordark.hcf.combatlog.type.LoggerEntityHuman;
-import org.bukkit.Bukkit;
-import org.bukkit.GameMode;
-import org.bukkit.Location;
-import org.bukkit.entity.Entity;
-import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerLoginEvent;
-import org.bukkit.event.player.PlayerQuitEvent;
-import org.bukkit.scheduler.BukkitRunnable;
 
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.Map;
-import java.util.Set;
-import java.util.UUID;
-import java.util.concurrent.Callable;
-import java.util.concurrent.ExecutionException;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.concurrent.Future;
+import java.util.*;
 
 //import com.gmail.xd.zwander.istaff.data.PlayerHackerMode;
 
@@ -38,8 +19,6 @@ import java.util.concurrent.Future;
  * Listener that prevents {@link Player}s from combat-logging.
  */
 public class CombatLogListener implements Listener {
-
-    private final ExecutorService executor = Executors.newFixedThreadPool(2);
 
 
     private final Set<UUID> safelyDisconnected = new HashSet<>();

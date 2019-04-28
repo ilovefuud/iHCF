@@ -1,6 +1,6 @@
 package com.doctordark.hcf.combatlog.event;
 
-import com.doctordark.hcf.combatlog.type.LoggerEntity;
+import org.bukkit.entity.Entity;
 import org.bukkit.event.Cancellable;
 import org.bukkit.event.Event;
 import org.bukkit.event.HandlerList;
@@ -10,13 +10,13 @@ public class LoggerSpawnEvent extends Event implements Cancellable {
     private static final HandlerList handlers = new HandlerList();
 
     private boolean cancelled;
-    private final LoggerEntity loggerEntity;
+    private final org.bukkit.entity.Entity loggerEntity;
 
-    public LoggerSpawnEvent(LoggerEntity loggerEntity) {
+    public LoggerSpawnEvent(org.bukkit.entity.Entity loggerEntity) {
         this.loggerEntity = loggerEntity;
     }
 
-    public LoggerEntity getLoggerEntity() {
+    public Entity getLoggerEntity() {
         return loggerEntity;
     }
 

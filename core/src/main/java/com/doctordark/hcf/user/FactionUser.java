@@ -8,11 +8,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.configuration.serialization.ConfigurationSerializable;
 import org.bukkit.entity.Player;
 
-import java.util.HashSet;
-import java.util.LinkedHashMap;
-import java.util.Map;
-import java.util.Set;
-import java.util.UUID;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Getter
@@ -26,10 +22,13 @@ public class FactionUser implements ConfigurationSerializable {
     private boolean showClaimMap;
     private boolean showLightning = true;
     private boolean showScoreboard = true;
+    private boolean showFriendlyFire = true;
+    private boolean staffMode = false;
     private Deathban deathban;
     private long lastFactionLeaveMillis;
     private int kills;
     private int deaths;
+    private int killstreak;
 
     public FactionUser(UUID userUUID) {
         this.userUUID = userUUID;

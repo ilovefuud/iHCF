@@ -4,27 +4,10 @@ import com.doctordark.hcf.HCF;
 import com.doctordark.hcf.combatlog.event.LoggerSpawnEvent;
 import com.doctordark.hcf.combatlog.type.LoggerEntity;
 import com.doctordark.hcf.combatlog.type.LoggerEntityHuman;
-import com.doctordark.hcf.faction.type.Faction;
 import com.doctordark.hcf.faction.type.PlayerFaction;
 import com.doctordark.hcf.util.XPUtil;
-import com.pvpraids.core.CorePlugin;
-import com.pvpraids.core.player.CoreProfile;
-import com.pvpraids.core.utils.message.CC;
-import com.pvpraids.raid.RaidPlugin;
-import com.pvpraids.raid.players.RaidPlayer;
-import com.pvpraids.raid.team.Team;
-import com.pvpraids.raid.util.XPUtil;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.UUID;
-import java.util.stream.Collectors;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
-import net.minecraft.server.v1_8_R3.EntityPlayer;
 import org.bukkit.*;
 import org.bukkit.entity.*;
 import org.bukkit.event.EventHandler;
@@ -39,6 +22,8 @@ import org.bukkit.inventory.EntityEquipment;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
 import org.bukkit.scheduler.BukkitRunnable;
+
+import java.util.*;
 
 @RequiredArgsConstructor
 public class LoggerListener implements Listener {
@@ -109,21 +94,30 @@ public class LoggerListener implements Listener {
 	@EventHandler(priority = EventPriority.LOW)
 	public void onQuit(PlayerQuitEvent event) {
 		Player player = event.getPlayer();
+		UUID uuid = player.getUniqueId();
+		boolean result = safelyDisconnected.remove(uuid);
 
-
-		if (playerData == null || playerData.isSpawnProtected() || profile.isVanished()) {
+		if (!plugin.getConfiguration().isHandleCombatLogging()) {
 			return;
 		}
 
-		List<Player> nearbyPlayers = player.getNearbyEntities(32.0, 32.0, 32.0).stream()
-				.filter(Player.class::isInstance)
-				.map(Player.class::cast)
-				.filter(player::canSee)
-				.filter(other -> !plugin.getPlayerManager().getPlayer(other).isSpawnProtected())
-				.filter(other -> plugin.getTeamManager().getTeam(player) == null || !plugin.getTeamManager().getTeam(player).isOnTeam(other))
-				.collect(Collectors.toList());
+		if (player.getGameMode() != GameMode.CREATIVE && !player.isDead() && !result) {
+			// If the player has PVP protection, don't spawn a logger
+			if (plugin.getTimerManager().getInvincibilityTimer().getRemaining(uuid) > 0L) {
+				return;
+			}
 
-		if (playerData.hasCombatTag() || nearbyPlayers.size() > 0) {
+			// There is no enemies near the player, so don't spawn a logger.
+			if (plugin.getTimerManager().getTeleportTimer().getNearbyEnemies(player, NEARBY_SPAWN_RADIUS) <= 0 || plugin.getSotwTimer().getSotwRunnable() != null) {
+				return;
+			}
+
+			// Make sure the player is not in a safezone.
+			Location location = player.getLocation();
+			if (plugin.getFactionManager().getFactionAt(location).isSafezone()) {
+				return;
+			}
+
 			Entity entity = player.getWorld().spawnEntity(player.getLocation(), EntityType.PLAYER);
 
 			entity.setCustomName(player.getDisplayName());
@@ -152,10 +146,19 @@ public class LoggerListener implements Listener {
 
 			combatLoggers.put(entity.getEntityId(), logger);
 
-			if (nearbyPlayers.size() > 0) {
-				for (Player nearbyPlayer : nearbyPlayers) {
-					nearbyPlayer.sendMessage(player.getDisplayName() + ChatColor.RED + " has combat logged! An entity has spawned at their location.");
-				}
+			LoggerSpawnEvent calledEvent = new LoggerSpawnEvent(entity);
+			Bukkit.getPluginManager().callEvent(calledEvent);
+			if (!calledEvent.isCancelled()) {
+				loggers.put(player.getUniqueId(), loggerEntity);
+
+				new BukkitRunnable() {
+					@Override
+					public void run() {
+						if (!player.isOnline()) { // just in-case
+							loggerEntity.postSpawn(plugin);
+						}
+					}
+				}.runTaskLater(plugin, 1L);
 			}
 
 			// remove the combat logger 30 seconds later
@@ -164,6 +167,12 @@ public class LoggerListener implements Listener {
 					removeVillagerLogger(entity);
 				}
 			}, 30 * 20L);
+
+			LoggerEntity loggerEntity = new LoggerEntityHuman(player, location.getWorld());
+
+		}
+
+
 		}
 	}
 

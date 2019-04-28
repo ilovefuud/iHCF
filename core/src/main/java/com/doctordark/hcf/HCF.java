@@ -26,6 +26,8 @@ import com.doctordark.hcf.faction.claim.*;
 import com.doctordark.hcf.faction.type.*;
 import com.doctordark.hcf.listener.*;
 import com.doctordark.hcf.listener.fixes.*;
+import com.doctordark.hcf.manager.RegionListener;
+import com.doctordark.hcf.manager.RegionManager;
 import com.doctordark.hcf.pvpclass.PvpClassManager;
 import com.doctordark.hcf.pvpclass.bard.EffectRestorer;
 import com.doctordark.hcf.scoreboard.ScoreboardHandler;
@@ -48,6 +50,7 @@ import org.bukkit.command.CommandMap;
 import org.bukkit.command.PluginCommand;
 import org.bukkit.configuration.InvalidConfigurationException;
 import org.bukkit.configuration.serialization.ConfigurationSerialization;
+import org.bukkit.entity.HumanEntity;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -60,7 +63,6 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.lang.reflect.Field;
 import java.net.Socket;
-import java.net.UnknownHostException;
 import java.util.Arrays;
 import java.util.Map;
 import java.util.concurrent.ThreadLocalRandom;
@@ -127,6 +129,9 @@ public class HCF extends JavaPlugin {
     private UserManager userManager;
 
     @Getter
+    private RegionManager regionManager;
+
+    @Getter
     private VisualiseHandler visualiseHandler;
 
     @Getter
@@ -159,6 +164,7 @@ public class HCF extends JavaPlugin {
         registerCommands();
         registerManagers();
         registerListeners();
+        registerOptionals();
 
         paperPatch = false;
         /* TODO: BROKEN: Method does not exist
@@ -179,6 +185,8 @@ public class HCF extends JavaPlugin {
         }.runTaskTimerAsynchronously(this, dataSaveInterval, dataSaveInterval);
 
         LeminSpigot.INSTANCE.addPacketHandler(new PacketHandler(this)); // Initialise Visualize Packet Handler
+
+
     }
 
     private void saveData() {
@@ -204,7 +212,7 @@ public class HCF extends JavaPlugin {
             getLogger().warning("Unable to save config.");
             ex.printStackTrace();
         }
-
+        getServer().getOnlinePlayers().forEach(HumanEntity::closeInventory);
         combatLogListener.removeCombatLoggers();
         pvpClassManager.onDisable();
         scoreboardHandler.clearBoards();
@@ -262,7 +270,6 @@ public class HCF extends JavaPlugin {
         manager.registerEvents(new BoatGlitchFixListener(this), this);
         manager.registerEvents(new BookDisenchantListener(this), this);
         manager.registerEvents(new BottledExpListener(this), this);
-        manager.registerEvents(new ChatListener(this), this);
         manager.registerEvents(new ClaimWandListener(this), this);
         manager.registerEvents(combatLogListener = new CombatLogListener(this), this);
         manager.registerEvents(new CoreListener(this), this);
@@ -292,6 +299,7 @@ public class HCF extends JavaPlugin {
         manager.registerEvents(new VoidGlitchFixListener(), this);
         manager.registerEvents(new WallBorderListener(this), this);
         manager.registerEvents(new WorldListener(), this);
+        manager.registerEvents(new RegionListener(this), this);
     }
 
 
@@ -344,7 +352,15 @@ public class HCF extends JavaPlugin {
         scoreboardHandler = new ScoreboardHandler(this);
         userManager = new UserManager(this);
         visualiseHandler = new VisualiseHandler();
-        tabHandler = new TabHandler(this, configuration.getScoreboardTablistUpdateRate());
+    }
+
+    private void registerOptionals() {
+        if (configuration.isScoreboardTablistEnabled()) {
+            tabHandler = new TabHandler(this, configuration.getScoreboardTablistUpdateRate());
+        }
+        if (configuration.isHandleChat()) {
+            plugin.getServer().getPluginManager().registerEvents(new ChatListener(this), this);
+        }
     }
 
     private void registerCommands(Command... commands) {

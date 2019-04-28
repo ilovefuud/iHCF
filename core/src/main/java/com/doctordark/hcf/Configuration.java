@@ -25,11 +25,23 @@ import java.util.logging.Level;
 @Getter
 public class Configuration extends AnnotationConfig {
 
+    @Setting("kitmap")
+    private boolean kitmap = false;
+
     @Setting("factions.home.allowTeleportingInEnemyTerritory")
     private boolean allowTeleportingInEnemyTerritory = true;
 
     @Setting("handleEntityLimiting")
     private boolean handleEntityLimiting = true;
+
+    @Setting("chat.handleChat")
+    private boolean handleChat = true;
+
+    @Setting("chat.vault")
+    private boolean vault = false;
+
+    @Setting("chat.essentials")
+    private boolean essentials = true;
 
     @Setting("removeInfinityArrowsOnLand")
     private boolean removeInfinityArrowsOnLand = true;
@@ -114,6 +126,15 @@ public class Configuration extends AnnotationConfig {
 
     @Setting("scoreboard.sidebar.updateRate")
     private int scoreboardSidebarUpdateRate = 10;
+
+    @Setting("scoreboard.sidebar.kitmap.kills")
+    private String scoreboardSidebarKitmapKills = "&4&lKills: %kills%";
+
+    @Setting("scoreboard.sidebar.kitmap.deaths")
+    private String scoreboardSidebarKitmapDeaths = "&4&lDeaths: %deaths%";
+
+    @Setting("scoreboard.sidebar.kitmap.killstreak")
+    private String scoreboardSidebarKitmapKillstreak = "&4&lKillstreak: %killstreak%";
 
     @Setting("scoreboard.sidebar.eotw.countdown")
     private String scoreboardSidebarEotwCountdown = "&4&lEOTW &cstarts in &l%remaining%";
@@ -318,6 +339,16 @@ public class Configuration extends AnnotationConfig {
     @Setting("factions.relationColours.enemy")
     private String relationColourEnemyName = "RED";
     private ChatColor relationColourEnemy = ChatColor.RED;
+
+    @Getter(AccessLevel.NONE)
+    @Setting("factions.relationColours.neutral")
+    private String relationColourNeutralName = "PINK";
+    private ChatColor relationColourNeutral = ChatColor.YELLOW;
+
+    @Getter(AccessLevel.NONE)
+    @Setting("factions.relationColours.neutral")
+    private String relationColourFocusName = "LIGHT_PURPLE";
+    private ChatColor relationColourFocus = ChatColor.LIGHT_PURPLE;
 
     @Getter(AccessLevel.NONE)
     @Setting("factions.relationColours.road")

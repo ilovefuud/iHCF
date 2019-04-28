@@ -5,11 +5,7 @@ import com.doctordark.hcf.HCF;
 import com.doctordark.hcf.deathban.Deathban;
 import com.doctordark.hcf.economy.EconomyManager;
 import com.doctordark.hcf.faction.FactionMember;
-import com.doctordark.hcf.faction.event.FactionDtrChangeEvent;
-import com.doctordark.hcf.faction.event.PlayerJoinFactionEvent;
-import com.doctordark.hcf.faction.event.PlayerJoinedFactionEvent;
-import com.doctordark.hcf.faction.event.PlayerLeaveFactionEvent;
-import com.doctordark.hcf.faction.event.PlayerLeftFactionEvent;
+import com.doctordark.hcf.faction.event.*;
 import com.doctordark.hcf.faction.event.cause.FactionLeaveCause;
 import com.doctordark.hcf.faction.struct.Raidable;
 import com.doctordark.hcf.faction.struct.RegenStatus;
@@ -22,7 +18,6 @@ import com.doctordark.util.GenericUtils;
 import com.doctordark.util.JavaUtils;
 import com.doctordark.util.PersistableLocation;
 import com.google.common.base.Joiner;
-import com.google.common.base.Predicate;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
@@ -35,19 +30,7 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 import javax.annotation.Nullable;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
-import java.util.Set;
-import java.util.TreeSet;
-import java.util.UUID;
+import java.util.*;
 
 public class PlayerFaction extends ClaimableFaction implements Raidable {
 
@@ -64,6 +47,8 @@ public class PlayerFaction extends ClaimableFaction implements Raidable {
     protected int balance;
     protected double deathsUntilRaidable = 1.0D;
     protected long regenCooldownTimestamp;
+
+    protected String focusedName;
 
     public PlayerFaction(String name) {
         super(name);
@@ -188,12 +173,16 @@ public class PlayerFaction extends ClaimableFaction implements Raidable {
      * @return mutable list of UUIDs
      */
     public Collection<UUID> getAllied() {
-        return Maps.filterValues(relations, new Predicate<Relation>() {
-            @Override
-            public boolean apply(@Nullable Relation relation) {
-                return relation == Relation.ALLY;
-            }
-        }).keySet();
+        return Maps.filterValues(relations, relation -> relation == Relation.ALLY).keySet();
+    }
+
+    /**
+     * Gets a list of faction UUIDs that are enemied to this {@link PlayerFaction}.
+     *
+     * @return mutable list of UUIDs
+     */
+    public Collection<UUID> getEnemied() {
+        return Maps.filterValues(relations, relation -> relation == Relation.ENEMY).keySet();
     }
 
     /**
@@ -205,6 +194,25 @@ public class PlayerFaction extends ClaimableFaction implements Raidable {
         Collection<UUID> allied = getAllied();
         Iterator<UUID> iterator = allied.iterator();
         List<PlayerFaction> results = new ArrayList<>(allied.size());
+        while (iterator.hasNext()) {
+            Faction faction = HCF.getPlugin().getFactionManager().getFaction(iterator.next());
+            if (faction instanceof PlayerFaction) {
+                results.add((PlayerFaction) faction);
+            } else iterator.remove();
+        }
+
+        return results;
+    }
+
+    /**
+     * Gets a list of {@link PlayerFaction}s that are enemied to this {@link PlayerFaction}.
+     *
+     * @return mutable list of {@link PlayerFaction}s
+     */
+    public List<PlayerFaction> getEnemiedFactions() {
+        Collection<UUID> enemied = getEnemied();
+        Iterator<UUID> iterator = enemied.iterator();
+        List<PlayerFaction> results = new ArrayList<>(enemied.size());
         while (iterator.hasNext()) {
             Faction faction = HCF.getPlugin().getFactionManager().getFaction(iterator.next());
             if (faction instanceof PlayerFaction) {
@@ -401,6 +409,13 @@ public class PlayerFaction extends ClaimableFaction implements Raidable {
         return deathsUntilRaidable <= 0;
     }
 
+    public String getFocusedName() {
+        return focusedName;
+    }
+
+    public void setFocusedName(String focusedName) {
+        this.focusedName = focusedName;
+    }
 
     public boolean isOnTeam(UUID uuid) { return members.containsKey(uuid); }
 

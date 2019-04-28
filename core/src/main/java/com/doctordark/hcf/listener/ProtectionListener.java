@@ -13,59 +13,23 @@ import com.doctordark.hcf.faction.type.ClaimableFaction;
 import com.doctordark.hcf.faction.type.Faction;
 import com.doctordark.hcf.faction.type.PlayerFaction;
 import com.doctordark.hcf.faction.type.WarzoneFaction;
+import com.doctordark.hcf.user.FactionUser;
 import com.doctordark.util.BukkitUtils;
 import com.doctordark.util.cuboid.Cuboid;
 import com.google.common.collect.ImmutableMultimap;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Sets;
-import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
-import org.bukkit.GameMode;
-import org.bukkit.Location;
-import org.bukkit.Material;
-import org.bukkit.TravelAgent;
-import org.bukkit.World;
+import org.bukkit.*;
 import org.bukkit.block.Block;
-import org.bukkit.entity.AnimalTamer;
-import org.bukkit.entity.Entity;
-import org.bukkit.entity.Hanging;
-import org.bukkit.entity.Horse;
-import org.bukkit.entity.LivingEntity;
-import org.bukkit.entity.Monster;
-import org.bukkit.entity.Player;
-import org.bukkit.entity.Projectile;
-import org.bukkit.entity.ThrownPotion;
-import org.bukkit.entity.Vehicle;
+import org.bukkit.entity.*;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
-import org.bukkit.event.block.Action;
-import org.bukkit.event.block.BlockBreakEvent;
-import org.bukkit.event.block.BlockBurnEvent;
-import org.bukkit.event.block.BlockFadeEvent;
-import org.bukkit.event.block.BlockFormEvent;
-import org.bukkit.event.block.BlockFromToEvent;
-import org.bukkit.event.block.BlockIgniteEvent;
-import org.bukkit.event.block.BlockPistonExtendEvent;
-import org.bukkit.event.block.BlockPistonRetractEvent;
-import org.bukkit.event.block.BlockPlaceEvent;
-import org.bukkit.event.block.LeavesDecayEvent;
-import org.bukkit.event.entity.CreatureSpawnEvent;
-import org.bukkit.event.entity.EntityChangeBlockEvent;
-import org.bukkit.event.entity.EntityDamageByEntityEvent;
-import org.bukkit.event.entity.EntityDamageEvent;
-import org.bukkit.event.entity.EntityTargetEvent;
-import org.bukkit.event.entity.FoodLevelChangeEvent;
-import org.bukkit.event.entity.PotionSplashEvent;
+import org.bukkit.event.block.*;
+import org.bukkit.event.entity.*;
 import org.bukkit.event.hanging.HangingBreakByEntityEvent;
 import org.bukkit.event.hanging.HangingPlaceEvent;
-import org.bukkit.event.player.PlayerBucketEmptyEvent;
-import org.bukkit.event.player.PlayerBucketFillEvent;
-import org.bukkit.event.player.PlayerInteractEntityEvent;
-import org.bukkit.event.player.PlayerInteractEvent;
-import org.bukkit.event.player.PlayerMoveEvent;
-import org.bukkit.event.player.PlayerPortalEvent;
-import org.bukkit.event.player.PlayerTeleportEvent;
+import org.bukkit.event.player.*;
 import org.bukkit.event.vehicle.VehicleDamageEvent;
 import org.bukkit.event.vehicle.VehicleEnterEvent;
 import org.bukkit.material.Cauldron;
@@ -350,17 +314,22 @@ public class ProtectionListener implements Listener {
                 if (playerFaction != null && ((attackerFaction = plugin.getFactionManager().getPlayerFaction(attacker)) != null)) {
                     Role role = playerFaction.getMember(player).getRole();
                     String hiddenAstrixedName = role.getAstrix() + (player.hasPotionEffect(PotionEffectType.INVISIBILITY) ? "???" : player.getName());
+                    FactionUser user = plugin.getUserManager().getUser(attacker.getUniqueId());
                     if (attackerFaction == playerFaction) {
-                        attacker.sendMessage(plugin.getConfiguration().getRelationColourTeammate() + hiddenAstrixedName + ChatColor.YELLOW + " is in your faction.");
+                        if (user.isShowFriendlyFire()) {
+                            attacker.sendMessage(plugin.getConfiguration().getRelationColourTeammate() + hiddenAstrixedName + ChatColor.YELLOW + " is in your faction.");
+                        }
                         event.setCancelled(true);
                     } else if (attackerFaction.getAllied().contains(playerFaction.getUniqueID())) {
                         ChatColor color = plugin.getConfiguration().getRelationColourAlly();
-                        // if (plugin.getConfiguration().isPreventAllyAttackDamage()) {
-                        //    event.setCancelled(true);
-                        //    attacker.sendMessage(color + hiddenAstrixedName + ChatColor.YELLOW + " is an ally.");
-                        // } else {
-                        attacker.sendMessage(ChatColor.YELLOW + "Careful! " + color + hiddenAstrixedName + ChatColor.YELLOW + " is an ally.");
-                        // }
+                        if (plugin.getConfiguration().isPreventAllyAttackDamage()) {
+                            if (user.isShowFriendlyFire()) {
+                                attacker.sendMessage(color + hiddenAstrixedName + ChatColor.YELLOW + " is an ally.");
+                            }
+                            event.setCancelled(true);
+                        } else {
+                            attacker.sendMessage(ChatColor.YELLOW + "Careful! " + color + hiddenAstrixedName + ChatColor.YELLOW + " is an ally.");
+                        }
                     }
                 }
             }

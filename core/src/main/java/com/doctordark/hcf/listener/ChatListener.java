@@ -7,6 +7,7 @@ import com.doctordark.hcf.faction.type.Faction;
 import com.doctordark.hcf.faction.type.PlayerFaction;
 import com.earth2me.essentials.Essentials;
 import com.earth2me.essentials.User;
+import net.milkbowl.vault.chat.Chat;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
@@ -18,6 +19,7 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.player.AsyncPlayerChatEvent;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.PluginManager;
+import org.bukkit.plugin.RegisteredServiceProvider;
 
 import java.util.Collection;
 import java.util.Set;
@@ -26,6 +28,7 @@ import java.util.regex.Matcher;
 public class ChatListener implements Listener {
 
     private Essentials essentials;
+    private Chat vaultChatApi;
     private final HCF plugin;
 
     public ChatListener(HCF plugin) {
@@ -35,6 +38,10 @@ public class ChatListener implements Listener {
         Plugin essentialsPlugin = pluginManager.getPlugin("Essentials");
         if (essentialsPlugin instanceof Essentials && essentialsPlugin.isEnabled()) {
             this.essentials = (Essentials) essentialsPlugin;
+        }
+        if (plugin.getConfiguration().isVault()) {
+            RegisteredServiceProvider<Chat> rsp = plugin.getServer().getServicesManager().getRegistration(Chat.class);
+            vaultChatApi = rsp.getProvider();
         }
     }
 
@@ -46,10 +53,10 @@ public class ChatListener implements Listener {
         PlayerFaction playerFaction = plugin.getFactionManager().getPlayerFaction(player);
         ChatChannel chatChannel = playerFaction == null ? ChatChannel.PUBLIC : playerFaction.getMember(player).getChatChannel();
 
-        // Handle faction or alliance chat modes.
+        // Handle faction or alliance vaultChatApi modes.
         Set<Player> recipients = event.getRecipients();
         if (chatChannel == ChatChannel.FACTION || chatChannel == ChatChannel.ALLIANCE) {
-            if (isGlobalChannel(message)) { // allow players to use '!' to bypass friendly chat.
+            if (isGlobalChannel(message)) { // allow players to use '!' to bypass friendly vaultChatApi.
                 message = message.substring(1).trim();
                 event.setMessage(message);
             } else {
@@ -93,6 +100,10 @@ public class ChatListener implements Listener {
                     .replace("{EOTWCAPPERPREFIX}", Matcher.quoteReplacement(capperTag))
                     .replace("{DISPLAYNAME}", Matcher.quoteReplacement(user.getDisplayName()))
                     .replace("{MESSAGE}", Matcher.quoteReplacement("%2$s"));
+        } else if (this.vaultChatApi != null) {
+            String primaryGroup = vaultChatApi.getPrimaryGroup(player);
+            String prefix = vaultChatApi.getGroupPrefix(player.getWorld(), primaryGroup);
+            result = ChatColor.GOLD + "[" + factionTag + ChatColor.GOLD + "] " + capperTag + prefix + "%1$s" + ChatColor.GRAY + ": " + ChatColor.WHITE + "%2$s";
         } else {
             result = ChatColor.GOLD + "[" + factionTag + ChatColor.GOLD + "] " + capperTag + "%1$s" + ChatColor.GRAY + ": " + ChatColor.WHITE + "%2$s";
         }

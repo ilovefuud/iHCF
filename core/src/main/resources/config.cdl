@@ -17,6 +17,20 @@ beaconStrengthLevelLimit = 1
 // If boats should not be allowed to be placed on land.
 disableBoatPlacementOnLand = true
 
+chat {
+
+    // If this is set to false, this plugin will not handle chat at all.
+    // You or your developer will have to use the api to figure out whether or not a player
+    // is in public/faction/alliance chat.  Documentation provided on the sale page.
+    handleChat = true
+
+    // Only one of these should be set to true.  These will handle
+    // chat and you should only pick one.  If you are using neither,
+    // set both to false.  (If handleChat is false, both below MUST BE false.)
+    vault = true
+    essentials = false
+}
+
 enderpearlGlitching {
      // If this plugin should try and block Enderpearl glitching.
      enabled = true
