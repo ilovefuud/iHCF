@@ -4,14 +4,8 @@ import com.doctordark.hcf.HCF;
 import com.doctordark.hcf.faction.FactionMember;
 import com.doctordark.hcf.faction.claim.Claim;
 import com.doctordark.hcf.faction.type.PlayerFaction;
-import com.doctordark.util.ItemBuilder;
-import com.doctordark.util.ParticleEffect;
 import org.apache.commons.lang3.text.WordUtils;
-import org.bukkit.ChatColor;
-import org.bukkit.Location;
-import org.bukkit.Material;
-import org.bukkit.Sound;
-import org.bukkit.World;
+import org.bukkit.*;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockState;
 import org.bukkit.block.CreatureSpawner;
@@ -27,6 +21,7 @@ import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.CraftingInventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
+import us.lemin.core.utils.item.ItemBuilder;
 
 import java.util.List;
 import java.util.Optional;
@@ -80,7 +75,7 @@ public class CrowbarListener implements Listener {
                     blockState.update();
 
                     world.dropItemNaturally(blockLocation, new ItemBuilder(Material.MOB_SPAWNER).
-                            displayName(ChatColor.GREEN + "Spawner").data(spawner.getData().getData()).
+                            name(ChatColor.GREEN + "Spawner").durability(spawner.getData().getData()).
                             loreLine(ChatColor.WHITE + WordUtils.capitalizeFully(spawner.getSpawnedType().name())).build());
                 } else if (block.getType() == Material.ENDER_PORTAL_FRAME) {
                     remainingUses = crowbar.getEndFrameUses();
@@ -140,7 +135,7 @@ public class CrowbarListener implements Listener {
                 if (event.getItem().getType() == Material.AIR) {
                     player.playSound(blockLocation, Sound.ITEM_BREAK, 1.0F, 1.0F);
                 } else {
-                    ParticleEffect.FIREWORK_SPARK.display(player, blockLocation, 0.125F, 50);
+                    player.getWorld().playEffect(blockLocation, Effect.FIREWORKS_SPARK, .125, 50);
                     player.playSound(blockLocation, Sound.LEVEL_UP, 1.0F, 1.0F);
                 }
             }

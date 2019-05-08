@@ -1,10 +1,10 @@
 package com.doctordark.hcf.faction.argument;
 
 import com.doctordark.hcf.HCF;
+import com.doctordark.hcf.faction.FactionArgument;
 import com.doctordark.hcf.faction.FactionMember;
 import com.doctordark.hcf.faction.struct.Role;
 import com.doctordark.hcf.faction.type.PlayerFaction;
-import com.doctordark.util.command.CommandArgument;
 import com.google.common.collect.ImmutableList;
 import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
@@ -16,12 +16,12 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Set;
 
-public class FactionUninviteArgument extends CommandArgument {
+public class FactionUninviteArgument extends FactionArgument {
 
     private final HCF plugin;
 
     public FactionUninviteArgument(HCF plugin) {
-        super("uninvite", "Revoke an invitation to a player.", new String[]{"deinvite", "deinv", "uninv", "revoke"});
+        super("uninvite", "Revoke an invitation to a player.");
         this.plugin = plugin;
     }
 
@@ -31,29 +31,29 @@ public class FactionUninviteArgument extends CommandArgument {
     }
 
     @Override
-    public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
-        if (!(sender instanceof Player)) {
-            sender.sendMessage(ChatColor.RED + "Only players can un-invite from a faction.");
+    public boolean onCommand(CommandSender player, Command command, String label, String[] args) {
+        if (!(player instanceof Player)) {
+            player.sendMessage(ChatColor.RED + "Only players can un-invite from a faction.");
             return true;
         }
 
         if (args.length < 2) {
-            sender.sendMessage(ChatColor.RED + "Usage: " + getUsage(label));
+            player.sendMessage(ChatColor.RED + "Usage: " + getUsage(label));
             return true;
         }
 
-        Player player = (Player) sender;
+        Player player = (Player) player;
         PlayerFaction playerFaction = plugin.getFactionManager().getPlayerFaction(player);
 
         if (playerFaction == null) {
-            sender.sendMessage(ChatColor.RED + "You are not in a faction.");
+            player.sendMessage(ChatColor.RED + "You are not in a faction.");
             return true;
         }
 
         FactionMember factionMember = playerFaction.getMember(player);
 
         if (factionMember.getRole() == Role.MEMBER) {
-            sender.sendMessage(ChatColor.RED + "You must be a faction officer to un-invite players.");
+            player.sendMessage(ChatColor.RED + "You must be a faction officer to un-invite players.");
             return true;
         }
 
@@ -61,16 +61,16 @@ public class FactionUninviteArgument extends CommandArgument {
 
         if (args[1].equalsIgnoreCase("all")) {
             invitedPlayerNames.clear();
-            sender.sendMessage(ChatColor.YELLOW + "You have cleared all pending invitations.");
+            player.sendMessage(ChatColor.YELLOW + "You have cleared all pending invitations.");
             return true;
         }
 
         if (!invitedPlayerNames.remove(args[1])) {
-            sender.sendMessage(ChatColor.RED + "There is not a pending invitation for " + args[1] + '.');
+            player.sendMessage(ChatColor.RED + "There is not a pending invitation for " + args[1] + '.');
             return true;
         }
 
-        playerFaction.broadcast(ChatColor.YELLOW + factionMember.getRole().getAstrix() + sender.getName() + " has uninvited " +
+        playerFaction.broadcast(ChatColor.YELLOW + factionMember.getRole().getAstrix() + player.getName() + " has uninvited " +
                 plugin.getConfiguration().getRelationColourEnemy() + args[1] + ChatColor.YELLOW + " from the faction.");
 
         return true;

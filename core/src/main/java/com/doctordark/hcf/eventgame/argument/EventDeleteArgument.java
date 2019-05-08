@@ -23,7 +23,7 @@ public class EventDeleteArgument extends CommandArgument {
         super("delete", "Deletes an event");
         this.plugin = plugin;
         this.aliases = new String[]{"remove", "del"};
-        this.permission = "hcf.oldcommands.event.argument." + getName();
+        this.permission = "hcf.command.event.argument." + getName();
     }
 
     @Override

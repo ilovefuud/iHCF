@@ -6,12 +6,13 @@ import com.doctordark.hcf.faction.struct.ChatChannel;
 import com.doctordark.hcf.faction.struct.Role;
 import com.doctordark.hcf.faction.type.Faction;
 import com.doctordark.hcf.faction.type.PlayerFaction;
-import com.doctordark.util.command.CommandArgument;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
+import us.lemin.core.commands.PlayerSubCommand;
+import us.lemin.core.player.rank.Rank;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -20,56 +21,60 @@ import java.util.List;
 /**
  * Faction argument used to forcefully join {@link Faction}s.
  */
-public class FactionForceJoinArgument extends CommandArgument {
+public class FactionForceJoinArgument extends PlayerSubCommand {
 
     private final HCF plugin;
 
     public FactionForceJoinArgument(HCF plugin) {
-        super("forcejoin", "Forcefully join a faction.");
+        super("forcejoin", "Forcefully join a faction.", Rank.ADMIN);
         this.plugin = plugin;
-        this.permission = "hcf.oldcommands.faction.argument." + getName();
+        this.permission = "hcf.command.faction.argument." + getName();
     }
 
-    @Override
     public String getUsage(String label) {
         return '/' + label + ' ' + getName() + " <factionName>";
     }
 
     @Override
-    public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
-        if (!(sender instanceof Player)) {
-            sender.sendMessage(ChatColor.RED + "Only players can join factions.");
+    protected void execute(Player player, String[] strings) {
+
+    }
+
+    @Override
+    public boolean onCommand(CommandSender player, Command command, String label, String[] args) {
+        if (!(player instanceof Player)) {
+            player.sendMessage(ChatColor.RED + "Only players can join factions.");
             return true;
         }
 
         if (args.length < 2) {
-            sender.sendMessage(ChatColor.RED + "Usage: " + getUsage(label));
+            player.sendMessage(ChatColor.RED + "Usage: " + getUsage(label));
             return true;
         }
 
-        Player player = (Player) sender;
+        Player player = (Player) player;
         PlayerFaction playerFaction = plugin.getFactionManager().getPlayerFaction(player);
 
         if (playerFaction != null) {
-            sender.sendMessage(ChatColor.RED + "You are already in a faction.");
+            player.sendMessage(ChatColor.RED + "You are already in a faction.");
             return true;
         }
 
         Faction faction = plugin.getFactionManager().getContainingFaction(args[1]);
 
         if (faction == null) {
-            sender.sendMessage(ChatColor.RED + "Faction named or containing member with IGN or UUID " + args[1] + " not found.");
+            player.sendMessage(ChatColor.RED + "Faction named or containing member with IGN or UUID " + args[1] + " not found.");
             return true;
         }
 
         if (!(faction instanceof PlayerFaction)) {
-            sender.sendMessage(ChatColor.RED + "You can only join player factions.");
+            player.sendMessage(ChatColor.RED + "You can only join player factions.");
             return true;
         }
 
         playerFaction = (PlayerFaction) faction;
         if (playerFaction.addMember(player, player, player.getUniqueId(), new FactionMember(player, ChatChannel.PUBLIC, Role.MEMBER))) {
-            playerFaction.broadcast(ChatColor.GOLD.toString() + ChatColor.BOLD + sender.getName() + " has forcefully joined the faction.");
+            playerFaction.broadcast(ChatColor.GOLD.toString() + ChatColor.BOLD + player.getName() + " has forcefully joined the faction.");
         }
 
         return true;
@@ -93,4 +98,5 @@ public class FactionForceJoinArgument extends CommandArgument {
             return results;
         }
     }
+
 }

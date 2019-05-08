@@ -1,10 +1,10 @@
 package com.doctordark.hcf.faction.argument;
 
 import com.doctordark.hcf.HCF;
+import com.doctordark.hcf.faction.FactionArgument;
 import com.doctordark.hcf.faction.struct.Relation;
 import com.doctordark.hcf.faction.struct.Role;
 import com.doctordark.hcf.faction.type.PlayerFaction;
-import com.doctordark.util.command.CommandArgument;
 import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
@@ -12,7 +12,7 @@ import org.bukkit.entity.Player;
 
 import java.util.UUID;
 
-public class FactionLeaveArgument extends CommandArgument {
+public class FactionLeaveArgument extends FactionArgument {
 
     private final HCF plugin;
 
@@ -27,31 +27,31 @@ public class FactionLeaveArgument extends CommandArgument {
     }
 
     @Override
-    public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
-        if (!(sender instanceof Player)) {
-            sender.sendMessage(ChatColor.RED + "Only players can leave faction.");
+    public boolean onCommand(CommandSender player, Command command, String label, String[] args) {
+        if (!(player instanceof Player)) {
+            player.sendMessage(ChatColor.RED + "Only players can leave faction.");
             return true;
         }
 
-        Player player = (Player) sender;
+        Player player = (Player) player;
         PlayerFaction playerFaction = plugin.getFactionManager().getPlayerFaction(player);
 
         if (playerFaction == null) {
-            sender.sendMessage(ChatColor.RED + "You are not in a faction.");
+            player.sendMessage(ChatColor.RED + "You are not in a faction.");
             return true;
         }
 
         UUID uuid = player.getUniqueId();
         if (playerFaction.getMember(uuid).getRole() == Role.LEADER) {
-            sender.sendMessage(ChatColor.RED + "You cannot leave factions as a leader. Either use " + ChatColor.GOLD + '/' + label + " disband" + ChatColor.RED + " or " +
+            player.sendMessage(ChatColor.RED + "You cannot leave factions as a leader. Either use " + ChatColor.GOLD + '/' + label + " disband" + ChatColor.RED + " or " +
                     ChatColor.GOLD + '/' + label + " leader" + ChatColor.RED + '.');
 
             return true;
         }
 
         if (playerFaction.removeMember(player, player, player.getUniqueId(), false, false)) {
-            sender.sendMessage(ChatColor.YELLOW + "Successfully left the faction.");
-            playerFaction.broadcast(Relation.ENEMY.toChatColour() + sender.getName() + ChatColor.YELLOW + " has left the faction.");
+            player.sendMessage(ChatColor.YELLOW + "Successfully left the faction.");
+            playerFaction.broadcast(Relation.ENEMY.toChatColour() + player.getName() + ChatColor.YELLOW + " has left the faction.");
         }
 
         return true;

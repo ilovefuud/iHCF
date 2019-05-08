@@ -90,7 +90,7 @@ public class ChatListener implements Listener {
     }
 
     private String getChatFormat(Player player, PlayerFaction playerFaction, CommandSender viewer) {
-        String factionTag = playerFaction == null ? ChatColor.RED + Faction.FACTIONLESS_PREFIX : playerFaction.getDisplayName(viewer);
+        String factionTag = playerFaction == null ? plugin.getConfiguration().getRelationColourNeutral() + Faction.FACTIONLESS_PREFIX : playerFaction.getDisplayName(viewer);
         String capperTag = plugin.getConfiguration().getEotwLastMapCapperUuids().contains(player.getUniqueId().toString()) ? plugin.getConfiguration().getEotwChatSymbolPrefix() : "";
         String result;
         if (this.essentials != null) {
@@ -128,7 +128,7 @@ public class ChatListener implements Listener {
                     continue;
                 }
 
-                // Player is faking a oldcommands
+                // Player is faking a command
                 if (character == '/') {
                     return false;
                 }

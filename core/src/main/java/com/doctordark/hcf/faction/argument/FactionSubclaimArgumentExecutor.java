@@ -1,26 +1,16 @@
 package com.doctordark.hcf.faction.argument;
 
 import com.doctordark.hcf.HCF;
-import com.doctordark.hcf.faction.argument.subclaim.FactionSubclaimAddMemberArgument;
-import com.doctordark.hcf.faction.argument.subclaim.FactionSubclaimCreateArgument;
-import com.doctordark.hcf.faction.argument.subclaim.FactionSubclaimDelMemberArgument;
-import com.doctordark.hcf.faction.argument.subclaim.FactionSubclaimDeleteArgument;
-import com.doctordark.hcf.faction.argument.subclaim.FactionSubclaimListArgument;
-import com.doctordark.hcf.faction.argument.subclaim.FactionSubclaimMembersArgument;
-import com.doctordark.hcf.faction.argument.subclaim.FactionSubclaimRenameArgument;
-import com.doctordark.hcf.faction.argument.subclaim.FactionSubclaimStartArgument;
+import com.doctordark.hcf.faction.FactionArgument;
+import com.doctordark.hcf.faction.argument.subclaim.*;
 import com.doctordark.util.command.CommandArgument;
 import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.List;
+import java.util.*;
 
-public class FactionSubclaimArgumentExecutor extends CommandArgument {
+public class FactionSubclaimArgumentExecutor extends FactionArgument {
 
     private final List<CommandArgument> arguments = new ArrayList<>(8);
 
@@ -34,7 +24,7 @@ public class FactionSubclaimArgumentExecutor extends CommandArgument {
         this.arguments.add(new FactionSubclaimMembersArgument(plugin));
         this.arguments.add(new FactionSubclaimRenameArgument(plugin));
         this.arguments.add(new FactionSubclaimStartArgument());
-        this.permission = "hcf.oldcommands.faction.argument." + getName();
+        this.permission = "hcf.command.faction.argument." + getName();
     }
 
     @Override
@@ -43,29 +33,29 @@ public class FactionSubclaimArgumentExecutor extends CommandArgument {
     }
 
     @Override
-    public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
+    public boolean onCommand(CommandSender player, Command command, String label, String[] args) {
         if (args.length < 2) {
-            sender.sendMessage(ChatColor.AQUA + "*** Faction Subclaim Help ***");
+            player.sendMessage(ChatColor.AQUA + "*** Faction Subclaim Help ***");
             for (CommandArgument argument : arguments) {
                 String permission = argument.getPermission();
-                if (permission == null || sender.hasPermission(permission)) {
-                    sender.sendMessage(ChatColor.GRAY + argument.getUsage(label) + " - " + argument.getDescription() + '.');
+                if (permission == null || player.hasPermission(permission)) {
+                    player.sendMessage(ChatColor.GRAY + argument.getUsage(label) + " - " + argument.getDescription() + '.');
                 }
             }
 
-            sender.sendMessage(ChatColor.GRAY + "/" + label + " map subclaim - Shows the faction subclaim map.");
+            player.sendMessage(ChatColor.GRAY + "/" + label + " map subclaim - Shows the faction subclaim map.");
             return true;
         }
 
         CommandArgument argument = getArgument(arguments, args[1]);
         String permission = (argument == null) ? null : argument.getPermission();
 
-        if (argument == null || (permission != null && !sender.hasPermission(permission))) {
-            sender.sendMessage(ChatColor.RED + "Faction subclaim sub-oldcommands " + args[1] + " not found.");
+        if (argument == null || (permission != null && !player.hasPermission(permission))) {
+            player.sendMessage(ChatColor.RED + "Faction subclaim sub-command " + args[1] + " not found.");
             return true;
         }
 
-        argument.onCommand(sender, command, label, args);
+        argument.onCommand(player, command, label, args);
         return true;
     }
 

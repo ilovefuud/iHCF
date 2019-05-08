@@ -1,21 +1,11 @@
 package com.doctordark.hcf.eventgame;
 
 import com.doctordark.hcf.HCF;
-import com.doctordark.hcf.eventgame.argument.EventAddLootTableArgument;
-import com.doctordark.hcf.eventgame.argument.EventCancelArgument;
-import com.doctordark.hcf.eventgame.argument.EventCreateArgument;
-import com.doctordark.hcf.eventgame.argument.EventDelLootTableArgument;
-import com.doctordark.hcf.eventgame.argument.EventDeleteArgument;
-import com.doctordark.hcf.eventgame.argument.EventRenameArgument;
-import com.doctordark.hcf.eventgame.argument.EventSetAreaArgument;
-import com.doctordark.hcf.eventgame.argument.EventSetCapzoneArgument;
-import com.doctordark.hcf.eventgame.argument.EventSetLootArgument;
-import com.doctordark.hcf.eventgame.argument.EventStartArgument;
-import com.doctordark.hcf.eventgame.argument.EventUptimeArgument;
+import com.doctordark.hcf.eventgame.argument.*;
 import com.doctordark.util.command.ArgumentExecutor;
 
 /**
- * Handles the execution and tab completion of the event oldcommands.
+ * Handles the execution and tab completion of the event command.
  */
 public class EventExecutor extends ArgumentExecutor {
 

@@ -2,6 +2,8 @@ package com.doctordark.hcf;
 
 import com.doctordark.hcf.combatlog.CombatLogListener;
 import com.doctordark.hcf.command.*;
+import com.doctordark.hcf.command.pvptimer.PvpTimerCommand;
+import com.doctordark.hcf.command.sotw.SotwCommand;
 import com.doctordark.hcf.deathban.*;
 import com.doctordark.hcf.deathban.lives.LivesExecutor;
 import com.doctordark.hcf.economy.*;
@@ -331,7 +333,7 @@ public class HCF extends JavaPlugin {
         Map<String, Map<String, Object>> map = getDescription().getCommands();
         for (Map.Entry<String, Map<String, Object>> entry : map.entrySet()) {
             PluginCommand command = getCommand(entry.getKey());
-            command.setPermission("hcf.oldcommands." + entry.getKey());
+            command.setPermission("hcf.command." + entry.getKey());
             command.setPermissionMessage(ChatColor.RED + "You do not have permission for this command.");
         }
     }
@@ -360,6 +362,9 @@ public class HCF extends JavaPlugin {
         }
         if (configuration.isHandleChat()) {
             plugin.getServer().getPluginManager().registerEvents(new ChatListener(this), this);
+        }
+        if (configuration.isSpawnCannon()) {
+            registerCommands(new SpawnCannonCommand(this));
         }
     }
 

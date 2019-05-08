@@ -1,17 +1,11 @@
 package com.doctordark.hcf.deathban.lives;
 
 import com.doctordark.hcf.HCF;
-import com.doctordark.hcf.deathban.lives.argument.LivesCheckArgument;
-import com.doctordark.hcf.deathban.lives.argument.LivesCheckDeathbanArgument;
-import com.doctordark.hcf.deathban.lives.argument.LivesClearDeathbansArgument;
-import com.doctordark.hcf.deathban.lives.argument.LivesGiveArgument;
-import com.doctordark.hcf.deathban.lives.argument.LivesReviveArgument;
-import com.doctordark.hcf.deathban.lives.argument.LivesSetArgument;
-import com.doctordark.hcf.deathban.lives.argument.LivesSetDeathbanTimeArgument;
+import com.doctordark.hcf.deathban.lives.argument.*;
 import com.doctordark.util.command.ArgumentExecutor;
 
 /**
- * Handles the execution and tab completion of the lives oldcommands.
+ * Handles the execution and tab completion of the lives command.
  */
 public class LivesExecutor extends ArgumentExecutor {
 

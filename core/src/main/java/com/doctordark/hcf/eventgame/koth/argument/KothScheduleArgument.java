@@ -12,11 +12,7 @@ import org.bukkit.command.CommandSender;
 
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Locale;
-import java.util.Map;
-import java.util.TimeZone;
+import java.util.*;
 import java.util.regex.Matcher;
 
 /**
@@ -37,7 +33,7 @@ public class KothScheduleArgument extends CommandArgument {
 
         this.plugin = plugin;
         this.aliases = new String[]{"info", "i", "time"};
-        this.permission = "hcf.oldcommands.koth.argument." + getName();
+        this.permission = "hcf.command.koth.argument." + getName();
 
         TimeZone timeZone = plugin.getConfiguration().getServerTimeZone();
         this.headingTimeFormat = FastDateFormat.getInstance("EEE FF h:mma (z)", timeZone, Locale.ENGLISH);

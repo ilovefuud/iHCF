@@ -1,11 +1,11 @@
 package com.doctordark.hcf.faction.argument;
 
 import com.doctordark.hcf.HCF;
+import com.doctordark.hcf.faction.FactionArgument;
 import com.doctordark.hcf.faction.FactionMember;
 import com.doctordark.hcf.faction.claim.Claim;
 import com.doctordark.hcf.faction.struct.Role;
 import com.doctordark.hcf.faction.type.PlayerFaction;
-import com.doctordark.util.command.CommandArgument;
 import com.google.common.collect.ImmutableList;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
@@ -18,7 +18,7 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 
-public class FactionUnclaimArgument extends CommandArgument {
+public class FactionUnclaimArgument extends FactionArgument {
 
     private final HCF plugin;
 
@@ -33,31 +33,31 @@ public class FactionUnclaimArgument extends CommandArgument {
     }
 
     @Override
-    public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
-        if (!(sender instanceof Player)) {
-            sender.sendMessage(ChatColor.RED + "Only players can un-claim land from a faction.");
+    public boolean onCommand(CommandSender player, Command command, String label, String[] args) {
+        if (!(player instanceof Player)) {
+            player.sendMessage(ChatColor.RED + "Only players can un-claim land from a faction.");
             return true;
         }
 
-        Player player = (Player) sender;
+        Player player = (Player) player;
         PlayerFaction playerFaction = plugin.getFactionManager().getPlayerFaction(player);
 
         if (playerFaction == null) {
-            sender.sendMessage(ChatColor.RED + "You are not in a faction.");
+            player.sendMessage(ChatColor.RED + "You are not in a faction.");
             return true;
         }
 
         FactionMember factionMember = playerFaction.getMember(player);
 
         if (factionMember.getRole() != Role.LEADER) {
-            sender.sendMessage(ChatColor.RED + "You must be a faction leader to unclaim land.");
+            player.sendMessage(ChatColor.RED + "You must be a faction leader to unclaim land.");
             return true;
         }
 
         Collection<Claim> factionClaims = playerFaction.getClaims();
 
         if (factionClaims.isEmpty()) {
-            sender.sendMessage(ChatColor.RED + "Your faction does not own any claims.");
+            player.sendMessage(ChatColor.RED + "Your faction does not own any claims.");
             return true;
         }
 
@@ -69,7 +69,7 @@ public class FactionUnclaimArgument extends CommandArgument {
             Location location = player.getLocation();
             Claim claimAt = plugin.getFactionManager().getClaimAt(location);
             if (claimAt == null || !factionClaims.contains(claimAt)) {
-                sender.sendMessage(ChatColor.RED + "Your faction does not own a claim here.");
+                player.sendMessage(ChatColor.RED + "Your faction does not own a claim here.");
                 return true;
             }
 
@@ -77,13 +77,13 @@ public class FactionUnclaimArgument extends CommandArgument {
         }
 
         if (!playerFaction.removeClaims(removingClaims, player)) {
-            sender.sendMessage(ChatColor.RED + "Error when removing claims, please contact an Administrator.");
+            player.sendMessage(ChatColor.RED + "Error when removing claims, please contact an Administrator.");
             return true;
         }
 
         int removingAmount = removingClaims.size();
         playerFaction.broadcast(ChatColor.RED + ChatColor.BOLD.toString() + factionMember.getRole().getAstrix() +
-                sender.getName() + " has removed " + removingAmount + " claim" + (removingAmount > 1 ? "s" : "") + '.');
+                player.getName() + " has removed " + removingAmount + " claim" + (removingAmount > 1 ? "s" : "") + '.');
 
         return true;
     }

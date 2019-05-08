@@ -2,11 +2,11 @@ package com.doctordark.hcf.faction.argument;
 
 import com.doctordark.base.GuavaCompat;
 import com.doctordark.hcf.HCF;
+import com.doctordark.hcf.faction.FactionArgument;
 import com.doctordark.hcf.faction.LandMap;
 import com.doctordark.hcf.faction.claim.Claim;
 import com.doctordark.hcf.user.FactionUser;
 import com.doctordark.hcf.visualise.VisualType;
-import com.doctordark.util.command.CommandArgument;
 import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
@@ -20,7 +20,7 @@ import java.util.UUID;
 /**
  * Faction argument used to view a interactive map of {@link Claim}s.
  */
-public class FactionMapArgument extends CommandArgument {
+public class FactionMapArgument extends FactionArgument {
 
     private final HCF plugin;
 
@@ -35,13 +35,13 @@ public class FactionMapArgument extends CommandArgument {
     }
 
     @Override
-    public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
-        if (!(sender instanceof Player)) {
-            sender.sendMessage(ChatColor.RED + "This oldcommands is only executable by players.");
+    public boolean onCommand(CommandSender player, Command command, String label, String[] args) {
+        if (!(player instanceof Player)) {
+            player.sendMessage(ChatColor.RED + "This command is only executable by players.");
             return true;
         }
 
-        Player player = (Player) sender;
+        Player player = (Player) player;
         UUID uuid = player.getUniqueId();
 
         final FactionUser factionUser = plugin.getUserManager().getUser(uuid);
@@ -60,7 +60,7 @@ public class FactionMapArgument extends CommandArgument {
             }
         } else {
             plugin.getVisualiseHandler().clearVisualBlocks(player, visualType, null);
-            sender.sendMessage(ChatColor.RED + "Claim pillars are no longer shown.");
+            player.sendMessage(ChatColor.RED + "Claim pillars are no longer shown.");
         }
 
         factionUser.setShowClaimMap(newShowingMap);

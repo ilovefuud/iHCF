@@ -1,11 +1,11 @@
 package com.doctordark.hcf.faction.argument.subclaim;
 
 import com.doctordark.hcf.HCF;
+import com.doctordark.hcf.faction.FactionArgument;
 import com.doctordark.hcf.faction.claim.Claim;
 import com.doctordark.hcf.faction.claim.Subclaim;
 import com.doctordark.hcf.faction.struct.Role;
 import com.doctordark.hcf.faction.type.PlayerFaction;
-import com.doctordark.util.command.CommandArgument;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.OfflinePlayer;
@@ -23,7 +23,7 @@ import java.util.stream.Collectors;
  * Faction subclaim argument used to list the names of members
  * who have access to a {@link Subclaim}.
  */
-public class FactionSubclaimMembersArgument extends CommandArgument {
+public class FactionSubclaimMembersArgument extends FactionArgument {
 
     private final HCF plugin;
 
@@ -40,7 +40,7 @@ public class FactionSubclaimMembersArgument extends CommandArgument {
     @Override
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
         if (!(sender instanceof Player)) {
-            sender.sendMessage(ChatColor.RED + "This oldcommands is only executable by players.");
+            sender.sendMessage(ChatColor.RED + "This command is only executable by players.");
             return true;
         }
 

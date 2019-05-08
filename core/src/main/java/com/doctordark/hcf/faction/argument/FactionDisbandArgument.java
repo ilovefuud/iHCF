@@ -3,13 +3,11 @@ package com.doctordark.hcf.faction.argument;
 import com.doctordark.hcf.HCF;
 import com.doctordark.hcf.faction.struct.Role;
 import com.doctordark.hcf.faction.type.PlayerFaction;
-import com.doctordark.util.command.CommandArgument;
 import org.bukkit.ChatColor;
-import org.bukkit.command.Command;
-import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
+import us.lemin.core.commands.PlayerSubCommand;
 
-public class FactionDisbandArgument extends CommandArgument {
+public class FactionDisbandArgument extends PlayerSubCommand {
 
     private final HCF plugin;
 
@@ -18,37 +16,30 @@ public class FactionDisbandArgument extends CommandArgument {
         this.plugin = plugin;
     }
 
-    @Override
     public String getUsage(String label) {
         return '/' + label + ' ' + getName();
     }
 
     @Override
-    public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
-        if (!(sender instanceof Player)) {
-            sender.sendMessage(ChatColor.RED + "This oldcommands is only executable by players.");
-            return true;
-        }
-
-        Player player = (Player) sender;
+    public void execute(Player player, Player player1, String[] args, String label) {
         PlayerFaction playerFaction = plugin.getFactionManager().getPlayerFaction(player);
 
         if (playerFaction == null) {
-            sender.sendMessage(ChatColor.RED + "You are not in a faction.");
-            return true;
+            player.sendMessage(ChatColor.RED + "You are not in a faction.");
+            return;
         }
 
         if (playerFaction.isRaidable() && !plugin.getEotwHandler().isEndOfTheWorld()) {
-            sender.sendMessage(ChatColor.RED + "You cannot disband your faction while it is raidable.");
-            return true;
+            player.sendMessage(ChatColor.RED + "You cannot disband your faction while it is raidable.");
+            return;
         }
 
         if (playerFaction.getMember(player.getUniqueId()).getRole() != Role.LEADER) {
-            sender.sendMessage(ChatColor.RED + "You must be a leader to disband the faction.");
-            return true;
+            player.sendMessage(ChatColor.RED + "You must be a leader to disband the faction.");
+            return;
         }
 
-        plugin.getFactionManager().removeFaction(playerFaction, sender);
-        return true;
+        plugin.getFactionManager().removeFaction(playerFaction, player);
+        return;
     }
 }

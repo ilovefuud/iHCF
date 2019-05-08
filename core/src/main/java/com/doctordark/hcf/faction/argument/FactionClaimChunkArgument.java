@@ -5,51 +5,43 @@ import com.doctordark.hcf.faction.claim.Claim;
 import com.doctordark.hcf.faction.claim.ClaimHandler;
 import com.doctordark.hcf.faction.struct.Role;
 import com.doctordark.hcf.faction.type.PlayerFaction;
-import com.doctordark.util.command.CommandArgument;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
-import org.bukkit.command.Command;
-import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
+import us.lemin.core.commands.PlayerSubCommand;
 
-public class FactionClaimChunkArgument extends CommandArgument {
+public class FactionClaimChunkArgument extends PlayerSubCommand {
 
     private static final int CHUNK_RADIUS = 7;
     private final HCF plugin;
 
     public FactionClaimChunkArgument(HCF plugin) {
-        super("claimchunk", "Claim a chunk of land in the Wilderness.", new String[]{"chunkclaim"});
+        super("claimchunk", "Claim a chunk of land in the Wilderness.");
         this.plugin = plugin;
     }
 
-    @Override
     public String getUsage(String label) {
         return '/' + label + ' ' + getName();
     }
 
-    @Override
-    public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
-        if (!(sender instanceof Player)) {
-            sender.sendMessage(ChatColor.RED + "This oldcommands is only executable by players.");
-            return true;
-        }
 
-        Player player = (Player) sender;
+    @Override
+    public void execute(Player player, Player player1, String[] strings, String label) {
         PlayerFaction playerFaction = plugin.getFactionManager().getPlayerFaction(player);
 
         if (playerFaction == null) {
-            sender.sendMessage(ChatColor.RED + "You are not in a faction.");
-            return true;
+            player.sendMessage(ChatColor.RED + "You are not in a faction.");
+            return;
         }
 
         if (playerFaction.isRaidable()) {
-            sender.sendMessage(ChatColor.RED + "You cannot claim land for your faction while raidable.");
-            return true;
+            player.sendMessage(ChatColor.RED + "You cannot claim land for your faction while raidable.");
+            return;
         }
 
         if (playerFaction.getMember(player.getUniqueId()).getRole() == Role.MEMBER) {
-            sender.sendMessage(ChatColor.RED + "You must be an officer to claim land.");
-            return true;
+            player.sendMessage(ChatColor.RED + "You must be an officer to claim land.");
+            return;
         }
 
         Location location = player.getLocation();
@@ -57,6 +49,5 @@ public class FactionClaimChunkArgument extends CommandArgument {
                 location.clone().add(CHUNK_RADIUS, ClaimHandler.MIN_CLAIM_HEIGHT, CHUNK_RADIUS),
                 location.clone().add(-CHUNK_RADIUS, ClaimHandler.MAX_CLAIM_HEIGHT, -CHUNK_RADIUS)));
 
-        return true;
     }
 }

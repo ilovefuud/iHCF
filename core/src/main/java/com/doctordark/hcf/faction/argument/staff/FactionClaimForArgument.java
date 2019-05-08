@@ -1,11 +1,11 @@
 package com.doctordark.hcf.faction.argument.staff;
 
 import com.doctordark.hcf.HCF;
+import com.doctordark.hcf.faction.FactionArgument;
 import com.doctordark.hcf.faction.claim.Claim;
 import com.doctordark.hcf.faction.type.ClaimableFaction;
 import com.doctordark.hcf.faction.type.Faction;
 import com.doctordark.hcf.util.RegionData;
-import com.doctordark.util.command.CommandArgument;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
@@ -19,14 +19,14 @@ import java.util.List;
 /**
  * Used to claim land for other {@link ClaimableFaction}s.
  */
-public class FactionClaimForArgument extends CommandArgument {
+public class FactionClaimForArgument extends FactionArgument {
 
     private final HCF plugin;
 
     public FactionClaimForArgument(HCF plugin) {
         super("claimfor", "Claims land for another faction.");
         this.plugin = plugin;
-        this.permission = "hcf.oldcommands.faction.argument." + getName();
+        this.permission = "hcf.command.faction.argument." + getName();
     }
 
     @Override
@@ -35,37 +35,37 @@ public class FactionClaimForArgument extends CommandArgument {
     }
 
     @Override
-    public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
-        if (!(sender instanceof Player)) {
-            sender.sendMessage(ChatColor.RED + "This oldcommands is only executable by players.");
+    public boolean onCommand(CommandSender player, Command command, String label, String[] args) {
+        if (!(player instanceof Player)) {
+            player.sendMessage(ChatColor.RED + "This command is only executable by players.");
             return true;
         }
 
         if (args.length < 2) {
-            sender.sendMessage(ChatColor.RED + "Usage: " + getUsage(label));
+            player.sendMessage(ChatColor.RED + "Usage: " + getUsage(label));
             return true;
         }
 
         Faction targetFaction = plugin.getFactionManager().getFaction(args[1]);
 
         if (!(targetFaction instanceof ClaimableFaction)) {
-            sender.sendMessage(ChatColor.RED + "Claimable faction named " + args[1] + " not found.");
+            player.sendMessage(ChatColor.RED + "Claimable faction named " + args[1] + " not found.");
             return true;
         }
 
-        Player player = (Player) sender;
+        Player player = (Player) player;
 
         RegionData selection = plugin.getRegionManager().getData(player);
 
         if (selection == null) {
-            sender.sendMessage(ChatColor.RED + "You must make a region selection to do this.");
+            player.sendMessage(ChatColor.RED + "You must make a region selection to do this.");
             return true;
         }
 
         ClaimableFaction claimableFaction = (ClaimableFaction) targetFaction;
 
-        if (claimableFaction.addClaim(new Claim(claimableFaction, selection.getA(), selection.getB()), sender)) {
-            sender.sendMessage(ChatColor.YELLOW + "Successfully claimed this land for " + ChatColor.RED + targetFaction.getName() + ChatColor.YELLOW + '.');
+        if (claimableFaction.addClaim(new Claim(claimableFaction, selection.getA(), selection.getB()), player)) {
+            player.sendMessage(ChatColor.YELLOW + "Successfully claimed this land for " + ChatColor.RED + targetFaction.getName() + ChatColor.YELLOW + '.');
         }
 
         return true;

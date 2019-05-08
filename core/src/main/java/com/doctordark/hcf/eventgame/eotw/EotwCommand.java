@@ -2,16 +2,8 @@ package com.doctordark.hcf.eventgame.eotw;
 
 import com.doctordark.hcf.HCF;
 import org.bukkit.ChatColor;
-import org.bukkit.command.Command;
-import org.bukkit.command.CommandExecutor;
-import org.bukkit.command.CommandSender;
-import org.bukkit.command.ConsoleCommandSender;
-import org.bukkit.command.TabCompleter;
-import org.bukkit.conversations.Conversable;
-import org.bukkit.conversations.ConversationContext;
-import org.bukkit.conversations.ConversationFactory;
-import org.bukkit.conversations.Prompt;
-import org.bukkit.conversations.StringPrompt;
+import org.bukkit.command.*;
+import org.bukkit.conversations.*;
 
 import java.util.Collections;
 import java.util.List;
@@ -35,7 +27,7 @@ public class EotwCommand implements CommandExecutor, TabCompleter {
     @Override
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
         if (!(sender instanceof ConsoleCommandSender)) {
-            sender.sendMessage(ChatColor.RED + "This oldcommands can be only executed from console.");
+            sender.sendMessage(ChatColor.RED + "This command can be only executed from console.");
             return true;
         }
 
@@ -54,7 +46,7 @@ public class EotwCommand implements CommandExecutor, TabCompleter {
         @Override
         public String getPromptText(ConversationContext context) {
             return ChatColor.YELLOW + "Are you sure you want to do this? The server will be in EOTW mode, If EOTW mode is active, all claims whilst making Spawn a KOTH. " +
-                    "You will still have " + EotwHandler.EOTW_WARMUP_WAIT_SECONDS + " seconds to cancel this using the same oldcommands though. " +
+                    "You will still have " + EotwHandler.EOTW_WARMUP_WAIT_SECONDS + " seconds to cancel this using the same command though. " +
                     "Type " + ChatColor.GREEN + "yes" + ChatColor.YELLOW + " to confirm or " + ChatColor.RED + "no" + ChatColor.YELLOW + " to deny.";
         }
 

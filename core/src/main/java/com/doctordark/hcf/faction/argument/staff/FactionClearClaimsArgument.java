@@ -1,20 +1,16 @@
 package com.doctordark.hcf.faction.argument.staff;
 
 import com.doctordark.hcf.HCF;
+import com.doctordark.hcf.faction.FactionArgument;
 import com.doctordark.hcf.faction.type.ClaimableFaction;
 import com.doctordark.hcf.faction.type.Faction;
 import com.doctordark.hcf.faction.type.PlayerFaction;
-import com.doctordark.util.command.CommandArgument;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.ConsoleCommandSender;
-import org.bukkit.conversations.Conversable;
-import org.bukkit.conversations.ConversationContext;
-import org.bukkit.conversations.ConversationFactory;
-import org.bukkit.conversations.Prompt;
-import org.bukkit.conversations.StringPrompt;
+import org.bukkit.conversations.*;
 import org.bukkit.entity.Player;
 
 import java.util.ArrayList;
@@ -24,7 +20,7 @@ import java.util.List;
 /**
  * Faction argument used to set the DTR Regeneration cooldown of {@link Faction}s.
  */
-public class FactionClearClaimsArgument extends CommandArgument {
+public class FactionClearClaimsArgument extends FactionArgument {
 
     private final ConversationFactory factory;
     private final HCF plugin;
@@ -32,7 +28,7 @@ public class FactionClearClaimsArgument extends CommandArgument {
     public FactionClearClaimsArgument(final HCF plugin) {
         super("clearclaims", "Clears the claims of a faction.");
         this.plugin = plugin;
-        this.permission = "hcf.oldcommands.faction.argument." + getName();
+        this.permission = "hcf.command.faction.argument." + getName();
 
         this.factory = new ConversationFactory(plugin).
                 withFirstPrompt(new ClaimClearAllPrompt(plugin)).
@@ -48,19 +44,19 @@ public class FactionClearClaimsArgument extends CommandArgument {
     }
 
     @Override
-    public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
+    public boolean onCommand(CommandSender player, Command command, String label, String[] args) {
         if (args.length < 2) {
-            sender.sendMessage(ChatColor.RED + "Usage: " + getUsage(label));
+            player.sendMessage(ChatColor.RED + "Usage: " + getUsage(label));
             return true;
         }
 
         if (args[1].equalsIgnoreCase("all")) {
-            if (!(sender instanceof ConsoleCommandSender)) {
-                sender.sendMessage(ChatColor.RED + "This oldcommands can be only executed from console.");
+            if (!(player instanceof ConsoleCommandSender)) {
+                player.sendMessage(ChatColor.RED + "This command can be only executed from console.");
                 return true;
             }
 
-            Conversable conversable = (Conversable) sender;
+            Conversable conversable = (Conversable) player;
             conversable.beginConversation(factory.buildConversation(conversable));
             return true;
         }
@@ -68,19 +64,19 @@ public class FactionClearClaimsArgument extends CommandArgument {
         Faction faction = plugin.getFactionManager().getContainingFaction(args[1]);
 
         if (faction == null) {
-            sender.sendMessage(ChatColor.RED + "Faction named or containing member with IGN or UUID " + args[1] + " not found.");
+            player.sendMessage(ChatColor.RED + "Faction named or containing member with IGN or UUID " + args[1] + " not found.");
             return true;
         }
 
         if (faction instanceof ClaimableFaction) {
             ClaimableFaction claimableFaction = (ClaimableFaction) faction;
-            claimableFaction.removeClaims(claimableFaction.getClaims(), sender);
+            claimableFaction.removeClaims(claimableFaction.getClaims(), player);
             if (claimableFaction instanceof PlayerFaction) {
-                ((PlayerFaction) claimableFaction).broadcast(ChatColor.GOLD.toString() + ChatColor.BOLD + "Your claims have been forcefully wiped by " + sender.getName() + '.');
+                ((PlayerFaction) claimableFaction).broadcast(ChatColor.GOLD.toString() + ChatColor.BOLD + "Your claims have been forcefully wiped by " + player.getName() + '.');
             }
         }
 
-        sender.sendMessage(ChatColor.GOLD.toString() + ChatColor.BOLD + "Claims belonging to " + faction.getName() + " have been forcefully wiped.");
+        player.sendMessage(ChatColor.GOLD.toString() + ChatColor.BOLD + "Claims belonging to " + faction.getName() + " have been forcefully wiped.");
         return true;
     }
 

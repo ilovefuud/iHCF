@@ -16,11 +16,7 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.messaging.PluginMessageRecipient;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 
 /**
  * An {@link CommandArgument} used to revive {@link Deathban}ned {@link Player}s.
@@ -35,7 +31,7 @@ public class LivesReviveArgument extends CommandArgument {
     public LivesReviveArgument(HCF plugin) {
         super("revive", "Revive a death-banned player");
         this.plugin = plugin;
-        this.permission = "hcf.oldcommands.lives.argument." + getName();
+        this.permission = "hcf.command.lives.argument." + getName();
         plugin.getServer().getMessenger().registerOutgoingPluginChannel(plugin, PROXY_CHANNEL_NAME);
     }
 

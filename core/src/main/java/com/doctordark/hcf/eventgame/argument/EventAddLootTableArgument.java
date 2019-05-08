@@ -28,7 +28,7 @@ public class EventAddLootTableArgument extends CommandArgument {
     public EventAddLootTableArgument(HCF plugin) {
         super("addloottable", "Adds another loot table for an event type");
         this.plugin = plugin;
-        this.permission = "hcf.oldcommands.event.argument." + getName();
+        this.permission = "hcf.command.event.argument." + getName();
     }
 
     @Override
@@ -39,7 +39,7 @@ public class EventAddLootTableArgument extends CommandArgument {
     @Override
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
         if (!(sender instanceof Player)) {
-            sender.sendMessage(ChatColor.RED + "This oldcommands is only executable by players.");
+            sender.sendMessage(ChatColor.RED + "This command is only executable by players.");
             return true;
         }
 

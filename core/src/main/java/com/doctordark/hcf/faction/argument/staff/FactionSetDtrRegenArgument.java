@@ -1,30 +1,30 @@
 package com.doctordark.hcf.faction.argument.staff;
 
 import com.doctordark.hcf.HCF;
+import com.doctordark.hcf.faction.FactionArgument;
 import com.doctordark.hcf.faction.FactionManager;
 import com.doctordark.hcf.faction.type.Faction;
 import com.doctordark.hcf.faction.type.PlayerFaction;
-import com.doctordark.util.JavaUtils;
-import com.doctordark.util.command.CommandArgument;
 import org.apache.commons.lang3.time.DurationFormatUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
+import us.lemin.core.utils.misc.JavaUtils;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-public class FactionSetDtrRegenArgument extends CommandArgument {
+public class FactionSetDtrRegenArgument extends FactionArgument {
 
     private final HCF plugin;
 
     public FactionSetDtrRegenArgument(HCF plugin) {
         super("setdtrregen", "Sets the DTR cooldown of a faction.", new String[]{"setdtrregeneration"});
         this.plugin = plugin;
-        this.permission = "hcf.oldcommands.faction.argument." + getName();
+        this.permission = "hcf.command.faction.argument." + getName();
     }
 
     @Override

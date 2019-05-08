@@ -7,20 +7,18 @@ import com.doctordark.hcf.faction.type.Faction;
 import com.doctordark.hcf.faction.type.PlayerFaction;
 import com.doctordark.hcf.timer.PlayerTimer;
 import com.doctordark.hcf.util.DurationFormatter;
-import com.doctordark.util.command.CommandArgument;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
-import org.bukkit.command.Command;
-import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.event.player.PlayerTeleportEvent;
+import us.lemin.core.commands.PlayerSubCommand;
 
 import java.util.UUID;
 
 /**
  * Faction argument used to teleport to {@link Faction} home {@link Location}s.
  */
-public class FactionHomeArgument extends CommandArgument {
+public class FactionHomeArgument extends PlayerSubCommand {
 
     private final FactionExecutor factionExecutor;
     private final HCF plugin;
@@ -31,23 +29,15 @@ public class FactionHomeArgument extends CommandArgument {
         this.plugin = plugin;
     }
 
-    @Override
     public String getUsage(String label) {
         return '/' + label + ' ' + getName();
     }
 
     @Override
-    public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
-        if (!(sender instanceof Player)) {
-            sender.sendMessage(ChatColor.RED + "This oldcommands is only executable by players.");
-            return true;
-        }
-
-        Player player = (Player) sender;
-
+    public void execute(Player player, Player player1, String[] args, String label) {
         if (args.length >= 2 && args[1].equalsIgnoreCase("set")) {
-            factionExecutor.getArgument("sethome").onCommand(sender, command, label, args);
-            return true;
+            factionExecutor.subCommandMap.get("sethome").execute(player, player1, args, label);
+            return;
         }
 
         UUID uuid = player.getUniqueId();
@@ -56,66 +46,64 @@ public class FactionHomeArgument extends CommandArgument {
         long remaining = timer.getRemaining(player);
 
         if (remaining > 0L) {
-            sender.sendMessage(ChatColor.RED + "You cannot warp whilst your " + timer.getName() + ChatColor.RED + " timer is active.");
-
-            return true;
+            player.sendMessage(ChatColor.RED + "You cannot warp whilst your " + timer.getName() + ChatColor.RED + " timer is active.");
+            return;
         }
 
-        if ((remaining = (timer = plugin.getTimerManager().getCombatTimer()).getRemaining(player)) > 0L) {
-            sender.sendMessage(ChatColor.RED + "You cannot warp whilst your " + timer.getDisplayName() + ChatColor.RED + " timer is active.");
-
-            return true;
+        if ((timer = plugin.getTimerManager().getCombatTimer()).getRemaining(player) > 0L) {
+            player.sendMessage(ChatColor.RED + "You cannot warp whilst your " + timer.getDisplayName() + ChatColor.RED + " timer is active.");
+            return;
         }
 
         PlayerFaction playerFaction = plugin.getFactionManager().getPlayerFaction(uuid);
 
         if (playerFaction == null) {
-            sender.sendMessage(ChatColor.RED + "You are not in a faction.");
-            return true;
+            player.sendMessage(ChatColor.RED + "You are not in a faction.");
+            return;
         }
 
         Location home = playerFaction.getHome();
 
         if (home == null) {
-            sender.sendMessage(ChatColor.RED + "Your faction does not have a home set.");
-            return true;
+            player.sendMessage(ChatColor.RED + "Your faction does not have a home set.");
+            return;
         }
 
         if (plugin.getConfiguration().getMaxHeightFactionHome() != -1 && home.getY() > plugin.getConfiguration().getMaxHeightFactionHome()) {
-            sender.sendMessage(ChatColor.RED + "Your faction home height is above the limit which is " + plugin.getConfiguration().getMaxHeightFactionHome() +
+            player.sendMessage(ChatColor.RED + "Your faction home height is above the limit which is " + plugin.getConfiguration().getMaxHeightFactionHome() +
                     ", travel to your current home location at (x. " + home.getBlockX() + ", z. " + home.getBlockZ() + ") and re-set it at a lower height to fix this.");
 
-            return true;
+            return;
         }
 
         Faction factionAt = plugin.getFactionManager().getFactionAt(player.getLocation());
 
         if (factionAt instanceof EventFaction) {
-            sender.sendMessage(ChatColor.RED + "You cannot warp whilst in event zones.");
-            return true;
+            player.sendMessage(ChatColor.RED + "You cannot warp whilst in event zones.");
+            return;
         }
 
         if (factionAt != playerFaction && factionAt instanceof PlayerFaction && plugin.getConfiguration().isAllowTeleportingInEnemyTerritory()) {
             player.sendMessage(ChatColor.RED + "You may not warp in enemy claims. Use " + ChatColor.YELLOW + '/' + label + " stuck" + ChatColor.RED + " if trapped.");
-            return true;
+            return;
         }
 
         long millis;
         if (factionAt.isSafezone()) {
             millis = 0L;
         } else {
-            String name;
+            String worldName;
             switch (player.getWorld().getEnvironment()) {
                 case THE_END:
-                    name = "End";
+                    worldName = "End";
                     millis = plugin.getConfiguration().getFactionHomeTeleportDelayEndMillis();
                     break;
                 case NETHER:
-                    name = "Nether";
+                    worldName = "Nether";
                     millis = plugin.getConfiguration().getFactionHomeTeleportDelayNetherMillis();
                     break;
                 case NORMAL:
-                    name = "Overworld";
+                    worldName = "Overworld";
                     millis = plugin.getConfiguration().getFactionHomeTeleportDelayOverworldMillis();
                     break;
                 default:
@@ -123,8 +111,8 @@ public class FactionHomeArgument extends CommandArgument {
             }
 
             if (millis == -1L) {
-                sender.sendMessage(ChatColor.RED + "Home teleports are disabled in the " + name + ".");
-                return true;
+                player.sendMessage(ChatColor.RED + "Home teleports are disabled in the " + worldName + ".");
+                return;
             }
         }
 
@@ -135,7 +123,5 @@ public class FactionHomeArgument extends CommandArgument {
         plugin.getTimerManager().getTeleportTimer().teleport(player, home, millis,
                 ChatColor.AQUA + "Teleporting to your faction home in " + ChatColor.LIGHT_PURPLE + DurationFormatter.getRemaining(millis, true, false) + ChatColor.AQUA + ". Do not move or take damage.",
                 PlayerTeleportEvent.TeleportCause.COMMAND);
-
-        return true;
     }
 }

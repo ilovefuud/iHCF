@@ -4,50 +4,41 @@ import com.doctordark.hcf.HCF;
 import com.doctordark.hcf.economy.EconomyManager;
 import com.doctordark.hcf.faction.struct.Relation;
 import com.doctordark.hcf.faction.type.PlayerFaction;
-import com.doctordark.util.JavaUtils;
-import com.doctordark.util.command.CommandArgument;
 import com.google.common.collect.ImmutableList;
 import org.bukkit.ChatColor;
-import org.bukkit.command.Command;
-import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
+import us.lemin.core.commands.PlayerSubCommand;
+import us.lemin.core.utils.misc.JavaUtils;
 
-import java.util.Collections;
-import java.util.List;
 import java.util.UUID;
 
-public class FactionDepositArgument extends CommandArgument {
+public class FactionDepositArgument extends PlayerSubCommand {
 
     private final HCF plugin;
 
     public FactionDepositArgument(HCF plugin) {
-        super("deposit", "Deposits money to the faction balance.", new String[]{"d"});
+        super("deposit", "Deposits money to the faction balance.");
         this.plugin = plugin;
     }
 
-    @Override
     public String getUsage(String label) {
         return '/' + label + ' ' + getName() + " <all|amount>";
     }
 
+    private static final ImmutableList<String> COMPLETIONS = ImmutableList.of("all");
+
     @Override
-    public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
-        if (!(sender instanceof Player)) {
-            sender.sendMessage(ChatColor.RED + "This oldcommands is only executable by players.");
-            return true;
-        }
-
+    public void execute(Player player, Player player1, String[] args, String label) {
         if (args.length < 2) {
-            sender.sendMessage(ChatColor.RED + "Usage: " + getUsage(label));
-            return true;
+            player.sendMessage(ChatColor.RED + "Usage: " + getUsage(label));
+            return;
         }
 
-        Player player = (Player) sender;
         PlayerFaction playerFaction = plugin.getFactionManager().getPlayerFaction(player);
 
         if (playerFaction == null) {
-            sender.sendMessage(ChatColor.RED + "You are not in a faction.");
-            return true;
+            player.sendMessage(ChatColor.RED + "You are not in a faction.");
+            return;
         }
 
         UUID uuid = player.getUniqueId();
@@ -58,36 +49,28 @@ public class FactionDepositArgument extends CommandArgument {
             amount = playerBalance;
         } else {
             if ((amount = (JavaUtils.tryParseInt(args[1]))) == null) {
-                sender.sendMessage(ChatColor.RED + "'" + args[1] + "' is not a valid number.");
-                return true;
+                player.sendMessage(ChatColor.RED + "'" + args[1] + "' is not a valid number.");
+                return;
             }
         }
 
         if (amount <= 0) {
-            sender.sendMessage(ChatColor.RED + "Amount must be positive.");
-            return true;
+            player.sendMessage(ChatColor.RED + "Amount must be positive.");
+            return;
         }
 
         if (playerBalance < amount) {
-            sender.sendMessage(ChatColor.RED + "You need at least " + EconomyManager.ECONOMY_SYMBOL + JavaUtils.format(amount) + " to do this, you only have " +
+            player.sendMessage(ChatColor.RED + "You need at least " + EconomyManager.ECONOMY_SYMBOL + JavaUtils.format(amount) + " to do this, you only have " +
                     EconomyManager.ECONOMY_SYMBOL + JavaUtils.format(playerBalance) + '.');
 
-            return true;
+            return;
         }
 
         plugin.getEconomyManager().subtractBalance(uuid, amount);
 
         playerFaction.setBalance(playerFaction.getBalance() + amount);
-        playerFaction.broadcast(Relation.MEMBER.toChatColour() + playerFaction.getMember(player).getRole().getAstrix() + sender.getName() + ChatColor.YELLOW + " has deposited " +
+        playerFaction.broadcast(Relation.MEMBER.toChatColour() + playerFaction.getMember(player).getRole().getAstrix() + player.getName() + ChatColor.YELLOW + " has deposited " +
                 ChatColor.BOLD + EconomyManager.ECONOMY_SYMBOL + JavaUtils.format(amount) + ChatColor.YELLOW + " into the faction balance.");
 
-        return true;
     }
-
-    @Override
-    public List<String> onTabComplete(CommandSender sender, Command command, String label, String[] args) {
-        return args.length == 2 ? COMPLETIONS : Collections.<String>emptyList();
-    }
-
-    private static final ImmutableList<String> COMPLETIONS = ImmutableList.of("all");
 }

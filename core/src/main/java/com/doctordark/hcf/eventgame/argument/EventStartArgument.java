@@ -23,7 +23,7 @@ public class EventStartArgument extends CommandArgument {
         super("start", "Starts an event");
         this.plugin = plugin;
         this.aliases = new String[]{"begin"};
-        this.permission = "hcf.oldcommands.event.argument." + getName();
+        this.permission = "hcf.command.event.argument." + getName();
     }
 
     @Override

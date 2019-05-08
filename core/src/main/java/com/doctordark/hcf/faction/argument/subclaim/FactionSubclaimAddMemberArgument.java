@@ -1,12 +1,12 @@
 package com.doctordark.hcf.faction.argument.subclaim;
 
 import com.doctordark.hcf.HCF;
+import com.doctordark.hcf.faction.FactionArgument;
 import com.doctordark.hcf.faction.FactionMember;
 import com.doctordark.hcf.faction.claim.Claim;
 import com.doctordark.hcf.faction.claim.Subclaim;
 import com.doctordark.hcf.faction.struct.Role;
 import com.doctordark.hcf.faction.type.PlayerFaction;
-import com.doctordark.util.command.CommandArgument;
 import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
@@ -17,12 +17,12 @@ import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
-public class FactionSubclaimAddMemberArgument extends CommandArgument {
+public class FactionSubclaimAddMemberArgument extends FactionArgument {
 
     private final HCF plugin;
 
     public FactionSubclaimAddMemberArgument(HCF plugin) {
-        super("addmember", "Adds a faction member to a subclaim", new String[]{"addplayer", "grant"});
+        super("addmember", "Adds a faction member to a subclaim");
         this.plugin = plugin;
     }
 
@@ -34,7 +34,7 @@ public class FactionSubclaimAddMemberArgument extends CommandArgument {
     @Override
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
         if (!(sender instanceof Player)) {
-            sender.sendMessage(ChatColor.RED + "This oldcommands is only executable by players.");
+            sender.sendMessage(ChatColor.RED + "This command is only executable by players.");
             return true;
         }
 

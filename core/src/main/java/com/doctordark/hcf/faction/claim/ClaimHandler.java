@@ -4,27 +4,19 @@ import com.doctordark.hcf.HCF;
 import com.doctordark.hcf.economy.EconomyManager;
 import com.doctordark.hcf.faction.FactionManager;
 import com.doctordark.hcf.faction.struct.Role;
-import com.doctordark.hcf.faction.type.ClaimableFaction;
-import com.doctordark.hcf.faction.type.Faction;
-import com.doctordark.hcf.faction.type.PlayerFaction;
-import com.doctordark.hcf.faction.type.RoadFaction;
-import com.doctordark.hcf.faction.type.WildernessFaction;
+import com.doctordark.hcf.faction.type.*;
 import com.doctordark.hcf.visualise.VisualType;
-import com.doctordark.util.ItemBuilder;
-import com.doctordark.util.cuboid.Cuboid;
-import com.doctordark.util.cuboid.CuboidDirection;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
+import us.lemin.core.utils.cuboid.Cuboid;
+import us.lemin.core.utils.cuboid.CuboidDirection;
+import us.lemin.core.utils.item.ItemBuilder;
 
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Objects;
-import java.util.UUID;
+import java.util.*;
 
 public class ClaimHandler {
 
@@ -33,7 +25,7 @@ public class ClaimHandler {
 
     public static final long PILLAR_BUFFER_DELAY_MILLIS = 200L;
 
-    public static final ItemStack SUBCLAIM_WAND = new ItemBuilder(Material.GOLD_SPADE, 1).displayName(ChatColor.GOLD + "Subclaim Wand").lore(
+    public static final ItemStack SUBCLAIM_WAND = new ItemBuilder(Material.GOLD_SPADE).name(ChatColor.GOLD + "Subclaim Wand").lore(
             ChatColor.AQUA + "Left or Right Click " + ChatColor.GREEN + "a Block" + ChatColor.AQUA + " to:",
             ChatColor.GRAY + "Set the first and second position of ",
             ChatColor.GRAY + "your Subclaim selection.",
@@ -44,7 +36,7 @@ public class ClaimHandler {
             ChatColor.AQUA + "Use " + ChatColor.YELLOW + "/faction subclaim create <name>" + ChatColor.AQUA + " to:",
             ChatColor.GRAY + "Acquire your selected Subclaim.").build();
 
-    public static final ItemStack CLAIM_WAND = new ItemBuilder(Material.DIAMOND_HOE).displayName(ChatColor.RED + "Claim Wand").lore(
+    public static final ItemStack CLAIM_WAND = new ItemBuilder(Material.DIAMOND_HOE).name(ChatColor.RED + "Claim Wand").lore(
             ChatColor.AQUA + "Left or Right Click " + ChatColor.GREEN + "a Block" + ChatColor.AQUA + " to:",
             ChatColor.GRAY + "Set the first and second position of ",
             ChatColor.GRAY + "your Claim selection.",

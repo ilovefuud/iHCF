@@ -1,8 +1,7 @@
 package com.doctordark.hcf.listener;
 
 import com.doctordark.hcf.HCF;
-import org.bukkit.entity.Entity;
-import org.bukkit.entity.Squid;
+import org.bukkit.entity.*;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
@@ -29,7 +28,11 @@ public class EntityLimitListener implements Listener {
         }
 
         Entity entity = event.getEntity();
-        if (entity instanceof Squid) {
+        if (entity instanceof Squid
+                || entity instanceof Rabbit
+                || entity instanceof Guardian
+                || entity instanceof Endermite
+                || entity instanceof ArmorStand) {
             event.setCancelled(true);
             return;
         }

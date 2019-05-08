@@ -1,16 +1,12 @@
 package com.doctordark.hcf.faction.argument;
 
 import com.doctordark.hcf.HCF;
+import com.doctordark.hcf.faction.FactionArgument;
 import com.doctordark.hcf.faction.type.PlayerFaction;
 import com.doctordark.util.BukkitUtils;
 import com.doctordark.util.JavaUtils;
 import com.doctordark.util.MapSorting;
-import com.doctordark.util.command.CommandArgument;
-import net.md_5.bungee.api.chat.BaseComponent;
-import net.md_5.bungee.api.chat.ClickEvent;
-import net.md_5.bungee.api.chat.ComponentBuilder;
-import net.md_5.bungee.api.chat.HoverEvent;
-import net.md_5.bungee.api.chat.TextComponent;
+import net.md_5.bungee.api.chat.*;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
@@ -18,14 +14,9 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Comparator;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
-public class FactionListArgument extends CommandArgument {
+public class FactionListArgument extends FactionArgument {
 
     private static final int MAX_FACTIONS_PER_PAGE = 10;
 
@@ -43,14 +34,14 @@ public class FactionListArgument extends CommandArgument {
     }
 
     @Override
-    public boolean onCommand(final CommandSender sender, Command command, final String label, String[] args) {
+    public boolean onCommand(final CommandSender player, Command command, final String label, String[] args) {
         final Integer page;
         if (args.length < 2) {
             page = 1;
         } else {
             page = JavaUtils.tryParseInt(args[1]);
             if (page == null) {
-                sender.sendMessage(ChatColor.RED + "'" + args[1] + "' is not a valid number.");
+                player.sendMessage(ChatColor.RED + "'" + args[1] + "' is not a valid number.");
                 return true;
             }
         }
@@ -58,7 +49,7 @@ public class FactionListArgument extends CommandArgument {
         new BukkitRunnable() {
             @Override
             public void run() {
-                showList(page, label, sender);
+                showList(page, label, player);
             }
         }.runTaskAsynchronously(plugin);
         return true;

@@ -4,45 +4,35 @@ import com.doctordark.hcf.HCF;
 import com.doctordark.hcf.faction.FactionMember;
 import com.doctordark.hcf.faction.struct.ChatChannel;
 import com.doctordark.hcf.faction.type.PlayerFaction;
-import com.doctordark.util.command.CommandArgument;
 import org.bukkit.ChatColor;
-import org.bukkit.command.Command;
-import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
+import us.lemin.core.commands.PlayerSubCommand;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
-import java.util.Collections;
-import java.util.List;
+import java.util.Objects;
 
-public class FactionChatArgument extends CommandArgument {
+public class FactionChatArgument extends PlayerSubCommand {
 
     private final HCF plugin;
 
     public FactionChatArgument(HCF plugin) {
-        super("chat", "Toggle faction chat only mode on or off.", new String[]{"c"});
+        super("chat", "Switch between different chat modes.");
         this.plugin = plugin;
     }
 
-    @Override
     public String getUsage(String label) {
         return '/' + label + ' ' + getName() + " [fac|public|ally] [message]";
     }
 
-    @Override
-    public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
-        if (!(sender instanceof Player)) {
-            sender.sendMessage(ChatColor.RED + "This oldcommands is only executable by players.");
-            return true;
-        }
 
-        Player player = (Player) sender;
+    @Override
+    public void execute(Player player, Player player1, String[] args, String label) {
         PlayerFaction playerFaction = plugin.getFactionManager().getPlayerFaction(player);
 
         if (playerFaction == null) {
-            sender.sendMessage(ChatColor.RED + "You are not in a faction.");
-            return true;
+            player.sendMessage(ChatColor.RED + "You are not in a faction.");
+            return;
         }
 
         FactionMember member = playerFaction.getMember(player.getUniqueId());
@@ -63,28 +53,12 @@ public class FactionChatArgument extends CommandArgument {
             }
 
             // spawn radius, border, allies, minigames,
-            return true;
+            return;
         }
 
         ChatChannel newChannel = parsed == null ? currentChannel.getRotation() : parsed;
         member.setChatChannel(newChannel);
 
-        sender.sendMessage(ChatColor.YELLOW + "You are now in " + ChatColor.AQUA + newChannel.getDisplayName().toLowerCase() + ChatColor.YELLOW + " chat mode.");
-        return true;
-    }
-
-    @Override
-    public List<String> onTabComplete(CommandSender sender, Command command, String label, String[] args) {
-        if (args.length != 2 || !(sender instanceof Player)) {
-            return Collections.emptyList();
-        }
-
-        ChatChannel[] values = ChatChannel.values();
-        List<String> results = new ArrayList<>(values.length);
-        for (ChatChannel type : values) {
-            results.add(type.getName());
-        }
-
-        return results;
+        player.sendMessage(ChatColor.YELLOW + "You are now in " + ChatColor.AQUA + Objects.requireNonNull(newChannel).getDisplayName().toLowerCase() + ChatColor.YELLOW + " chat mode.");
     }
 }

@@ -1,8 +1,8 @@
 package com.doctordark.hcf.faction.argument;
 
 import com.doctordark.hcf.HCF;
+import com.doctordark.hcf.faction.FactionArgument;
 import com.doctordark.hcf.faction.type.Faction;
-import com.doctordark.util.command.CommandArgument;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
@@ -13,12 +13,13 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-public class FactionShowArgument extends CommandArgument {
+public class FactionShowArgument extends FactionArgument {
 
     private final HCF plugin;
 
     public FactionShowArgument(HCF plugin) {
-        super("show", "Get details about a faction.", new String[]{"i", "info", "who"});
+        super("show", "Get details about a faction.");
+
         this.plugin = plugin;
     }
 
@@ -28,20 +29,20 @@ public class FactionShowArgument extends CommandArgument {
     }
 
     @Override
-    public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
+    public boolean onCommand(CommandSender player, Command command, String label, String[] args) {
         Faction playerFaction = null;
         Faction namedFaction;
 
         if (args.length < 2) {
-            if (!(sender instanceof Player)) {
-                sender.sendMessage(ChatColor.RED + "Usage: " + getUsage(label));
+            if (!(player instanceof Player)) {
+                player.sendMessage(ChatColor.RED + "Usage: " + getUsage(label));
                 return true;
             }
 
-            namedFaction = plugin.getFactionManager().getPlayerFaction((Player) sender);
+            namedFaction = plugin.getFactionManager().getPlayerFaction((Player) player);
 
             if (namedFaction == null) {
-                sender.sendMessage(ChatColor.RED + "You are not in a faction.");
+                player.sendMessage(ChatColor.RED + "You are not in a faction.");
                 return true;
             }
         } else {
@@ -49,17 +50,17 @@ public class FactionShowArgument extends CommandArgument {
             playerFaction = plugin.getFactionManager().getContainingPlayerFaction(args[1]);
 
             if (namedFaction == null && playerFaction == null) {
-                sender.sendMessage(ChatColor.RED + "Faction named or containing member with IGN or UUID " + args[1] + " not found.");
+                player.sendMessage(ChatColor.RED + "Faction named or containing member with IGN or UUID " + args[1] + " not found.");
                 return true;
             }
         }
 
         if (namedFaction != null) {
-            namedFaction.printDetails(sender);
+            namedFaction.printDetails(player);
         }
 
         if (playerFaction != null && namedFaction != playerFaction) {
-            playerFaction.printDetails(sender);
+            playerFaction.printDetails(player);
         }
 
         return true;

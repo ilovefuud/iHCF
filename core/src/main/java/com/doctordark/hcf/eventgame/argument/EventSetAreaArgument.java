@@ -29,7 +29,7 @@ public class EventSetAreaArgument extends CommandArgument {
         super("setarea", "Sets the area of an event");
         this.plugin = plugin;
         this.aliases = new String[]{"setclaim", "setclaimarea", "setland"};
-        this.permission = "hcf.oldcommands.event.argument." + getName();
+        this.permission = "hcf.command.event.argument." + getName();
     }
 
     @Override

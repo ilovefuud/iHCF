@@ -1,10 +1,10 @@
 package com.doctordark.hcf.faction.argument.staff;
 
 import com.doctordark.hcf.HCF;
+import com.doctordark.hcf.faction.FactionArgument;
 import com.doctordark.hcf.faction.type.Faction;
 import com.doctordark.hcf.faction.type.PlayerFaction;
 import com.doctordark.util.JavaUtils;
-import com.doctordark.util.command.CommandArgument;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
@@ -18,14 +18,14 @@ import java.util.List;
 /**
  * Faction argument used to set the DTR of {@link Faction}s.
  */
-public class FactionSetDtrArgument extends CommandArgument {
+public class FactionSetDtrArgument extends FactionArgument {
 
     private final HCF plugin;
 
     public FactionSetDtrArgument(HCF plugin) {
         super("setdtr", "Sets the DTR of a faction.", new String[]{"dtr"});
         this.plugin = plugin;
-        this.permission = "hcf.oldcommands.faction.argument." + getName();
+        this.permission = "hcf.command.faction.argument." + getName();
     }
 
     @Override

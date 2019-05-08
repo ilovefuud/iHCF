@@ -1,9 +1,9 @@
 package com.doctordark.hcf.faction.argument.staff;
 
 import com.doctordark.hcf.HCF;
+import com.doctordark.hcf.faction.FactionArgument;
 import com.doctordark.hcf.faction.type.Faction;
 import com.doctordark.util.JavaUtils;
-import com.doctordark.util.command.CommandArgument;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
@@ -14,7 +14,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-public class FactionSetDeathbanMultiplierArgument extends CommandArgument {
+public class FactionSetDeathbanMultiplierArgument extends FactionArgument {
 
     private static final double MIN_MULTIPLIER = 0.0;
     private static final double MAX_MULTIPLIER = 5.0;
@@ -24,7 +24,7 @@ public class FactionSetDeathbanMultiplierArgument extends CommandArgument {
     public FactionSetDeathbanMultiplierArgument(HCF plugin) {
         super("setdeathbanmultiplier", "Sets the deathban multiplier of a faction.");
         this.plugin = plugin;
-        this.permission = "hcf.oldcommands.faction.argument." + getName();
+        this.permission = "hcf.command.faction.argument." + getName();
     }
 
     @Override

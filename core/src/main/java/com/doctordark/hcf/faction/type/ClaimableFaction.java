@@ -6,8 +6,6 @@ import com.doctordark.hcf.faction.claim.Claim;
 import com.doctordark.hcf.faction.event.FactionClaimChangeEvent;
 import com.doctordark.hcf.faction.event.FactionClaimChangedEvent;
 import com.doctordark.hcf.faction.event.cause.ClaimChangeCause;
-import com.doctordark.util.BukkitUtils;
-import com.doctordark.util.GenericUtils;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import org.bukkit.Bukkit;
@@ -15,13 +13,10 @@ import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.command.CommandSender;
+import us.lemin.core.utils.misc.GenericUtils;
 
 import javax.annotation.Nullable;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * Represents a {@link Faction} that can claim land.

@@ -22,7 +22,7 @@ public class EventCreateArgument extends CommandArgument {
     public EventCreateArgument(HCF plugin) {
         super("create", "Defines a new event", new String[]{"make", "define"});
         this.plugin = plugin;
-        this.permission = "hcf.oldcommands.event.argument." + getName();
+        this.permission = "hcf.command.event.argument." + getName();
     }
 
     @Override

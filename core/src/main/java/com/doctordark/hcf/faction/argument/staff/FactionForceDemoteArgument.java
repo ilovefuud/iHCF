@@ -1,10 +1,10 @@
 package com.doctordark.hcf.faction.argument.staff;
 
 import com.doctordark.hcf.HCF;
+import com.doctordark.hcf.faction.FactionArgument;
 import com.doctordark.hcf.faction.FactionMember;
 import com.doctordark.hcf.faction.struct.Role;
 import com.doctordark.hcf.faction.type.PlayerFaction;
-import com.doctordark.util.command.CommandArgument;
 import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
@@ -12,14 +12,15 @@ import org.bukkit.command.CommandSender;
 import java.util.Collections;
 import java.util.List;
 
-public class FactionForceDemoteArgument extends CommandArgument {
+public class FactionForceDemoteArgument extends FactionArgument
+{
 
     private final HCF plugin;
 
     public FactionForceDemoteArgument(HCF plugin) {
         super("forcedemote", "Forces the demotion status of a player.");
         this.plugin = plugin;
-        this.permission = "hcf.oldcommands.faction.argument." + getName();
+        this.permission = "hcf.command.faction.argument." + getName();
     }
 
     @Override
@@ -28,33 +29,33 @@ public class FactionForceDemoteArgument extends CommandArgument {
     }
 
     @Override
-    public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
+    public boolean onCommand(CommandSender player, Command command, String label, String[] args) {
         if (args.length < 2) {
-            sender.sendMessage(ChatColor.RED + "Usage: " + getUsage(label));
+            player.sendMessage(ChatColor.RED + "Usage: " + getUsage(label));
             return true;
         }
 
         PlayerFaction playerFaction = plugin.getFactionManager().getContainingPlayerFaction(args[1]);
 
         if (playerFaction == null) {
-            sender.sendMessage(ChatColor.RED + "Faction containing member with IGN or UUID " + args[1] + " not found.");
+            player.sendMessage(ChatColor.RED + "Faction containing member with IGN or UUID " + args[1] + " not found.");
             return true;
         }
 
         FactionMember factionMember = playerFaction.getMember(args[1]);
 
         if (factionMember == null) {
-            sender.sendMessage(ChatColor.RED + "Faction containing member with IGN or UUID " + args[1] + " not found.");
+            player.sendMessage(ChatColor.RED + "Faction containing member with IGN or UUID " + args[1] + " not found.");
             return true;
         }
 
         if (factionMember.getRole() != Role.LEADER) {
-            sender.sendMessage(ChatColor.RED + factionMember.getName() + " is a " + factionMember.getRole().getName() + "; cannot be demoted.");
+            player.sendMessage(ChatColor.RED + factionMember.getName() + " is a " + factionMember.getRole().getName() + "; cannot be demoted.");
             return true;
         }
 
         factionMember.setRole(Role.MEMBER);
-        playerFaction.broadcast(ChatColor.GOLD.toString() + ChatColor.BOLD + sender.getName() + " has been forcefully assigned as a member.");
+        playerFaction.broadcast(ChatColor.GOLD.toString() + ChatColor.BOLD + player.getName() + " has been forcefully assigned as a member.");
         return true;
     }
 

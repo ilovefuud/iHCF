@@ -1,6 +1,6 @@
 package com.doctordark.hcf;
 
-import com.doctordark.util.PersistableLocation;
+import com.doctordark.hcf.util.PersistableLocation;
 import gnu.trove.impl.Constants;
 import gnu.trove.map.TObjectIntMap;
 import gnu.trove.map.hash.TObjectIntHashMap;
@@ -27,6 +27,9 @@ public class Configuration extends AnnotationConfig {
 
     @Setting("kitmap")
     private boolean kitmap = false;
+
+    @Setting("spawnCannon")
+    private boolean spawnCannon = true;
 
     @Setting("factions.home.allowTeleportingInEnemyTerritory")
     private boolean allowTeleportingInEnemyTerritory = true;

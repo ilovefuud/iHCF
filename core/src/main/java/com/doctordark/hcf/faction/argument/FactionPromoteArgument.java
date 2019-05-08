@@ -1,11 +1,11 @@
 package com.doctordark.hcf.faction.argument;
 
 import com.doctordark.hcf.HCF;
+import com.doctordark.hcf.faction.FactionArgument;
 import com.doctordark.hcf.faction.FactionMember;
 import com.doctordark.hcf.faction.struct.Relation;
 import com.doctordark.hcf.faction.struct.Role;
 import com.doctordark.hcf.faction.type.PlayerFaction;
-import com.doctordark.util.command.CommandArgument;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.OfflinePlayer;
@@ -13,13 +13,9 @@ import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
-import java.util.UUID;
+import java.util.*;
 
-public class FactionPromoteArgument extends CommandArgument {
+public class FactionPromoteArgument extends FactionArgument {
 
     private final HCF plugin;
 
@@ -35,41 +31,41 @@ public class FactionPromoteArgument extends CommandArgument {
     }
 
     @Override
-    public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
-        if (!(sender instanceof Player)) {
-            sender.sendMessage(ChatColor.RED + "Only players can set faction captains.");
+    public boolean onCommand(CommandSender player, Command command, String label, String[] args) {
+        if (!(player instanceof Player)) {
+            player.sendMessage(ChatColor.RED + "Only players can set faction captains.");
             return true;
         }
 
         if (args.length < 2) {
-            sender.sendMessage(ChatColor.RED + "Usage: " + getUsage(label));
+            player.sendMessage(ChatColor.RED + "Usage: " + getUsage(label));
             return true;
         }
 
-        Player player = (Player) sender;
+        Player player = (Player) player;
         UUID uuid = player.getUniqueId();
 
         PlayerFaction playerFaction = plugin.getFactionManager().getPlayerFaction(uuid);
 
         if (playerFaction == null) {
-            sender.sendMessage(ChatColor.RED + "You are not in a faction.");
+            player.sendMessage(ChatColor.RED + "You are not in a faction.");
             return true;
         }
 
         if (playerFaction.getMember(uuid).getRole() != Role.LEADER) {
-            sender.sendMessage(ChatColor.RED + "You must be a faction leader to assign members as a captain.");
+            player.sendMessage(ChatColor.RED + "You must be a faction leader to assign members as a captain.");
             return true;
         }
 
         FactionMember targetMember = playerFaction.getMember(args[1]);
 
         if (targetMember == null) {
-            sender.sendMessage(ChatColor.RED + "That player is not in your faction.");
+            player.sendMessage(ChatColor.RED + "That player is not in your faction.");
             return true;
         }
 
         if (targetMember.getRole() != Role.MEMBER) {
-            sender.sendMessage(ChatColor.RED + "You can only assign captains to members, " + targetMember.getName() + " is a " + targetMember.getRole().getName() + '.');
+            player.sendMessage(ChatColor.RED + "You can only assign captains to members, " + targetMember.getName() + " is a " + targetMember.getRole().getName() + '.');
             return true;
         }
 

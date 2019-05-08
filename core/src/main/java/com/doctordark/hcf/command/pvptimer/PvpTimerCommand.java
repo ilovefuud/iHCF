@@ -1,10 +1,9 @@
-package com.doctordark.hcf.oldcommands.pvptimer;
+package com.doctordark.hcf.command.pvptimer;
 
 import com.doctordark.hcf.HCF;
-import com.doctordark.hcf.oldcommands.pvptimer.impl.PvPTimerEnableCommand;
-import com.doctordark.hcf.oldcommands.pvptimer.impl.PvPTimerRemainingCommand;
+import com.doctordark.hcf.command.pvptimer.impl.PvPTimerEnableCommand;
+import com.doctordark.hcf.command.pvptimer.impl.PvPTimerRemainingCommand;
 import com.doctordark.hcf.timer.type.InvincibilityTimer;
-import com.doctordark.util.BukkitUtils;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import org.bukkit.ChatColor;
@@ -12,6 +11,7 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import us.lemin.core.commands.PlayerCommand;
 import us.lemin.core.commands.PlayerSubCommand;
+import us.lemin.core.utils.misc.BukkitUtils;
 
 import java.util.Collections;
 import java.util.HashMap;
@@ -46,7 +46,7 @@ public class PvpTimerCommand extends PlayerCommand {
     private static final ImmutableList<String> COMPLETIONS = ImmutableList.of("enable", "time");
 
     /**
-     * Prints the usage of this oldcommands to a sender.
+     * Prints the usage of this command to a sender.
      *
      * @param sender the sender to print for
      */

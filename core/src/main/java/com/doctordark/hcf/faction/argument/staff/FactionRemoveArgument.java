@@ -1,18 +1,14 @@
 package com.doctordark.hcf.faction.argument.staff;
 
 import com.doctordark.hcf.HCF;
+import com.doctordark.hcf.faction.FactionArgument;
 import com.doctordark.hcf.faction.type.Faction;
-import com.doctordark.util.command.CommandArgument;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.ConsoleCommandSender;
-import org.bukkit.conversations.Conversable;
-import org.bukkit.conversations.ConversationContext;
-import org.bukkit.conversations.ConversationFactory;
-import org.bukkit.conversations.Prompt;
-import org.bukkit.conversations.StringPrompt;
+import org.bukkit.conversations.*;
 import org.bukkit.entity.Player;
 
 import java.util.ArrayList;
@@ -22,7 +18,7 @@ import java.util.List;
 /**
  * Faction argument used to forcefully remove {@link Faction}s.
  */
-public class FactionRemoveArgument extends CommandArgument {
+public class FactionRemoveArgument extends FactionArgument {
 
     private final ConversationFactory factory;
     private final HCF plugin;
@@ -31,7 +27,7 @@ public class FactionRemoveArgument extends CommandArgument {
         super("remove", "Remove a faction.");
         this.plugin = plugin;
         this.aliases = new String[]{"delete", "forcedisband", "forceremove"};
-        this.permission = "hcf.oldcommands.faction.argument." + getName();
+        this.permission = "hcf.command.faction.argument." + getName();
         this.factory = new ConversationFactory(plugin).
                 withFirstPrompt(new RemoveAllPrompt(plugin)).
                 withEscapeSequence("/no").
@@ -54,7 +50,7 @@ public class FactionRemoveArgument extends CommandArgument {
 
         if (args[1].equalsIgnoreCase("all")) {
             if (!(sender instanceof ConsoleCommandSender)) {
-                sender.sendMessage(ChatColor.RED + "This oldcommands can be only executed from console.");
+                sender.sendMessage(ChatColor.RED + "This command can be only executed from console.");
                 return true;
             }
 

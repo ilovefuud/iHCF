@@ -1,6 +1,5 @@
 package com.doctordark.hcf.faction;
 
-import com.doctordark.base.GuavaCompat;
 import com.doctordark.hcf.faction.struct.ChatChannel;
 import com.doctordark.hcf.faction.struct.Role;
 import com.doctordark.hcf.faction.type.Faction;

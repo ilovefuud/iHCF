@@ -24,7 +24,7 @@ public class EventDelLootTableArgument extends CommandArgument {
     public EventDelLootTableArgument(HCF plugin) {
         super("delloottable", "Deletes a loot table at a specific slot for a type");
         this.plugin = plugin;
-        this.permission = "hcf.oldcommands.event.argument." + getName();
+        this.permission = "hcf.command.event.argument." + getName();
     }
 
     @Override
@@ -35,7 +35,7 @@ public class EventDelLootTableArgument extends CommandArgument {
     @Override
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
         if (!(sender instanceof Player)) {
-            sender.sendMessage(ChatColor.RED + "This oldcommands is only executable by players.");
+            sender.sendMessage(ChatColor.RED + "This command is only executable by players.");
             return true;
         }
 

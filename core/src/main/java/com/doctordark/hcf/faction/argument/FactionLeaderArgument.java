@@ -1,10 +1,10 @@
 package com.doctordark.hcf.faction.argument;
 
 import com.doctordark.hcf.HCF;
+import com.doctordark.hcf.faction.FactionArgument;
 import com.doctordark.hcf.faction.FactionMember;
 import com.doctordark.hcf.faction.struct.Role;
 import com.doctordark.hcf.faction.type.PlayerFaction;
-import com.doctordark.util.command.CommandArgument;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.OfflinePlayer;
@@ -12,13 +12,9 @@ import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
-import java.util.UUID;
+import java.util.*;
 
-public class FactionLeaderArgument extends CommandArgument {
+public class FactionLeaderArgument extends FactionArgument {
 
     private final HCF plugin;
 
@@ -34,22 +30,22 @@ public class FactionLeaderArgument extends CommandArgument {
     }
 
     @Override
-    public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
-        if (!(sender instanceof Player)) {
-            sender.sendMessage(ChatColor.RED + "Only players can set faction leaders.");
+    public boolean onCommand(CommandSender player, Command command, String label, String[] args) {
+        if (!(player instanceof Player)) {
+            player.sendMessage(ChatColor.RED + "Only players can set faction leaders.");
             return true;
         }
 
         if (args.length < 2) {
-            sender.sendMessage(ChatColor.RED + "Usage: " + getUsage(label));
+            player.sendMessage(ChatColor.RED + "Usage: " + getUsage(label));
             return true;
         }
 
-        Player player = (Player) sender;
+        Player player = (Player) player;
         PlayerFaction playerFaction = plugin.getFactionManager().getPlayerFaction(player);
 
         if (playerFaction == null) {
-            sender.sendMessage(ChatColor.RED + "You are not in a faction.");
+            player.sendMessage(ChatColor.RED + "You are not in a faction.");
             return true;
         }
 
@@ -58,19 +54,19 @@ public class FactionLeaderArgument extends CommandArgument {
         Role selfRole = selfMember.getRole();
 
         if (selfRole != Role.LEADER) {
-            sender.sendMessage(ChatColor.RED + "You must be the current faction leader to transfer the faction.");
+            player.sendMessage(ChatColor.RED + "You must be the current faction leader to transfer the faction.");
             return true;
         }
 
         FactionMember targetMember = playerFaction.getMember(args[1]);
 
         if (targetMember == null) {
-            sender.sendMessage(ChatColor.RED + "Player '" + args[1] + "' is not in your faction.");
+            player.sendMessage(ChatColor.RED + "Player '" + args[1] + "' is not in your faction.");
             return true;
         }
 
         if (targetMember.getUniqueId().equals(uuid)) {
-            sender.sendMessage(ChatColor.RED + "You are already the faction leader.");
+            player.sendMessage(ChatColor.RED + "You are already the faction leader.");
             return true;
         }
 

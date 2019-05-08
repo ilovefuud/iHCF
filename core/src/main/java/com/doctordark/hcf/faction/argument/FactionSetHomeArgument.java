@@ -1,18 +1,18 @@
 package com.doctordark.hcf.faction.argument;
 
 import com.doctordark.hcf.HCF;
+import com.doctordark.hcf.faction.FactionArgument;
 import com.doctordark.hcf.faction.FactionMember;
 import com.doctordark.hcf.faction.claim.Claim;
 import com.doctordark.hcf.faction.struct.Role;
 import com.doctordark.hcf.faction.type.PlayerFaction;
-import com.doctordark.util.command.CommandArgument;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
-public class FactionSetHomeArgument extends CommandArgument {
+public class FactionSetHomeArgument extends FactionArgument {
 
     private final HCF plugin;
 
@@ -27,30 +27,30 @@ public class FactionSetHomeArgument extends CommandArgument {
     }
 
     @Override
-    public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
-        if (!(sender instanceof Player)) {
-            sender.sendMessage(ChatColor.RED + "This oldcommands is only executable by players.");
+    public boolean onCommand(CommandSender player, Command command, String label, String[] args) {
+        if (!(player instanceof Player)) {
+            player.sendMessage(ChatColor.RED + "This command is only executable by players.");
             return true;
         }
 
-        Player player = (Player) sender;
+        Player player = (Player) player;
 
         if (plugin.getConfiguration().getMaxHeightFactionHome() != -1 && player.getLocation().getY() > plugin.getConfiguration().getMaxHeightFactionHome()) {
-            sender.sendMessage(ChatColor.RED + "You can not set your faction home above y " + plugin.getConfiguration().getMaxHeightFactionHome() + ".");
+            player.sendMessage(ChatColor.RED + "You can not set your faction home above y " + plugin.getConfiguration().getMaxHeightFactionHome() + ".");
             return true;
         }
 
         PlayerFaction playerFaction = plugin.getFactionManager().getPlayerFaction(player);
 
         if (playerFaction == null) {
-            sender.sendMessage(ChatColor.RED + "You are not in a faction.");
+            player.sendMessage(ChatColor.RED + "You are not in a faction.");
             return true;
         }
 
         FactionMember factionMember = playerFaction.getMember(player);
 
         if (factionMember.getRole() == Role.MEMBER) {
-            sender.sendMessage(ChatColor.RED + "You must be a faction officer to set the home.");
+            player.sendMessage(ChatColor.RED + "You must be a faction officer to set the home.");
             return true;
         }
 
@@ -71,7 +71,7 @@ public class FactionSetHomeArgument extends CommandArgument {
 
         playerFaction.setHome(location);
         playerFaction.broadcast(plugin.getConfiguration().getRelationColourTeammate() + factionMember.getRole().getAstrix() +
-                sender.getName() + ChatColor.YELLOW + " has updated the faction home.");
+                player.getName() + ChatColor.YELLOW + " has updated the faction home.");
 
         return true;
     }

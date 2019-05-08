@@ -16,7 +16,7 @@ public class KothHelpArgument extends CommandArgument {
     public KothHelpArgument(KothExecutor kothExecutor) {
         super("help", "View help about how KOTH's work");
         this.kothExecutor = kothExecutor;
-        this.permission = "hcf.oldcommands.koth.argument." + getName();
+        this.permission = "hcf.command.koth.argument." + getName();
     }
 
     @Override

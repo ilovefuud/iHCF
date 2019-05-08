@@ -1,10 +1,12 @@
 package com.doctordark.hcf.listener;
 
 import com.doctordark.hcf.HCF;
-import com.doctordark.util.ExperienceManager;
-import com.doctordark.util.JavaUtils;
+import com.doctordark.hcf.util.XPUtil;
 import com.google.common.collect.Lists;
-import org.bukkit.*;
+import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
+import org.bukkit.Material;
+import org.bukkit.Sound;
 import org.bukkit.entity.HumanEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -15,11 +17,11 @@ import org.bukkit.event.inventory.CraftItemEvent;
 import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.event.inventory.PrepareItemCraftEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
-import org.bukkit.event.world.ChunkLoadEvent;
 import org.bukkit.inventory.CraftingInventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.ShapelessRecipe;
 import org.bukkit.inventory.meta.ItemMeta;
+import us.lemin.core.utils.misc.JavaUtils;
 
 import java.util.List;
 
@@ -68,7 +70,7 @@ public class BottledExpListener implements Listener {
 
                 Player player = event.getPlayer();
                 int previousLevel = player.getLevel();
-                new ExperienceManager(player).changeExp(amount);
+                XPUtil.setXP(player, amount);
 
                 // Play a fancy sound if they earned 5 exp levels.
                 if ((player.getLevel() - previousLevel) > 5) {
@@ -92,7 +94,7 @@ public class BottledExpListener implements Listener {
             CraftingInventory inventory = event.getInventory();
             Player player = (Player) inventory.getHolder();
             if (isBottledExperience(inventory.getResult())) {
-                int exp = new ExperienceManager(player).getCurrentExp();
+                int exp = XPUtil.getXP(player);
                 inventory.setResult(exp > 0 ? createExpBottle(exp) : new ItemStack(Material.AIR, 1));
             }
         }

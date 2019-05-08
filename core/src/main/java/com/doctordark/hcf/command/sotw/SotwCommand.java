@@ -1,15 +1,15 @@
-package com.doctordark.hcf.oldcommands.sotw;
+package com.doctordark.hcf.command.sotw;
 
 import com.doctordark.hcf.HCF;
-import com.doctordark.hcf.oldcommands.sotw.impl.SotwEndCommand;
-import com.doctordark.hcf.oldcommands.sotw.impl.SotwStartCommand;
-import com.doctordark.hcf.util.BukkitUtils;
+import com.doctordark.hcf.command.sotw.impl.SotwEndCommand;
+import com.doctordark.hcf.command.sotw.impl.SotwStartCommand;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import us.lemin.core.commands.BaseCommand;
 import us.lemin.core.commands.SubCommand;
+import us.lemin.core.utils.misc.BukkitUtils;
 
 import java.util.Collections;
 import java.util.HashMap;

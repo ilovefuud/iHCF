@@ -12,7 +12,6 @@ import com.doctordark.hcf.faction.FactionManager;
 import com.doctordark.hcf.faction.claim.Claim;
 import com.doctordark.hcf.faction.type.Faction;
 import com.doctordark.util.command.CommandArgument;
-import com.google.common.base.Joiner;
 import com.sk89q.worldedit.bukkit.WorldEditPlugin;
 import com.sk89q.worldedit.bukkit.selections.Selection;
 import org.bukkit.ChatColor;
@@ -38,7 +37,7 @@ public class EventSetCapzoneArgument extends CommandArgument {
         super("setcapzone", "Sets the capture zone of an event");
         this.plugin = plugin;
         this.aliases = new String[]{"setcapturezone", "setcap", "setcappoint", "setcapturepoint", "setcappoint"};
-        this.permission = "hcf.oldcommands.event.argument." + getName();
+        this.permission = "hcf.command.event.argument." + getName();
     }
 
     @Override

@@ -3,12 +3,12 @@ package com.doctordark.hcf.faction.claim;
 import com.doctordark.hcf.HCF;
 import com.doctordark.hcf.faction.type.ClaimableFaction;
 import com.doctordark.hcf.faction.type.Faction;
-import com.doctordark.util.GenericUtils;
-import com.doctordark.util.cuboid.Cuboid;
-import com.doctordark.util.cuboid.NamedCuboid;
 import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.configuration.serialization.ConfigurationSerializable;
+import us.lemin.core.utils.cuboid.Cuboid;
+import us.lemin.core.utils.cuboid.NamedCuboid;
+import us.lemin.core.utils.misc.GenericUtils;
 
 import java.util.*;
 

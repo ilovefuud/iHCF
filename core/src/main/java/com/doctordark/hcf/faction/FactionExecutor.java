@@ -1,67 +1,43 @@
 package com.doctordark.hcf.faction;
 
 import com.doctordark.hcf.HCF;
-import com.doctordark.hcf.faction.argument.FactionAcceptArgument;
-import com.doctordark.hcf.faction.argument.FactionAllyArgument;
-import com.doctordark.hcf.faction.argument.FactionAnnouncementArgument;
-import com.doctordark.hcf.faction.argument.FactionChatArgument;
-import com.doctordark.hcf.faction.argument.FactionClaimArgument;
-import com.doctordark.hcf.faction.argument.FactionClaimChunkArgument;
-import com.doctordark.hcf.faction.argument.FactionClaimsArgument;
-import com.doctordark.hcf.faction.argument.FactionCreateArgument;
-import com.doctordark.hcf.faction.argument.FactionDemoteArgument;
-import com.doctordark.hcf.faction.argument.FactionDepositArgument;
-import com.doctordark.hcf.faction.argument.FactionDisbandArgument;
-import com.doctordark.hcf.faction.argument.FactionHelpArgument;
-import com.doctordark.hcf.faction.argument.FactionHomeArgument;
-import com.doctordark.hcf.faction.argument.FactionInviteArgument;
-import com.doctordark.hcf.faction.argument.FactionInvitesArgument;
-import com.doctordark.hcf.faction.argument.FactionKickArgument;
-import com.doctordark.hcf.faction.argument.FactionLeaderArgument;
-import com.doctordark.hcf.faction.argument.FactionLeaveArgument;
-import com.doctordark.hcf.faction.argument.FactionListArgument;
-import com.doctordark.hcf.faction.argument.FactionMapArgument;
-import com.doctordark.hcf.faction.argument.FactionMessageArgument;
-import com.doctordark.hcf.faction.argument.FactionOpenArgument;
-import com.doctordark.hcf.faction.argument.FactionPromoteArgument;
-import com.doctordark.hcf.faction.argument.FactionRenameArgument;
-import com.doctordark.hcf.faction.argument.FactionSetHomeArgument;
-import com.doctordark.hcf.faction.argument.FactionShowArgument;
-import com.doctordark.hcf.faction.argument.FactionStuckArgument;
-import com.doctordark.hcf.faction.argument.FactionSubclaimArgumentExecutor;
-import com.doctordark.hcf.faction.argument.FactionUnallyArgument;
-import com.doctordark.hcf.faction.argument.FactionUnclaimArgument;
-import com.doctordark.hcf.faction.argument.FactionUninviteArgument;
-import com.doctordark.hcf.faction.argument.FactionUnsubclaimArgument;
-import com.doctordark.hcf.faction.argument.FactionWithdrawArgument;
-import com.doctordark.hcf.faction.argument.staff.FactionChatSpyArgument;
-import com.doctordark.hcf.faction.argument.staff.FactionClaimForArgument;
-import com.doctordark.hcf.faction.argument.staff.FactionClearClaimsArgument;
-import com.doctordark.hcf.faction.argument.staff.FactionForceDemoteArgument;
-import com.doctordark.hcf.faction.argument.staff.FactionForceJoinArgument;
-import com.doctordark.hcf.faction.argument.staff.FactionForceKickArgument;
-import com.doctordark.hcf.faction.argument.staff.FactionForceLeaderArgument;
-import com.doctordark.hcf.faction.argument.staff.FactionForcePromoteArgument;
-import com.doctordark.hcf.faction.argument.staff.FactionForceUnclaimHereArgument;
-import com.doctordark.hcf.faction.argument.staff.FactionMuteArgument;
-import com.doctordark.hcf.faction.argument.staff.FactionRemoveArgument;
-import com.doctordark.hcf.faction.argument.staff.FactionSetDeathbanMultiplierArgument;
-import com.doctordark.hcf.faction.argument.staff.FactionSetDtrArgument;
-import com.doctordark.hcf.faction.argument.staff.FactionSetDtrRegenArgument;
-import com.doctordark.util.command.ArgumentExecutor;
+import com.doctordark.hcf.command.sotw.impl.SotwEndCommand;
+import com.doctordark.hcf.command.sotw.impl.SotwStartCommand;
+import com.doctordark.hcf.faction.argument.*;
+import com.doctordark.hcf.faction.argument.staff.*;
 import com.doctordark.util.command.CommandArgument;
+import com.google.common.collect.ImmutableList;
+import com.google.common.collect.ImmutableMap;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
+import org.bukkit.entity.Player;
+import us.lemin.core.commands.PlayerCommand;
+import us.lemin.core.commands.SubCommand;
+
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
- * Class to handle the oldcommands and tab completion for the faction oldcommands.
+ * Class to handle the command and tab completion for the faction command.
  */
-public class FactionExecutor extends ArgumentExecutor {
+public class FactionExecutor extends PlayerCommand {
 
-    private final CommandArgument helpArgument;
+    private static final List<String> COMPLETIONS = ImmutableList.of("start", "end");
+
+    public final Map<String, SubCommand> subCommandMap;
 
     public FactionExecutor(HCF plugin) {
         super("faction");
+        setAliases("f", "fac", "clan", "squad", "team", "t");
+
+        Map<String, SubCommand> subCommands = new HashMap<>();
+
+        subCommands.put("accept", new SotwStartCommand(plugin));
+        subCommands.put("end", new SotwEndCommand(plugin));
+        subCommands.put("cancel", new SotwEndCommand(plugin));
+
+        subCommandMap = ImmutableMap.copyOf(subCommands);
 
         addArgument(new FactionAcceptArgument(plugin));
         addArgument(new FactionAllyArgument(plugin));
@@ -130,5 +106,14 @@ public class FactionExecutor extends ArgumentExecutor {
 
         helpArgument.onCommand(sender, command, label, args);
         return true;
+    }
+
+    @Override
+    public void execute(Player player, String[] args) {
+        String arg = args.length < 1 ? "help" : args[0].toLowerCase();
+        SubCommand subCommand = subCommandMap.get(arg);
+        Player target = args.length > 1 ? plugin.getServer().getPlayer(args[1]) : null;
+
+        subCommand.execute(player, target, args, getLabel());
     }
 }
