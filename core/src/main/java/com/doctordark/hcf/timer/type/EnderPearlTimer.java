@@ -5,7 +5,6 @@ import com.doctordark.hcf.timer.PlayerTimer;
 import com.doctordark.hcf.timer.TimerCooldown;
 import com.doctordark.hcf.util.DurationFormatter;
 import com.doctordark.hcf.util.NmsUtils;
-import com.doctordark.util.Config;
 import net.minecraft.server.v1_8_R3.ItemEnderPearl;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
@@ -23,9 +22,9 @@ import org.bukkit.event.player.PlayerKickEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.projectiles.ProjectileSource;
 import org.bukkit.scheduler.BukkitRunnable;
+import us.lemin.core.storage.flatfile.Config;
 
 import javax.annotation.Nullable;
 import java.util.HashMap;

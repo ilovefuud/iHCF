@@ -17,6 +17,7 @@ public class FactionClaimArgument extends PlayerSubCommand {
     public FactionClaimArgument(HCF plugin) {
         super("claim", "Claim land in the Wilderness.");
         this.plugin = plugin;
+        this.aliases = new String[]{"claimland"};
     }
 
     public String getUsage(String label) {

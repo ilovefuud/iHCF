@@ -3,9 +3,9 @@ package com.doctordark.hcf.faction.claim;
 import com.doctordark.hcf.HCF;
 import com.doctordark.hcf.faction.type.Faction;
 import com.doctordark.hcf.faction.type.PlayerFaction;
-import com.doctordark.util.cuboid.Cuboid;
 import org.bukkit.Location;
 import org.bukkit.World;
+import us.lemin.core.utils.cuboid.Cuboid;
 
 import java.util.UUID;
 

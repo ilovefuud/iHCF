@@ -2,22 +2,22 @@ package com.doctordark.hcf.eventgame.argument;
 
 import com.doctordark.hcf.HCF;
 import com.doctordark.hcf.eventgame.EventType;
-import com.doctordark.util.JavaUtils;
-import com.doctordark.util.command.CommandArgument;
 import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
+import us.lemin.core.commands.PlayerSubCommand;
+import us.lemin.core.utils.misc.JavaUtils;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
 /**
- * An {@link CommandArgument} used to delete a loot table for an {@link EventType}.
+ * An {@link PlayerSubCommand} used to delete a loot table for an {@link EventType}.
  */
-public class EventDelLootTableArgument extends CommandArgument {
+public class EventDelLootTableArgument extends PlayerSubCommand {
 
     private final HCF plugin;
 
@@ -27,35 +27,30 @@ public class EventDelLootTableArgument extends CommandArgument {
         this.permission = "hcf.command.event.argument." + getName();
     }
 
-    @Override
     public String getUsage(String label) {
         return '/' + label + ' ' + getName() + " <eventType> [size (multiple of 9)]";
     }
 
-    @Override
-    public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
-        if (!(sender instanceof Player)) {
-            sender.sendMessage(ChatColor.RED + "This command is only executable by players.");
-            return true;
-        }
 
+    @Override
+    public void execute(Player sender, Player player1, String[] args, String label) {
         if (args.length < 2) {
             sender.sendMessage(ChatColor.RED + "Usage: " + getUsage(label));
-            return true;
+            return;
         }
 
         EventType eventType = EventType.getByDisplayName(args[1]);
 
         if (eventType == null) {
             sender.sendMessage(ChatColor.RED + "There is not an event type named " + args[1] + '.');
-            return true;
+            return;
         }
 
         Integer index = JavaUtils.tryParseInt(args[2]);
 
         if (index == null) {
             sender.sendMessage(ChatColor.RED + "'" + args[2] + "' is not a number.");
-            return true;
+            return;
         }
 
         List<Inventory> inventories = plugin.getKeyManager().getEventKey().getInventories(eventType);
@@ -63,33 +58,16 @@ public class EventDelLootTableArgument extends CommandArgument {
 
         if (index < 1) {
             sender.sendMessage(ChatColor.RED + "You cannot edit an inventory less than 1.");
-            return true;
+            return;
         }
 
         if (index > size) {
             sender.sendMessage(ChatColor.RED + "There are only " + size + " possible loot inventories for " + eventType.getDisplayName() + ChatColor.RED + '.');
-            return true;
+            return;
         }
 
         int removedIndex = --index;
         inventories.remove(removedIndex);
         sender.sendMessage(ChatColor.YELLOW + "Removed inventory for " + eventType.getDisplayName() + " at index " + removedIndex + '.');
-
-        return true;
-    }
-
-    @Override
-    public List<String> onTabComplete(CommandSender sender, Command command, String label, String[] args) {
-        if (args.length != 2) {
-            return Collections.emptyList();
-        }
-
-        EventType[] eventTypes = EventType.values();
-        List<String> results = new ArrayList<>(eventTypes.length);
-        for (EventType eventType : eventTypes) {
-            results.add(eventType.name());
-        }
-
-        return results;
     }
 }

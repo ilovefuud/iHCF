@@ -1,6 +1,5 @@
 package com.doctordark.hcf.faction;
 
-import com.doctordark.base.BasePlugin;
 import com.doctordark.hcf.HCF;
 import com.doctordark.hcf.faction.claim.Claim;
 import com.doctordark.hcf.faction.claim.ClaimHandler;
@@ -11,6 +10,7 @@ import com.doctordark.hcf.visualise.VisualType;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.World;
+import org.bukkit.craftbukkit.v1_8_R3.inventory.CraftItemStack;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import us.lemin.core.utils.misc.BukkitUtils;
@@ -82,7 +82,7 @@ public class LandMap {
 
             Map<Location, VisualBlockData> dataMap = plugin.getVisualiseHandler().generate(player, shown, visualType, true);
             if (dataMap.isEmpty()) continue;
-            String materialName = BasePlugin.getPlugin().getItemDb().getName(new ItemStack(dataMap.entrySet().iterator().next().getValue().getItemType(), 1));
+            String materialName = CraftItemStack.asNMSCopy(new ItemStack(dataMap.entrySet().iterator().next().getValue().getItemType(), 1)).getName();
 
             if (inform) {
                 player.sendMessage(ChatColor.YELLOW + claim.getFaction().getDisplayName(player) + ChatColor.YELLOW + " owns land " + ChatColor.WHITE + claim.getName() +

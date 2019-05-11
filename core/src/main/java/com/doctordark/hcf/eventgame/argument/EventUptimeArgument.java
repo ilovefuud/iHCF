@@ -4,16 +4,17 @@ import com.doctordark.hcf.DateTimeFormats;
 import com.doctordark.hcf.HCF;
 import com.doctordark.hcf.eventgame.EventTimer;
 import com.doctordark.hcf.eventgame.faction.EventFaction;
-import com.doctordark.util.command.CommandArgument;
 import org.apache.commons.lang3.time.DurationFormatUtils;
 import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
+import org.bukkit.entity.Player;
+import us.lemin.core.commands.SubCommand;
 
 /**
- * A {@link CommandArgument} argument used for checking the uptime of current event.
+ * A {@link SubCommand} argument used for checking the uptime of current event.
  */
-public class EventUptimeArgument extends CommandArgument {
+public class EventUptimeArgument extends SubCommand {
 
     private final HCF plugin;
 
@@ -23,18 +24,17 @@ public class EventUptimeArgument extends CommandArgument {
         this.permission = "hcf.command.event.argument." + getName();
     }
 
-    @Override
     public String getUsage(String label) {
         return '/' + label + ' ' + getName();
     }
 
     @Override
-    public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
+    public void execute(CommandSender sender, Player player, String[] args, String label) {
         EventTimer eventTimer = plugin.getTimerManager().getEventTimer();
 
         if (eventTimer.getRemaining() <= 0L) {
             sender.sendMessage(ChatColor.RED + "There is not a running event.");
-            return true;
+            return;
         }
 
         EventFaction eventFaction = eventTimer.getEventFaction();
@@ -42,7 +42,5 @@ public class EventUptimeArgument extends CommandArgument {
                 (eventFaction == null ? "" : ": " + ChatColor.BLUE + '(' + eventFaction.getDisplayName(sender) + ChatColor.BLUE + ')') +
                 ChatColor.YELLOW + " is " + ChatColor.GRAY + DurationFormatUtils.formatDurationWords(eventTimer.getUptime(), true, true) + ChatColor.YELLOW + ", started at " +
                 ChatColor.GOLD + DateTimeFormats.HR_MIN_AMPM_TIMEZONE.format(eventTimer.getStartStamp()) + ChatColor.YELLOW + '.');
-
-        return true;
     }
 }

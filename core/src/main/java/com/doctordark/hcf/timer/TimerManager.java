@@ -2,19 +2,12 @@ package com.doctordark.hcf.timer;
 
 import com.doctordark.hcf.HCF;
 import com.doctordark.hcf.eventgame.EventTimer;
-import com.doctordark.hcf.timer.type.CombatTimer;
-import com.doctordark.hcf.timer.type.EnderPearlTimer;
-import com.doctordark.hcf.timer.type.GappleTimer;
-import com.doctordark.hcf.timer.type.InvincibilityTimer;
-import com.doctordark.hcf.timer.type.LogoutTimer;
-import com.doctordark.hcf.timer.type.PvpClassWarmupTimer;
-import com.doctordark.hcf.timer.type.StuckTimer;
-import com.doctordark.hcf.timer.type.TeleportTimer;
-import com.doctordark.util.Config;
+import com.doctordark.hcf.timer.type.*;
 import lombok.Data;
 import lombok.Getter;
 import org.bukkit.event.Listener;
 import org.bukkit.plugin.java.JavaPlugin;
+import us.lemin.core.storage.flatfile.Config;
 
 import java.util.LinkedHashSet;
 import java.util.Set;

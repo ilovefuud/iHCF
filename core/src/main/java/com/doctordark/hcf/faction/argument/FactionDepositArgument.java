@@ -19,6 +19,7 @@ public class FactionDepositArgument extends PlayerSubCommand {
     public FactionDepositArgument(HCF plugin) {
         super("deposit", "Deposits money to the faction balance.");
         this.plugin = plugin;
+        this.aliases = new String[]{"d"};
     }
 
     public String getUsage(String label) {

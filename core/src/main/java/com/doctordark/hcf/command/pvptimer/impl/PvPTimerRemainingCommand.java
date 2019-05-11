@@ -8,13 +8,17 @@ import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 import us.lemin.core.commands.PlayerSubCommand;
 
-@RequiredArgsConstructor
-public class PvPTimerRemainingCommand implements PlayerSubCommand {
+public class PvPTimerRemainingCommand extends PlayerSubCommand {
 
     private final HCF plugin;
 
+    public PvPTimerRemainingCommand(HCF plugin) {
+        super("remaining");
+        this.plugin = plugin;
+    }
+
     @Override
-    public void execute(Player player, Player player1, String[] strings) {
+    public void execute(Player player, Player player1, String[] strings, String s) {
         InvincibilityTimer pvpTimer = plugin.getTimerManager().getInvincibilityTimer();
 
         long remaining = pvpTimer.getRemaining(player);

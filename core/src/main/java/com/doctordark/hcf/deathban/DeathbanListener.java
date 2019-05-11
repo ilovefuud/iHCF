@@ -43,11 +43,15 @@ public class DeathbanListener implements Listener {
 
     @EventHandler(ignoreCancelled = true, priority = EventPriority.MONITOR)
     public void onPlayerJoin(PlayerJoinEvent event) {
+
         event.getPlayer().spigot().respawn(); // Method already checks if player is dead first
     }
 
     @EventHandler(ignoreCancelled = true, priority = EventPriority.HIGH)
     public void onPlayerLogin(PlayerLoginEvent event) {
+        if(plugin.getConfiguration().isKitmap() && !plugin.getEotwHandler().isEndOfTheWorld()){
+            return;
+        }
         Player player = event.getPlayer();
         FactionUser user = plugin.getUserManager().getUser(player.getUniqueId());
         Deathban deathban = user.getDeathban();
@@ -111,6 +115,9 @@ public class DeathbanListener implements Listener {
 
     @EventHandler(ignoreCancelled = true, priority = EventPriority.LOW)
     public void onPlayerDeath(PlayerDeathEvent event) {
+        if(plugin.getConfiguration().isKitmap() && !plugin.getEotwHandler().isEndOfTheWorld()){
+            return;
+        }
         Player player = event.getEntity();
         Deathban deathban = plugin.getDeathbanManager().applyDeathBan(player, event.getDeathMessage());
         long remaining = deathban.getRemaining();

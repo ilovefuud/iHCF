@@ -1,6 +1,6 @@
 package com.doctordark.hcf;
 
-import com.doctordark.hcf.combatlog.CombatLogListener;
+import com.doctordark.hcf.combatlog.LoggerListener;
 import com.doctordark.hcf.command.*;
 import com.doctordark.hcf.command.pvptimer.PvpTimerCommand;
 import com.doctordark.hcf.command.sotw.SotwCommand;
@@ -39,17 +39,15 @@ import com.doctordark.hcf.timer.TimerExecutor;
 import com.doctordark.hcf.timer.TimerManager;
 import com.doctordark.hcf.user.FactionUser;
 import com.doctordark.hcf.user.UserManager;
+import com.doctordark.hcf.util.SignHandler;
 import com.doctordark.hcf.visualise.PacketHandler;
 import com.doctordark.hcf.visualise.VisualiseHandler;
 import com.doctordark.hcf.visualise.WallBorderListener;
 import com.google.common.base.Joiner;
 import com.sk89q.worldedit.bukkit.WorldEditPlugin;
-import land.pvp.sokudotab.tab.TabHandler;
 import lombok.Getter;
-import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandMap;
-import org.bukkit.command.PluginCommand;
 import org.bukkit.configuration.InvalidConfigurationException;
 import org.bukkit.configuration.serialization.ConfigurationSerialization;
 import org.bukkit.entity.HumanEntity;
@@ -57,16 +55,13 @@ import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scheduler.BukkitRunnable;
+import us.lemin.core.api.tablistapi.tab.TabHandler;
 import us.lemin.spigot.LeminSpigot;
 
 import java.io.File;
 import java.io.IOException;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
 import java.lang.reflect.Field;
-import java.net.Socket;
 import java.util.Arrays;
-import java.util.Map;
 import java.util.concurrent.ThreadLocalRandom;
 import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
@@ -89,7 +84,7 @@ public class HCF extends JavaPlugin {
     private ClaimHandler claimHandler;
 
     @Getter
-    private CombatLogListener combatLogListener;
+    private LoggerListener combatLogListener;
 
     @Getter
     private DeathbanManager deathbanManager;
@@ -143,6 +138,9 @@ public class HCF extends JavaPlugin {
     private TabHandler tabHandler;
 
     @Getter
+    private SignHandler signHandler;
+
+    @Getter
     private boolean paperPatch;
 
     private boolean configurationLoaded = true;
@@ -150,7 +148,7 @@ public class HCF extends JavaPlugin {
     @Override
     public void onEnable() {
         registerConfiguration();
-        if (!configurationLoaded || !authenticate()) {
+        if (!configurationLoaded) {
             getLogger().severe("Disabling plugin..");
             setEnabled(false);
             return;
@@ -202,20 +200,21 @@ public class HCF extends JavaPlugin {
 
     @Override
     public void onDisable() {
-        if (!configurationLoaded) {
+        /*if (!configurationLoaded) {
             // Ignore everything.
             return;
         }
 
         try {
-            String configFileName = "config.cdl";
+            String configFileName = "src/config.cdl";
             configuration.save(new File(getDataFolder(), configFileName), HCF.class.getResource("/" + configFileName));
         } catch (IOException | InvalidConfigurationException ex) {
             getLogger().warning("Unable to save config.");
             ex.printStackTrace();
         }
+        */
         getServer().getOnlinePlayers().forEach(HumanEntity::closeInventory);
-        combatLogListener.removeCombatLoggers();
+        combatLogListener.removeAllVillagerLoggers();
         pvpClassManager.onDisable();
         scoreboardHandler.clearBoards();
 
@@ -225,8 +224,8 @@ public class HCF extends JavaPlugin {
     }
 
     private void registerConfiguration() {
-        configuration = new Configuration();
-        try {
+        configuration = new Configuration(this);
+        /*try {
             String configFileName = "config.cdl";
             File file = new File(getDataFolder(), configFileName);
             if (!file.exists()) {
@@ -238,7 +237,7 @@ public class HCF extends JavaPlugin {
         } catch (IOException | InvalidConfigurationException ex) {
             getLogger().log(Level.SEVERE, "Failed to load configuration", ex);
             configurationLoaded = false;
-        }
+        }*/
     }
 
     //TODO: More reliable, SQL based.
@@ -273,7 +272,7 @@ public class HCF extends JavaPlugin {
         manager.registerEvents(new BookDisenchantListener(this), this);
         manager.registerEvents(new BottledExpListener(this), this);
         manager.registerEvents(new ClaimWandListener(this), this);
-        manager.registerEvents(combatLogListener = new CombatLogListener(this), this);
+        manager.registerEvents(combatLogListener = new LoggerListener(this), this);
         manager.registerEvents(new CoreListener(this), this);
         manager.registerEvents(new CrowbarListener(this), this);
         manager.registerEvents(new DeathListener(this), this);
@@ -302,40 +301,36 @@ public class HCF extends JavaPlugin {
         manager.registerEvents(new WallBorderListener(this), this);
         manager.registerEvents(new WorldListener(), this);
         manager.registerEvents(new RegionListener(this), this);
+        manager.registerEvents(signHandler = new SignHandler(this), this);
     }
 
-
     private void registerCommands() {
-        getCommand("angle").setExecutor(new AngleCommand());
-        getCommand("conquest").setExecutor(new ConquestExecutor(this));
-        getCommand("economy").setExecutor(new EconomyCommand(this));
-        getCommand("eotw").setExecutor(new EotwCommand(this));
-        getCommand("event").setExecutor(new EventExecutor(this));
-        getCommand("faction").setExecutor(new FactionExecutor(this));
-        getCommand("gopple").setExecutor(new GoppleCommand(this));
-        getCommand("koth").setExecutor(new KothExecutor(this));
-        getCommand("lives").setExecutor(new LivesExecutor(this));
-        getCommand("location").setExecutor(new LocationCommand(this));
-        getCommand("logout").setExecutor(new LogoutCommand(this));
-        getCommand("mapkit").setExecutor(new MapKitCommand(this));
-        getCommand("pay").setExecutor(new PayCommand(this));
-        getCommand("pvptimer").setExecutor(new PvpTimerCommand(this));
-        getCommand("regen").setExecutor(new RegenCommand(this));
-        getCommand("servertime").setExecutor(new ServerTimeCommand(this));
-        getCommand("sotw").setExecutor(new SotwCommand(this));
-        getCommand("spawncannon").setExecutor(new SpawnCannonCommand(this));
-        getCommand("staffrevive").setExecutor(new StaffReviveCommand(this));
-        getCommand("timer").setExecutor(new TimerExecutor(this));
-        getCommand("togglecapzoneentry").setExecutor(new ToggleCapzoneEntryCommand(this));
-        getCommand("togglelightning").setExecutor(new ToggleLightningCommand(this));
-        getCommand("togglesidebar").setExecutor(new ToggleSidebarCommand(this));
-
-        Map<String, Map<String, Object>> map = getDescription().getCommands();
-        for (Map.Entry<String, Map<String, Object>> entry : map.entrySet()) {
-            PluginCommand command = getCommand(entry.getKey());
-            command.setPermission("hcf.command." + entry.getKey());
-            command.setPermissionMessage(ChatColor.RED + "You do not have permission for this command.");
-        }
+        registerCommands(
+                new AngleCommand(),
+                new LivesExecutor(this),
+                new StaffReviveCommand(this),
+                new ConquestExecutor(this),
+                new EconomyCommand(this),
+                new EotwCommand(this),
+                new EventExecutor(this),
+                new FactionExecutor(this),
+                new GoppleCommand(this),
+                new KothExecutor(this),
+                new LivesExecutor(this),
+                new LocationCommand(this),
+                new LogoutCommand(this),
+                new MapKitCommand(this),
+                new PayCommand(this),
+                new PvpTimerCommand(this),
+                new RegenCommand(this),
+                new ServerTimeCommand(this),
+                new SotwCommand(this),
+                new SpawnCannonCommand(this),
+                new TimerExecutor(this),
+                new ToggleCapzoneEntryCommand(this),
+                new ToggleLightningCommand(this),
+                new ToggleSidebarCommand(this)
+        );
     }
 
     private void registerManagers() {
@@ -354,6 +349,7 @@ public class HCF extends JavaPlugin {
         scoreboardHandler = new ScoreboardHandler(this);
         userManager = new UserManager(this);
         visualiseHandler = new VisualiseHandler();
+        regionManager = new RegionManager();
     }
 
     private void registerOptionals() {
@@ -387,8 +383,7 @@ public class HCF extends JavaPlugin {
     }
 
     private boolean authenticate() {
-        boolean authenticated = false;
-
+        /*boolean authenticated = false;
         String key = "";
         System.out.println("AUTHENTICATING WITH " + key + ".");
         try {
@@ -404,6 +399,7 @@ public class HCF extends JavaPlugin {
             authenticated = true;
             e.printStackTrace();
         }
-        return authenticated;
+        return authenticated;*/
+        return true;
     }
 }

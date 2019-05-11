@@ -1,7 +1,6 @@
 package com.doctordark.hcf.faction.argument.staff;
 
 import com.doctordark.hcf.HCF;
-import com.doctordark.hcf.faction.FactionArgument;
 import com.doctordark.hcf.faction.type.ClaimableFaction;
 import com.doctordark.hcf.faction.type.Faction;
 import com.doctordark.hcf.faction.type.PlayerFaction;
@@ -12,6 +11,8 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.command.ConsoleCommandSender;
 import org.bukkit.conversations.*;
 import org.bukkit.entity.Player;
+import us.lemin.core.commands.SubCommand;
+import us.lemin.core.player.rank.Rank;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -20,16 +21,14 @@ import java.util.List;
 /**
  * Faction argument used to set the DTR Regeneration cooldown of {@link Faction}s.
  */
-public class FactionClearClaimsArgument extends FactionArgument {
+public class FactionClearClaimsArgument extends SubCommand {
 
     private final ConversationFactory factory;
     private final HCF plugin;
 
     public FactionClearClaimsArgument(final HCF plugin) {
-        super("clearclaims", "Clears the claims of a faction.");
+        super("clearclaims", "Clears the claims of a faction.", Rank.ADMIN);
         this.plugin = plugin;
-        this.permission = "hcf.command.faction.argument." + getName();
-
         this.factory = new ConversationFactory(plugin).
                 withFirstPrompt(new ClaimClearAllPrompt(plugin)).
                 withEscapeSequence("/no").
@@ -38,34 +37,34 @@ public class FactionClearClaimsArgument extends FactionArgument {
                 withLocalEcho(true);
     }
 
-    @Override
     public String getUsage(String label) {
         return '/' + label + ' ' + getName() + " <playerName|factionName|all>";
     }
 
+
+
     @Override
-    public boolean onCommand(CommandSender player, Command command, String label, String[] args) {
+    public void execute(CommandSender commandSender, Player player, String[] args, String label) {
         if (args.length < 2) {
             player.sendMessage(ChatColor.RED + "Usage: " + getUsage(label));
-            return true;
+            return;
         }
 
         if (args[1].equalsIgnoreCase("all")) {
             if (!(player instanceof ConsoleCommandSender)) {
                 player.sendMessage(ChatColor.RED + "This command can be only executed from console.");
-                return true;
+                return;
             }
 
-            Conversable conversable = (Conversable) player;
-            conversable.beginConversation(factory.buildConversation(conversable));
-            return true;
+            player.beginConversation(factory.buildConversation(player));
+            return;
         }
 
         Faction faction = plugin.getFactionManager().getContainingFaction(args[1]);
 
         if (faction == null) {
             player.sendMessage(ChatColor.RED + "Faction named or containing member with IGN or UUID " + args[1] + " not found.");
-            return true;
+            return;
         }
 
         if (faction instanceof ClaimableFaction) {
@@ -77,26 +76,7 @@ public class FactionClearClaimsArgument extends FactionArgument {
         }
 
         player.sendMessage(ChatColor.GOLD.toString() + ChatColor.BOLD + "Claims belonging to " + faction.getName() + " have been forcefully wiped.");
-        return true;
-    }
 
-    @Override
-    public List<String> onTabComplete(CommandSender sender, Command command, String label, String[] args) {
-        if (args.length != 2 || !(sender instanceof Player)) {
-            return Collections.emptyList();
-        } else if (args[1].isEmpty()) {
-            return null;
-        } else {
-            Player player = (Player) sender;
-            List<String> results = new ArrayList<>(plugin.getFactionManager().getFactionNameMap().keySet());
-            for (Player target : Bukkit.getOnlinePlayers()) {
-                if (player.canSee(target) && !results.contains(target.getName())) {
-                    results.add(target.getName());
-                }
-            }
-
-            return results;
-        }
     }
 
     private static class ClaimClearAllPrompt extends StringPrompt {

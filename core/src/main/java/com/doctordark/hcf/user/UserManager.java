@@ -1,20 +1,15 @@
 package com.doctordark.hcf.user;
 
-import com.doctordark.base.GuavaCompat;
 import com.doctordark.hcf.HCF;
-import com.doctordark.util.Config;
+import com.doctordark.hcf.util.GuavaCompat;
 import org.bukkit.configuration.MemorySection;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;
+import us.lemin.core.storage.flatfile.Config;
 
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.LinkedHashMap;
-import java.util.Map;
-import java.util.Set;
-import java.util.UUID;
+import java.util.*;
 
 public class UserManager implements Listener {
 

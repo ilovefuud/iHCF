@@ -1,6 +1,7 @@
 package com.doctordark.hcf.combatlog.event;
 
-import com.doctordark.hcf.combatlog.type.LoggerEntity;
+import com.doctordark.hcf.combatlog.LoggerListener;
+import org.bukkit.entity.Entity;
 import org.bukkit.event.Event;
 import org.bukkit.event.HandlerList;
 
@@ -8,14 +9,14 @@ public class LoggerRemovedEvent extends Event {
 
     private static final HandlerList handlers = new HandlerList();
 
-    private final LoggerEntity loggerEntity;
+    private final LoggerListener.CombatLogger combatLogger;
 
-    public LoggerRemovedEvent(LoggerEntity loggerEntity) {
-        this.loggerEntity = loggerEntity;
+    public LoggerRemovedEvent(LoggerListener.CombatLogger combatLogger) {
+        this.combatLogger = combatLogger;
     }
 
-    public LoggerEntity getLoggerEntity() {
-        return loggerEntity;
+    public Entity getLoggerEntity() {
+        return combatLogger.getEntity();
     }
 
     public static HandlerList getHandlerList() {

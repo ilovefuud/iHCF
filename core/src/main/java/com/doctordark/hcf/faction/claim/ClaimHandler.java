@@ -253,7 +253,7 @@ public class ClaimHandler {
         int locZ = location.getBlockZ();
 
         final FactionManager factionManager = plugin.getFactionManager();
-        boolean flag = HCF.getPlugin().getConfiguration().isAllowClaimsBesidesRoads();
+        boolean flag = HCF.getPlugin().getConfiguration().isAllowClaimsBesideRoads();
         for (int x = locX - CLAIM_BUFFER_RADIUS; x < locX + CLAIM_BUFFER_RADIUS; x++) {
             for (int z = locZ - CLAIM_BUFFER_RADIUS; z < locZ + CLAIM_BUFFER_RADIUS; z++) {
                 Faction factionAtNew = factionManager.getFactionAt(world, x, z);
@@ -337,7 +337,7 @@ public class ClaimHandler {
             }
         }
 
-        boolean flag = HCF.getPlugin().getConfiguration().isAllowClaimsBesidesRoads();
+        boolean flag = HCF.getPlugin().getConfiguration().isAllowClaimsBesideRoads();
         for (int x = minimumX - CLAIM_BUFFER_RADIUS; x < maximumX + CLAIM_BUFFER_RADIUS; x++) {
             for (int z = minimumZ - CLAIM_BUFFER_RADIUS; z < maximumZ + CLAIM_BUFFER_RADIUS; z++) {
                 Faction factionAtNew = factionManager.getFactionAt(world, x, z);

@@ -20,6 +20,9 @@ import org.bukkit.event.player.AsyncPlayerChatEvent;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.RegisteredServiceProvider;
+import us.lemin.core.CorePlugin;
+import us.lemin.core.player.CoreProfile;
+import us.lemin.core.utils.message.CC;
 
 import java.util.Collection;
 import java.util.Set;
@@ -105,9 +108,13 @@ public class ChatListener implements Listener {
             String prefix = vaultChatApi.getGroupPrefix(player.getWorld(), primaryGroup);
             result = ChatColor.GOLD + "[" + factionTag + ChatColor.GOLD + "] " + capperTag + prefix + "%1$s" + ChatColor.GRAY + ": " + ChatColor.WHITE + "%2$s";
         } else {
-            result = ChatColor.GOLD + "[" + factionTag + ChatColor.GOLD + "] " + capperTag + "%1$s" + ChatColor.GRAY + ": " + ChatColor.WHITE + "%2$s";
+            if (CorePlugin.getInstance() != null) {
+                CoreProfile coreProfile = CorePlugin.getInstance().getProfileManager().getProfile(player);
+                result = ChatColor.GOLD + "[" + factionTag + ChatColor.GOLD + "] " + capperTag + coreProfile.getChatFormat() + ChatColor.GRAY + ": " + ChatColor.WHITE + "%2$s";
+            } else {
+                result = ChatColor.GOLD + "[" + factionTag + ChatColor.GOLD + "] " + capperTag + "%1$s" + ChatColor.GRAY + ": " + ChatColor.WHITE + "%2$s";
+            }
         }
-
         return result;
     }
 

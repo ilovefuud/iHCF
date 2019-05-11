@@ -27,6 +27,7 @@ public class FactionAllyArgument extends PlayerSubCommand {
     public FactionAllyArgument(HCF plugin) {
         super("ally", "Make an ally pact with other factions.");
         this.plugin = plugin;
+        this.aliases = new String[]{"alliance"};
     }
 
     public String getUsage(String label) {

@@ -1,6 +1,5 @@
 package com.doctordark.hcf.listener.fixes;
 
-import com.doctordark.hcf.util.BukkitUtils;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Sets;
 import gnu.trove.map.TObjectLongMap;
@@ -16,6 +15,7 @@ import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerKickEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
+import us.lemin.core.utils.misc.BukkitUtils;
 
 import java.util.UUID;
 

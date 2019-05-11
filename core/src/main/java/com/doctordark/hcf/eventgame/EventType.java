@@ -9,7 +9,9 @@ import com.google.common.collect.ImmutableMap;
 
 public enum EventType {
 
-    CONQUEST("Conquest", new ConquestTracker(HCF.getPlugin())), KOTH("KOTH", new KothTracker(HCF.getPlugin()));
+    CONQUEST("Conquest", new ConquestTracker(HCF.getPlugin())),
+    CITADEL("Citadel", new KothTracker(HCF.getPlugin())),
+    KOTH("KOTH", new KothTracker(HCF.getPlugin()));
 
     private final EventTracker eventTracker;
     private final String displayName;

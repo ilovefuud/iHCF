@@ -3,6 +3,7 @@ package com.doctordark.hcf.faction;
 import com.doctordark.hcf.faction.struct.ChatChannel;
 import com.doctordark.hcf.faction.struct.Role;
 import com.doctordark.hcf.faction.type.Faction;
+import com.doctordark.hcf.util.GuavaCompat;
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.configuration.serialization.ConfigurationSerializable;

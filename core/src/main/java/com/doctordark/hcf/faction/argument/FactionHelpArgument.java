@@ -29,7 +29,6 @@ public class FactionHelpArgument extends SubCommand {
     public FactionHelpArgument(FactionExecutor executor) {
         super("help", "View help on how to use factions.");
         this.executor = executor;
-        executor.subCommandMap.values().forEach(sub -> sub.getDescription());
     }
 
     public String getUsage(String label) {

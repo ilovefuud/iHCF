@@ -169,7 +169,7 @@ public class HCFAdapter implements ScoreboardAdapter {
                     if (remaining <= 0) continue;
 
                     String timerName = playerTimer.getName();
-                    event.addLine(config.getScoreboardSidebarTimer().replace("%timer%", timerName).replace("%remaining%", DurationFormatter.getRemaining(remaining, true)));
+                    event.addLine(config.getScoreboardSidebarTimerFormat().replace("%timer%", timerName).replace("%remaining%", DurationFormatter.getRemaining(remaining, true)));
                 }
             }
 

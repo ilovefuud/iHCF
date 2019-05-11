@@ -11,12 +11,10 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import us.lemin.core.commands.PlayerCommand;
 import us.lemin.core.commands.PlayerSubCommand;
+import us.lemin.core.commands.SubCommand;
 import us.lemin.core.utils.misc.BukkitUtils;
 
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * Command used to manage the {@link InvincibilityTimer} of {@link Player}s.
@@ -60,17 +58,27 @@ public class PvpTimerCommand extends PlayerCommand {
     @Override
     public void execute(Player sender, String[] args) {
         String arg = args.length < 1 ? "help" : args[0].toLowerCase();
-        PlayerSubCommand subCommand = subCommandMap.get(arg);
+        SubCommand subCommand = subCommandMap.get(arg);
 
         InvincibilityTimer pvpTimer = plugin.getTimerManager().getInvincibilityTimer();
 
         if (subCommand == null) {
+            for (SubCommand loop : subCommandMap.values()) {
+                if (loop.getAliases() == null) continue;
+                if (Arrays.stream(loop.getAliases())
+                        .anyMatch(arg::equalsIgnoreCase)) {
+                    Player target = args.length > 1 ? plugin.getServer().getPlayer(args[1]) : null;
+                    loop.execute(sender, target, args, getLabel());
+                    return;
+                }
+            }
             printUsage(sender, pvpTimer);
-            return;
+        } else {
+            Player target = args.length > 1 ? plugin.getServer().getPlayer(args[1]) : null;
+            subCommand.execute(sender, target, args, getLabel());
         }
 
-        Player target = args.length > 1 ? plugin.getServer().getPlayer(args[1]) : null;
-        subCommand.execute(sender, target, args);
+
     }
 
     @Override

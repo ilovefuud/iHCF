@@ -18,6 +18,7 @@ public class FactionCreateArgument extends PlayerSubCommand {
     public FactionCreateArgument(HCF plugin) {
         super("create", "Create a faction.");
         this.plugin = plugin;
+        this.aliases = new String[]{"make", "define"};
     }
 
     public String getUsage(String label) {

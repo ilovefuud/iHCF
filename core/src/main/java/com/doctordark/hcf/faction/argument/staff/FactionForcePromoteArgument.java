@@ -1,65 +1,61 @@
 package com.doctordark.hcf.faction.argument.staff;
 
 import com.doctordark.hcf.HCF;
-import com.doctordark.hcf.faction.FactionArgument;
 import com.doctordark.hcf.faction.FactionMember;
 import com.doctordark.hcf.faction.struct.Role;
 import com.doctordark.hcf.faction.type.PlayerFaction;
 import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
+import org.bukkit.entity.Player;
+import us.lemin.core.commands.PlayerSubCommand;
+import us.lemin.core.commands.SubCommand;
+import us.lemin.core.player.rank.Rank;
 
 import java.util.Collections;
 import java.util.List;
 
-public class FactionForcePromoteArgument extends FactionArgument {
+public class FactionForcePromoteArgument extends SubCommand {
 
     private final HCF plugin;
 
     public FactionForcePromoteArgument(HCF plugin) {
-        super("forcepromote", "Forces the promotion status of a player.");
+        super("forcepromote", "Forces the promotion status of a player.", Rank.ADMIN);
         this.plugin = plugin;
-        this.permission = "hcf.command.faction.argument." + getName();
     }
 
-    @Override
     public String getUsage(String label) {
         return '/' + label + ' ' + getName() + " <playerName>";
     }
 
     @Override
-    public boolean onCommand(CommandSender player, Command command, String label, String[] args) {
+    public void execute(CommandSender commandSender, Player player, String[] args, String label) {
         if (args.length < 2) {
             player.sendMessage(ChatColor.RED + "Usage: " + getUsage(label));
-            return true;
+            return;
         }
 
         PlayerFaction playerFaction = plugin.getFactionManager().getContainingPlayerFaction(args[1]);
 
         if (playerFaction == null) {
             player.sendMessage(ChatColor.RED + "Faction containing member with IGN or UUID " + args[1] + " not found.");
-            return true;
+            return;
         }
 
         FactionMember factionMember = playerFaction.getMember(args[1]);
 
         if (factionMember == null) {
             player.sendMessage(ChatColor.RED + "Faction containing member with IGN or UUID " + args[1] + " not found.");
-            return true;
+            return;
         }
 
         if (factionMember.getRole() != Role.MEMBER) {
             player.sendMessage(ChatColor.RED + factionMember.getName() + " is already a " + factionMember.getRole().getName() + '.');
-            return true;
+            return;
         }
 
         factionMember.setRole(Role.CAPTAIN);
         playerFaction.broadcast(ChatColor.GOLD.toString() + ChatColor.BOLD + player.getName() + " has been forcefully assigned as a captain.");
-        return true;
-    }
 
-    @Override
-    public List<String> onTabComplete(CommandSender sender, Command command, String label, String[] args) {
-        return args.length == 2 ? null : Collections.emptyList();
     }
 }

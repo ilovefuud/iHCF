@@ -14,8 +14,6 @@ import com.doctordark.hcf.faction.type.Faction;
 import com.doctordark.hcf.faction.type.PlayerFaction;
 import com.doctordark.hcf.faction.type.WarzoneFaction;
 import com.doctordark.hcf.user.FactionUser;
-import com.doctordark.util.BukkitUtils;
-import com.doctordark.util.cuboid.Cuboid;
 import com.google.common.collect.ImmutableMultimap;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Sets;
@@ -36,8 +34,13 @@ import org.bukkit.material.Cauldron;
 import org.bukkit.material.MaterialData;
 import org.bukkit.potion.PotionEffectType;
 import org.bukkit.projectiles.ProjectileSource;
+import us.lemin.core.utils.cuboid.Cuboid;
+import us.lemin.core.utils.misc.BukkitUtils;
 
 import javax.annotation.Nullable;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.UUID;
 
 /**
  * Listener that manages protection for {@link Claim}s.
@@ -45,6 +48,8 @@ import javax.annotation.Nullable;
 public class ProtectionListener implements Listener {
 
     public static final String PROTECTION_BYPASS_PERMISSION = "hcf.faction.protection.bypass";
+
+    public static final Map<UUID, Long> PROTECTION_COOLDOWN_MAP = new HashMap<>();
 
     // List of materials a player can not right click in enemy territory. ~No such ImmutableEnumMultimap in current Guava build :/
     private static final ImmutableMultimap<Material, Material> ITEM_ON_BLOCK_RIGHT_CLICK_DENY = ImmutableMultimap.<Material, Material>builder().
@@ -301,11 +306,11 @@ public class ProtectionListener implements Listener {
                 Faction attackerFactionAt = plugin.getFactionManager().getFactionAt(attacker.getLocation());
                 if (attackerFactionAt.isSafezone()) {
                     event.setCancelled(true);
-                    attacker.sendMessage(ChatColor.RED + "You cannot attack players whilst in safe-zones.");
+                    tryAlert(player, ChatColor.RED + "You cannot attack players whilst in safe-zones.");
                     return;
                 } else if (playerFactionAt.isSafezone()) {
                     // it's already cancelled above.
-                    attacker.sendMessage(ChatColor.RED + "You cannot attack players that are in safe-zones.");
+                    tryAlert(player, ChatColor.RED + "You cannot attack players that are in safe-zones.");
                     return;
                 }
 
@@ -324,11 +329,11 @@ public class ProtectionListener implements Listener {
                         ChatColor color = plugin.getConfiguration().getRelationColourAlly();
                         if (plugin.getConfiguration().isPreventAllyAttackDamage()) {
                             if (user.isShowFriendlyFire()) {
-                                attacker.sendMessage(color + hiddenAstrixedName + ChatColor.YELLOW + " is an ally.");
+                                tryAlert(attacker, color + hiddenAstrixedName + ChatColor.YELLOW + " is an ally.");
                             }
                             event.setCancelled(true);
                         } else {
-                            attacker.sendMessage(ChatColor.YELLOW + "Careful! " + color + hiddenAstrixedName + ChatColor.YELLOW + " is an ally.");
+                            tryAlert(attacker, ChatColor.YELLOW + "Careful! " + color + hiddenAstrixedName + ChatColor.YELLOW + " is an ally.");
                         }
                     }
                 }
@@ -550,7 +555,7 @@ public class ProtectionListener implements Listener {
                 Horse horse = (Horse) event.getVehicle();
                 AnimalTamer owner = horse.getOwner();
                 if (owner != null && !owner.equals(entered)) {
-                    ((Player) entered).sendMessage(ChatColor.YELLOW + "You cannot enter a Horse that belongs to " + ChatColor.RED + owner.getName() + ChatColor.YELLOW + '.');
+                    entered.sendMessage(ChatColor.YELLOW + "You cannot enter a Horse that belongs to " + ChatColor.RED + owner.getName() + ChatColor.YELLOW + '.');
                     event.setCancelled(true);
                 }
             }
@@ -634,7 +639,7 @@ public class ProtectionListener implements Listener {
         }
 
         if (player != null && player.getWorld().getEnvironment() == World.Environment.THE_END) {
-            player.sendMessage(ChatColor.RED + "You cannot build in the end.");
+            tryAlert(player, ChatColor.RED + "You cannot build in the end.");
             return false;
         }
 
@@ -656,13 +661,13 @@ public class ProtectionListener implements Listener {
             // Show this message last as the other messages look cleaner.
             if (!isInteraction && factionAt instanceof WarzoneFaction) {
                 if (denyMessage != null && player != null) {
-                    player.sendMessage(ChatColor.YELLOW + "You cannot build in the " + factionAt.getDisplayName(player) + ChatColor.YELLOW + ".");
+                    tryAlert(player, ChatColor.YELLOW + "You cannot build in the " + factionAt.getDisplayName(player) + ChatColor.YELLOW + ".");
                 }
 
                 return false;
             }
         } else if (denyMessage != null && player != null) {
-            player.sendMessage(String.format(denyMessage, factionAt.getDisplayName(player)));
+            tryAlert(player, String.format(denyMessage, factionAt.getDisplayName(player)));
         }
 
         return result;
@@ -679,4 +684,40 @@ public class ProtectionListener implements Listener {
         Faction toFactionAt = HCF.getPlugin().getFactionManager().getFactionAt(to);
         return !(toFactionAt instanceof Raidable && !((Raidable) toFactionAt).isRaidable() && toFactionAt != HCF.getPlugin().getFactionManager().getFactionAt(from));
     }
+
+
+    /**
+     * Checks if a {@link Player} is able to be sent an alert.
+     *
+     * @param player the {@link Player} to test
+     * @param alert   the alert {@link String} to test
+     * @return true if the to {@link Player} is able to be alerted.
+     */
+
+    public static boolean tryAlert(Player player, String alert) {
+        if (PROTECTION_COOLDOWN_MAP.containsKey(player.getUniqueId())) {
+            if (System.currentTimeMillis() - PROTECTION_COOLDOWN_MAP.get(player.getUniqueId()) > 5000) {
+                player.sendMessage(alert);
+                return true;
+            }
+        } else {
+            PROTECTION_COOLDOWN_MAP.put(player.getUniqueId(), System.currentTimeMillis());
+            player.sendMessage(alert);
+            return true;
+        }
+        return false;
+    }
+
+    private void onDisconnect(Player player) {
+        PROTECTION_COOLDOWN_MAP.remove(player.getUniqueId());
+    }
+
+    public void onQuit(PlayerQuitEvent event) {
+        onDisconnect(event.getPlayer());
+    }
+
+    public void onKick(PlayerKickEvent event) {
+        onDisconnect(event.getPlayer());
+    }
+
 }

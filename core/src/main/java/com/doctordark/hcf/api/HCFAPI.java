@@ -1,5 +1,6 @@
 package com.doctordark.hcf.api;
 
+import com.doctordark.hcf.Configuration;
 import com.doctordark.hcf.HCF;
 import com.doctordark.hcf.faction.FactionMember;
 import com.doctordark.hcf.faction.claim.Claim;
@@ -11,6 +12,7 @@ import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
+import us.lemin.core.storage.flatfile.Config;
 
 import java.util.Map;
 import java.util.Set;
@@ -230,5 +232,9 @@ public class HCFAPI {
         FactionUser user = HCF.getPlugin().getUserManager().getUser(uuid);
         user.setStaffMode(!isStaffMode(uuid));
         return user.isStaffMode();
+    }
+
+    public static Configuration getConfig() {
+        return HCF.getPlugin().getConfiguration();
     }
 }

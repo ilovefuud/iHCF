@@ -1,22 +1,21 @@
 package com.doctordark.hcf.faction.argument;
 
 import com.doctordark.hcf.HCF;
-import com.doctordark.hcf.faction.FactionArgument;
 import com.doctordark.hcf.faction.type.PlayerFaction;
-import com.doctordark.util.BukkitUtils;
-import com.doctordark.util.JavaUtils;
-import com.doctordark.util.MapSorting;
+import com.doctordark.hcf.util.MapSorting;
 import net.md_5.bungee.api.chat.*;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
-import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
-import org.bukkit.scheduler.BukkitRunnable;
+import us.lemin.core.commands.SubCommand;
+import us.lemin.core.utils.misc.BukkitUtils;
+import us.lemin.core.utils.misc.JavaUtils;
+import us.lemin.core.utils.plugin.TaskUtil;
 
 import java.util.*;
 
-public class FactionListArgument extends FactionArgument {
+public class FactionListArgument extends SubCommand {
 
     private static final int MAX_FACTIONS_PER_PAGE = 10;
 
@@ -28,32 +27,10 @@ public class FactionListArgument extends FactionArgument {
         this.aliases = new String[]{"l"};
     }
 
-    @Override
     public String getUsage(String label) {
         return '/' + label + ' ' + getName();
     }
 
-    @Override
-    public boolean onCommand(final CommandSender player, Command command, final String label, String[] args) {
-        final Integer page;
-        if (args.length < 2) {
-            page = 1;
-        } else {
-            page = JavaUtils.tryParseInt(args[1]);
-            if (page == null) {
-                player.sendMessage(ChatColor.RED + "'" + args[1] + "' is not a valid number.");
-                return true;
-            }
-        }
-
-        new BukkitRunnable() {
-            @Override
-            public void run() {
-                showList(page, label, player);
-            }
-        }.runTaskAsynchronously(plugin);
-        return true;
-    }
 
     private static net.md_5.bungee.api.ChatColor fromBukkit(ChatColor chatColor) {
         return net.md_5.bungee.api.ChatColor.getByChar(chatColor.getChar());
@@ -133,5 +110,20 @@ public class FactionListArgument extends FactionArgument {
         sender.sendMessage(ChatColor.GOLD + " You are currently on " + ChatColor.WHITE + "Page " + pageNumber + '/' + maxPages + ChatColor.GOLD + '.');
         sender.sendMessage(ChatColor.GOLD + " To view other pages, use " + ChatColor.YELLOW + '/' + label + ' ' + getName() + " <page#>" + ChatColor.GOLD + '.');
         sender.sendMessage(ChatColor.GOLD + BukkitUtils.STRAIGHT_LINE_DEFAULT);
+    }
+
+    @Override
+    public void execute(CommandSender commandSender, Player player, String[] args, String label) {
+        final Integer page;
+        if (args.length < 2) {
+            page = 1;
+        } else {
+            page = JavaUtils.tryParseInt(args[1]);
+            if (page == null) {
+                commandSender.sendMessage(ChatColor.RED + "'" + args[1] + "' is not a valid number.");
+                return;
+            }
+        }
+        TaskUtil.runAsync(plugin, () -> showList(page, label, commandSender));
     }
 }

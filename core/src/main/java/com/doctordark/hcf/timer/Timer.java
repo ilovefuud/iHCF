@@ -1,7 +1,8 @@
 package com.doctordark.hcf.timer;
 
-import com.doctordark.util.Config;
 import lombok.Getter;
+import org.bukkit.ChatColor;
+import us.lemin.core.storage.flatfile.Config;
 
 /**
  * Represents a {@link Timer}, used to manage cooldowns.
@@ -37,7 +38,7 @@ public abstract class Timer {
      * @return the display name
      */
     public final String getDisplayName() {
-        return getScoreboardPrefix() + name;
+        return ChatColor.translateAlternateColorCodes('&', getScoreboardPrefix() + name);
     }
 
     /**

@@ -1,7 +1,6 @@
 package com.doctordark.hcf.faction.argument;
 
 import com.doctordark.hcf.HCF;
-import com.doctordark.hcf.faction.FactionArgument;
 import com.doctordark.hcf.faction.FactionMember;
 import com.doctordark.hcf.faction.struct.Role;
 import com.doctordark.hcf.faction.type.PlayerFaction;
@@ -11,10 +10,13 @@ import org.bukkit.OfflinePlayer;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
+import us.lemin.core.commands.PlayerSubCommand;
+import us.lemin.core.utils.plugin.TaskUtil;
+import us.lemin.core.utils.profile.ProfileUtil;
 
 import java.util.*;
 
-public class FactionLeaderArgument extends FactionArgument {
+public class FactionLeaderArgument extends PlayerSubCommand {
 
     private final HCF plugin;
 
@@ -24,86 +26,55 @@ public class FactionLeaderArgument extends FactionArgument {
         this.aliases = new String[]{"setleader", "newleader"};
     }
 
-    @Override
     public String getUsage(String label) {
         return '/' + label + ' ' + getName() + " <playerName>";
     }
 
-    @Override
-    public boolean onCommand(CommandSender player, Command command, String label, String[] args) {
-        if (!(player instanceof Player)) {
-            player.sendMessage(ChatColor.RED + "Only players can set faction leaders.");
-            return true;
-        }
 
+
+    @Override
+    public void execute(Player player, Player target, String[] args, String label) {
         if (args.length < 2) {
             player.sendMessage(ChatColor.RED + "Usage: " + getUsage(label));
-            return true;
+            return;
         }
 
-        Player player = (Player) player;
-        PlayerFaction playerFaction = plugin.getFactionManager().getPlayerFaction(player);
+        TaskUtil.runAsync(plugin, ()-> {
+            PlayerFaction playerFaction = plugin.getFactionManager().getPlayerFaction(player.getUniqueId());
 
-        if (playerFaction == null) {
-            player.sendMessage(ChatColor.RED + "You are not in a faction.");
-            return true;
-        }
-
-        UUID uuid = player.getUniqueId();
-        FactionMember selfMember = playerFaction.getMember(uuid);
-        Role selfRole = selfMember.getRole();
-
-        if (selfRole != Role.LEADER) {
-            player.sendMessage(ChatColor.RED + "You must be the current faction leader to transfer the faction.");
-            return true;
-        }
-
-        FactionMember targetMember = playerFaction.getMember(args[1]);
-
-        if (targetMember == null) {
-            player.sendMessage(ChatColor.RED + "Player '" + args[1] + "' is not in your faction.");
-            return true;
-        }
-
-        if (targetMember.getUniqueId().equals(uuid)) {
-            player.sendMessage(ChatColor.RED + "You are already the faction leader.");
-            return true;
-        }
-
-        targetMember.setRole(Role.LEADER);
-        selfMember.setRole(Role.CAPTAIN);
-
-        ChatColor colour = plugin.getConfiguration().getRelationColourTeammate();
-        playerFaction.broadcast(colour + selfMember.getRole().getAstrix() + selfMember.getName() + ChatColor.YELLOW +
-                " has transferred the faction to " + colour + targetMember.getRole().getAstrix() + targetMember.getName() + ChatColor.YELLOW + '.');
-
-        return true;
-    }
-
-    @Override
-    public List<String> onTabComplete(CommandSender sender, Command command, String label, String[] args) {
-        if (args.length != 2 || !(sender instanceof Player)) {
-            return Collections.emptyList();
-        }
-
-        Player player = (Player) sender;
-        PlayerFaction playerFaction = plugin.getFactionManager().getPlayerFaction(player);
-        if (playerFaction == null || (playerFaction.getMember(player.getUniqueId()).getRole() != Role.LEADER)) {
-            return Collections.emptyList();
-        }
-
-        List<String> results = new ArrayList<>();
-        Map<UUID, FactionMember> members = playerFaction.getMembers();
-        for (Map.Entry<UUID, FactionMember> entry : members.entrySet()) {
-            if (entry.getValue().getRole() != Role.LEADER) {
-                OfflinePlayer target = Bukkit.getOfflinePlayer(entry.getKey());
-                String targetName = target.getName();
-                if (targetName != null && !results.contains(targetName)) {
-                    results.add(targetName);
-                }
+            if (playerFaction == null) {
+                player.sendMessage(ChatColor.RED + "You are not in a faction.");
+                return;
             }
-        }
 
-        return results;
+            UUID uuid = player.getUniqueId();
+            FactionMember selfMember = playerFaction.getMember(uuid);
+            Role selfRole = selfMember.getRole();
+
+            if (selfRole != Role.LEADER) {
+                player.sendMessage(ChatColor.RED + "You must be the current faction leader to transfer the faction.");
+                return;
+            }
+            ProfileUtil.MojangProfile profile = ProfileUtil.lookupProfile(args[1]);
+            FactionMember targetMember = playerFaction.getMember(profile.getId());
+
+            if (targetMember == null) {
+                player.sendMessage(ChatColor.RED + "Player '" + args[1] + "' is not in your faction.");
+                return;
+            }
+
+            if (targetMember.getUniqueId().equals(uuid)) {
+                player.sendMessage(ChatColor.RED + "You are already the faction leader.");
+                return;
+            }
+
+            targetMember.setRole(Role.LEADER);
+            selfMember.setRole(Role.CAPTAIN);
+
+            ChatColor colour = plugin.getConfiguration().getRelationColourTeammate();
+            playerFaction.broadcast(colour + selfMember.getRole().getAstrix() + selfMember.getName() + ChatColor.YELLOW +
+                    " has transferred the faction to " + colour + targetMember.getRole().getAstrix() + targetMember.getName() + ChatColor.YELLOW + '.');
+
+        });
     }
 }

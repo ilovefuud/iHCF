@@ -11,10 +11,7 @@ import us.lemin.core.commands.BaseCommand;
 import us.lemin.core.commands.SubCommand;
 import us.lemin.core.utils.misc.BukkitUtils;
 
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public class SotwCommand extends BaseCommand {
 
@@ -49,11 +46,20 @@ public class SotwCommand extends BaseCommand {
         SubCommand subCommand = subCommandMap.get(arg);
 
         if (subCommand == null) {
-            sender.sendMessage(usageMessage);
-            return;
+            for (SubCommand loop : subCommandMap.values()) {
+                if (loop.getAliases() == null) continue;
+                if (Arrays.stream(loop.getAliases())
+                        .anyMatch(arg::equalsIgnoreCase)) {
+                    Player target = args.length > 1 ? plugin.getServer().getPlayer(args[1]) : null;
+                    loop.execute(sender, target, args, getLabel());
+                    break;
+                }
+            }
+        } else {
+            Player target = args.length > 1 ? plugin.getServer().getPlayer(args[1]) : null;
+            subCommand.execute(sender, target, args, getLabel());
         }
 
-        Player target = args.length > 1 ? plugin.getServer().getPlayer(args[1]) : null;
-        subCommand.execute(sender, target, args);
+
     }
 }

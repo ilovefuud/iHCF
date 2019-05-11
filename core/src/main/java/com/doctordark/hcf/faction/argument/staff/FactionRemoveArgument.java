@@ -1,7 +1,6 @@
 package com.doctordark.hcf.faction.argument.staff;
 
 import com.doctordark.hcf.HCF;
-import com.doctordark.hcf.faction.FactionArgument;
 import com.doctordark.hcf.faction.type.Faction;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -10,24 +9,21 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.command.ConsoleCommandSender;
 import org.bukkit.conversations.*;
 import org.bukkit.entity.Player;
-
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
+import us.lemin.core.commands.SubCommand;
+import us.lemin.core.player.rank.Rank;
 
 /**
  * Faction argument used to forcefully remove {@link Faction}s.
  */
-public class FactionRemoveArgument extends FactionArgument {
+public class FactionRemoveArgument extends SubCommand {
 
     private final ConversationFactory factory;
     private final HCF plugin;
 
     public FactionRemoveArgument(final HCF plugin) {
-        super("remove", "Remove a faction.");
+        super("remove", "Remove a faction.", Rank.ADMIN);
         this.plugin = plugin;
         this.aliases = new String[]{"delete", "forcedisband", "forceremove"};
-        this.permission = "hcf.command.faction.argument." + getName();
         this.factory = new ConversationFactory(plugin).
                 withFirstPrompt(new RemoveAllPrompt(plugin)).
                 withEscapeSequence("/no").
@@ -36,60 +32,41 @@ public class FactionRemoveArgument extends FactionArgument {
                 withLocalEcho(true);
     }
 
-    @Override
+
     public String getUsage(String label) {
         return '/' + label + ' ' + getName() + " <all|factionName>";
     }
 
+
     @Override
-    public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
+    public void execute(CommandSender sender, Player player, String[] args, String label) {
         if (args.length < 2) {
             sender.sendMessage(ChatColor.RED + "Usage: " + getUsage(label));
-            return true;
+            return;
         }
 
         if (args[1].equalsIgnoreCase("all")) {
             if (!(sender instanceof ConsoleCommandSender)) {
                 sender.sendMessage(ChatColor.RED + "This command can be only executed from console.");
-                return true;
+                return;
             }
 
             Conversable conversable = (Conversable) sender;
             conversable.beginConversation(factory.buildConversation(conversable));
-            return true;
+            return;
         }
 
         Faction faction = plugin.getFactionManager().getContainingFaction(args[1]);
 
         if (faction == null) {
             sender.sendMessage(ChatColor.RED + "Faction named or containing member with IGN or UUID " + args[1] + " not found.");
-            return true;
+            return;
         }
 
         if (plugin.getFactionManager().removeFaction(faction, sender)) {
             Command.broadcastCommandMessage(sender, ChatColor.YELLOW + "Disbanded faction " + faction.getName() + ChatColor.YELLOW + '.');
         }
 
-        return true;
-    }
-
-    @Override
-    public List<String> onTabComplete(CommandSender sender, Command command, String label, String[] args) {
-        if (args.length != 2 || !(sender instanceof Player)) {
-            return Collections.emptyList();
-        } else if (args[1].isEmpty()) {
-            return null;
-        } else {
-            Player player = (Player) sender;
-            List<String> results = new ArrayList<>(plugin.getFactionManager().getFactionNameMap().keySet());
-            for (Player target : Bukkit.getOnlinePlayers()) {
-                if (player.canSee(target) && !results.contains(target.getName())) {
-                    results.add(target.getName());
-                }
-            }
-
-            return results;
-        }
     }
 
     private static class RemoveAllPrompt extends StringPrompt {

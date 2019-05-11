@@ -3,6 +3,11 @@
 // Be sure to double-check your config
 // Credits - Techcable's Configuration API
 
+// If the server is in a kit map mode.
+kitMap = false
+
+spawnCannon = false;
+
 // If the plugin should attempt to limit entities to reduce lag.
 // currently what this does is allow only 25 entities in one chunk.
 handleEntityLimiting = true
@@ -54,8 +59,8 @@ furnaceCookSpeedMultiplier = 6.0
 // If you should be able to bottle exp by crafting a glass bottle.
 bottledExp = true
 
-// If you should be able to de-enchant books by right clicking enchant tables.
-bookDeenchanting = true
+// If you should be able to disenchant books by right clicking enchant tables.
+bookDisenchanting = true
 
 // If death signs should spawn upon deaths.
 deathSigns = true
@@ -66,8 +71,6 @@ deathLightning = true
 // The current number of the map.
 mapNumber = 1
 
-// If the server is in a kit map mode.
-kitMap = false
 
 // If ally damage should be prevented or just warn the attacker.
 preventAllyDamage = true
@@ -104,12 +107,64 @@ scoreboard {
         // If this plugin utilises the sidebar.
         enabled = true
 
+        // Update rate of sidebar in ticks, the lower the faster it updates
+        updateRate = 10;
+
         // All scoreboard entries must be below 48 characters,
         // including color codes (-> &e15 characters <-).  Please
         // keep note of your maximum faction character limit.
-        eotw {
-
+        kitmap {
+            kills = "&4&lKills: %kills%"
+            deaths = "&4&lDeaths: %deaths%"
+            killstreak = "&4&lKillstreak: %killstreak%"
         }
+        eotw {
+            countdown = "&4&lEOTW &cstarts in &l%remaining%"
+            cappable = ""&4&lEOTW &ccappable in &l%remaining%"
+        }
+        sotw = "&2&lSOTW&7: &6%remaining%"
+        activeKoth = "&a%kothName%&7: &6%remaining%"
+
+        conquest {
+            activeConquest = "&9&l%conquestName%&7:"
+            lineOne = "  &c%redRemaining%&r &e%yellowRemaining%"
+            lineTwo ="  &a%greenRemaining%&r &b%blueRemaining%"
+            topThree = "&d&l%factionName%&7: &e%score%"
+        }
+
+        pvpClass {
+            activeClass = "&eActive Class&7: &a%className%"
+            bard {
+                energy = " &5\u00bb &dEnergy&7: &6%energy%"
+                buffDelay = " &5\u00bb &dBuff Delay&7: &6%buffDelay%"
+            }
+            archer {
+                markColorLevel {
+                    one = "&a"
+                    two = "&c"
+                    three = "&e"
+                }
+                archerMark = " &d»&c %targetName% %levelColor%[Mark %markLevel%]"
+            }
+            miner {
+                enabled = "&aEnabled"
+                disable = "&cDisabled"
+                status = " &5» &dInvisibility&7: %invisibility%"
+            }
+            timer {
+                format = "&b%timer%&7: &6%remaining%"
+                gapplePrefix = "&e&l"
+                combatPrefix = "&4&l"
+                pearlPrefix = "&d&l"
+                invincibilityPrefix = "&2&l"
+                logoutPrefix = "&c&l"
+                classWarmupPrefix = "&b&l"
+                stuckPrefix = "&3&l"
+                teleportPrefix = "&3&l"
+            }
+        }
+
+
     }
 
     tablist {
@@ -118,6 +173,8 @@ scoreboard {
 
         // If this plugin utilizes the custom tablist.
         enabled = true
+
+        updateRate = 20;
     }
 
     nametags {
@@ -141,6 +198,9 @@ warzone {
 }
 
 factions {
+
+    allowCreationDuringEOTW = false;
+
     conquest {
         // How much points should a faction lose when a player dies in Conquest.
         pointLossPerDeath = 20
@@ -232,6 +292,8 @@ factions {
         teammate = "GREEN"
         ally = "GOLD"
         enemy = "RED"
+        neutral "YELLOW"
+        focus = "LIGHT_PURPLE"
         road = "YELLOW"
         safezone = "AQUA"
     }

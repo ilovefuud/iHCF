@@ -20,6 +20,7 @@ public class FactionDemoteArgument extends PlayerSubCommand {
     public FactionDemoteArgument(HCF plugin) {
         super("demote", "Demotes a player to a member.");
         this.plugin = plugin;
+        this.aliases = new String[]{"uncaptain", "delcaptain", "delofficer"};
     }
 
     public String getUsage(String label) {

@@ -6,15 +6,18 @@ import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import us.lemin.core.commands.SubCommand;
-@RequiredArgsConstructor
 
-public class SotwEndCommand implements SubCommand {
+public class SotwEndCommand extends SubCommand {
 
     private final HCF plugin;
 
+    public SotwEndCommand(HCF plugin) {
+        super("end");
+        this.plugin = plugin;
+    }
 
     @Override
-    public void execute(CommandSender sender, Player player, String[] args) {
+    public void execute(CommandSender sender, Player player, String[] strings, String s) {
         if (plugin.getSotwTimer().cancel()) {
             sender.sendMessage(ChatColor.RED + "Cancelled SOTW protection.");
             return;

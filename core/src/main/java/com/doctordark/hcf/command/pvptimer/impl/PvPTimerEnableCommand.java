@@ -7,13 +7,17 @@ import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 import us.lemin.core.commands.PlayerSubCommand;
 
-@RequiredArgsConstructor
-public class PvPTimerEnableCommand implements PlayerSubCommand {
+public class PvPTimerEnableCommand extends PlayerSubCommand {
 
     private final HCF plugin;
 
+    public PvPTimerEnableCommand( HCF plugin) {
+        super("enable");
+        this.plugin = plugin;
+    }
+
     @Override
-    public void execute(Player player, Player player1, String[] strings) {
+    public void execute(Player player, Player player1, String[] strings, String s) {
         InvincibilityTimer pvpTimer = plugin.getTimerManager().getInvincibilityTimer();
 
         if (pvpTimer.getRemaining(player) <= 0L) {

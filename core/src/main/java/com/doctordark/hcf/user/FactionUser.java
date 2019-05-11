@@ -1,12 +1,12 @@
 package com.doctordark.hcf.user;
 
 import com.doctordark.hcf.deathban.Deathban;
-import com.doctordark.util.GenericUtils;
 import lombok.Getter;
 import lombok.Setter;
 import org.bukkit.Bukkit;
 import org.bukkit.configuration.serialization.ConfigurationSerializable;
 import org.bukkit.entity.Player;
+import us.lemin.core.utils.misc.GenericUtils;
 
 import java.util.*;
 import java.util.stream.Collectors;

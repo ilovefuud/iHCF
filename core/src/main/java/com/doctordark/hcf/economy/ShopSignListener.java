@@ -1,9 +1,7 @@
 package com.doctordark.hcf.economy;
 
-import com.doctordark.base.BasePlugin;
 import com.doctordark.hcf.HCF;
 import com.doctordark.hcf.listener.Crowbar;
-import com.doctordark.util.InventoryUtils;
 import com.doctordark.hcf.util.NmsUtils;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
@@ -18,6 +16,7 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.ItemStack;
+import us.lemin.core.utils.misc.InventoryUtils;
 
 import java.util.Arrays;
 import java.util.Map;
@@ -59,7 +58,7 @@ public class ShopSignListener implements Listener {
                     ItemStack stack;
                     if (lines[1].equalsIgnoreCase("Crowbar")) {
                         stack = new Crowbar().getItemIfPresent();
-                    } else if ((stack = BasePlugin.getPlugin().getItemDb().getItem(ALPHANUMERIC_PATTERN.matcher(lines[1]).replaceAll(""), quantity)) == null) {
+                    } else {
                         return;
                     }
 
@@ -104,7 +103,7 @@ public class ShopSignListener implements Listener {
                     }
 
                     event.setCancelled(true);
-                    BasePlugin.getPlugin().getSignHandler().showLines(player, sign, fakeLines, SIGN_TEXT_REVERT_TICKS, true);
+                    plugin.getSignHandler().showLines(player, sign, fakeLines, SIGN_TEXT_REVERT_TICKS, true);
                 }
             }
         }

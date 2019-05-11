@@ -19,6 +19,7 @@ public class FactionChatArgument extends PlayerSubCommand {
     public FactionChatArgument(HCF plugin) {
         super("chat", "Switch between different chat modes.");
         this.plugin = plugin;
+        this.aliases = new String[]{"c"};
     }
 
     public String getUsage(String label) {

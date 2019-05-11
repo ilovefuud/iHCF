@@ -4,17 +4,13 @@ import com.doctordark.hcf.timer.event.TimerClearEvent;
 import com.doctordark.hcf.timer.event.TimerExtendEvent;
 import com.doctordark.hcf.timer.event.TimerPauseEvent;
 import com.doctordark.hcf.timer.event.TimerStartEvent;
-import com.doctordark.util.Config;
 import org.bukkit.Bukkit;
 import org.bukkit.configuration.MemorySection;
 import org.bukkit.entity.Player;
+import us.lemin.core.storage.flatfile.Config;
 
 import javax.annotation.Nullable;
-import java.util.LinkedHashMap;
-import java.util.Map;
-import java.util.Objects;
-import java.util.Set;
-import java.util.UUID;
+import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Predicate;
 
@@ -157,7 +153,7 @@ public abstract class PlayerTimer extends Timer {
             MemorySection section = (MemorySection) object;
             long millis = System.currentTimeMillis();
             for (String id : section.getKeys(false)) {
-                long remaining = config.getLong(section.getCurrentPath() + '.' + id) - millis;
+                long remaining = config.getDelegate().getLong(section.getCurrentPath() + '.' + id) - millis;
                 if (remaining > 0L) {
                     setCooldown(null, UUID.fromString(id), remaining, true, null);
                 }
@@ -171,7 +167,7 @@ public abstract class PlayerTimer extends Timer {
                 TimerCooldown timerCooldown = cooldowns.get(UUID.fromString(id));
                 if (timerCooldown == null) continue;
 
-                timerCooldown.setPauseMillis(config.getLong(path + '.' + id));
+                timerCooldown.setPauseMillis(config.getDelegate().getLong(path + '.' + id));
             }
         }
     }

@@ -7,7 +7,6 @@ import com.doctordark.hcf.faction.event.PlayerLeaveFactionEvent;
 import com.doctordark.hcf.timer.PlayerTimer;
 import com.doctordark.hcf.timer.TimerCooldown;
 import com.doctordark.hcf.timer.event.TimerStartEvent;
-import com.doctordark.hcf.util.BukkitUtils;
 import com.doctordark.hcf.util.DurationFormatter;
 import com.doctordark.hcf.visualise.VisualType;
 import org.bukkit.ChatColor;
@@ -19,6 +18,7 @@ import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.player.PlayerRespawnEvent;
+import us.lemin.core.utils.misc.BukkitUtils;
 
 import javax.annotation.Nullable;
 import java.util.Optional;

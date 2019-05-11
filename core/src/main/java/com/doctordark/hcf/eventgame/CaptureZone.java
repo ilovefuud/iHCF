@@ -1,10 +1,10 @@
 package com.doctordark.hcf.eventgame;
 
 import com.doctordark.hcf.DateTimeFormats;
-import com.doctordark.util.cuboid.Cuboid;
 import org.apache.commons.lang3.time.DurationFormatUtils;
 import org.bukkit.configuration.serialization.ConfigurationSerializable;
 import org.bukkit.entity.Player;
+import us.lemin.core.utils.cuboid.Cuboid;
 
 import javax.annotation.Nullable;
 import java.util.LinkedHashMap;

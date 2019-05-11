@@ -34,46 +34,13 @@ public class FactionInviteArgument extends PlayerSubCommand {
     public FactionInviteArgument(HCF plugin) {
         super("invite", "Invite a player to the faction.");
         this.plugin = plugin;
-        this.aliases = new String[]{ "inv", "invitemember", "inviteplayer" };
+        this.aliases = new String[]{ "inv", "invitemember", "inviteplayer", "add"};
     }
 
     public String getUsage(String label) {
         return '/' + label + ' ' + getName() + " <playerName>";
     }
 
-    @Override
-    public boolean onCommand(CommandSender player, Command command, String label, String[] args) {
-        if (!(player instanceof Player)) {
-            player.sendMessage(ChatColor.RED + "Only players can invite to a faction.");
-            return true;
-        }
-
-
-    }
-
-    @Override
-    public List<String> onTabComplete(CommandSender sender, Command command, String label, String[] args) {
-        if (args.length != 2 || !(sender instanceof Player)) {
-            return Collections.emptyList();
-        }
-
-        Player player = (Player) sender;
-        PlayerFaction playerFaction = plugin.getFactionManager().getPlayerFaction(player);
-        if (playerFaction == null || (playerFaction.getMember(player.getUniqueId()).getRole() == Role.MEMBER)) {
-            return Collections.emptyList();
-        }
-
-        List<String> results = new ArrayList<>();
-        for (Player target : Bukkit.getOnlinePlayers()) {
-            if (player.canSee(target) && !results.contains(target.getName())) {
-                if (playerFaction != plugin.getFactionManager().getPlayerFaction(target.getUniqueId())) {
-                    results.add(target.getName());
-                }
-            }
-        }
-
-        return results;
-    }
 
     @Override
     public void execute(Player player, Player player1, String[] args, String label) {

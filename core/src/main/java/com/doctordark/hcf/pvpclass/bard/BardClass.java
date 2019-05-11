@@ -4,9 +4,7 @@ import com.doctordark.hcf.HCF;
 import com.doctordark.hcf.faction.type.Faction;
 import com.doctordark.hcf.faction.type.PlayerFaction;
 import com.doctordark.hcf.pvpclass.PvpClass;
-import com.doctordark.hcf.util.BukkitUtils;
 import com.doctordark.hcf.util.DurationFormatter;
-import com.doctordark.util.chat.Lang;
 import gnu.trove.map.TObjectLongMap;
 import gnu.trove.map.hash.TObjectLongHashMap;
 import org.bukkit.ChatColor;
@@ -26,6 +24,7 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 import org.bukkit.scheduler.BukkitRunnable;
+import us.lemin.core.utils.misc.BukkitUtils;
 
 import java.util.*;
 import java.util.concurrent.TimeUnit;
@@ -173,7 +172,7 @@ public class BardClass extends PvpClass implements Listener {
                 msgCooldowns.put(uuid, millis + 1500L);
                 player.sendMessage(ChatColor.RED + " Bard Effect: " + ChatColor.GOLD + MARK);
                 player.sendMessage(ChatColor.YELLOW + "  Clickable Effect: " + ChatColor.AQUA +
-                        Lang.fromPotionEffectType(bardEffect.clickable.getType()) + ' ' + (bardEffect.clickable.getAmplifier() + 1) +
+                        bardEffect.clickable.getType().getName() + ' ' + (bardEffect.clickable.getAmplifier() + 1) +
                         ChatColor.GRAY + " (" + (bardEffect.clickable.getDuration() / 20) + "s)");
                 player.sendMessage(ChatColor.YELLOW + "  Energy Cost: " + ChatColor.AQUA + bardEffect.energyCost);
             }
@@ -227,7 +226,7 @@ public class BardClass extends PvpClass implements Listener {
 
                 double newEnergy = this.setEnergy(player, bardData.getEnergy() - bardEffect.energyCost);
                 player.sendMessage(ChatColor.YELLOW + "You have just used " + name + " buff " + ChatColor.AQUA +
-                        Lang.fromPotionEffectType(bardEffect.clickable.getType()) + ' ' + (bardEffect.clickable.getAmplifier() + 1) + ChatColor.YELLOW + " costing you " +
+                        bardEffect.clickable.getType().getName() + ' ' + (bardEffect.clickable.getAmplifier() + 1) + ChatColor.YELLOW + " costing you " +
                         ChatColor.BOLD + bardEffect.energyCost + ChatColor.YELLOW + " energy. " +
                         "Your energy is now " + ChatColor.GREEN + ((newEnergy * 10.0) / 10.0)/*TODO:neeeded?*/ + ChatColor.YELLOW + '.');
             }

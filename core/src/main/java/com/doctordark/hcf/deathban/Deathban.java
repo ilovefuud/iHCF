@@ -1,6 +1,6 @@
 package com.doctordark.hcf.deathban;
 
-import com.doctordark.util.PersistableLocation;
+import com.doctordark.hcf.util.PersistableLocation;
 import lombok.Getter;
 import org.bukkit.Location;
 import org.bukkit.configuration.serialization.ConfigurationSerializable;

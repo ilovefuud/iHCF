@@ -1,97 +1,69 @@
 package com.doctordark.hcf.faction.argument;
 
 import com.doctordark.hcf.HCF;
-import com.doctordark.hcf.faction.FactionArgument;
+import com.doctordark.hcf.command.sotw.impl.SotwEndCommand;
+import com.doctordark.hcf.command.sotw.impl.SotwStartCommand;
 import com.doctordark.hcf.faction.argument.subclaim.*;
-import com.doctordark.util.command.CommandArgument;
+import com.google.common.collect.ImmutableMap;
 import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
+import org.bukkit.entity.Player;
+import us.lemin.core.commands.PlayerSubCommand;
+import us.lemin.core.commands.SubCommand;
 
 import java.util.*;
 
-public class FactionSubclaimArgumentExecutor extends FactionArgument {
+public class FactionSubclaimArgumentExecutor extends PlayerSubCommand {
 
-    private final List<CommandArgument> arguments = new ArrayList<>(8);
+    private final HCF plugin;
+    private final ImmutableMap<String, SubCommand> subCommandMap;
+
 
     public FactionSubclaimArgumentExecutor(HCF plugin) {
-        super("subclaim", "Shows the subclaim help page.", new String[]{"sub", "subland", "subclaimland"});
-        this.arguments.add(new FactionSubclaimAddMemberArgument(plugin));
-        this.arguments.add(new FactionSubclaimCreateArgument(plugin));
-        this.arguments.add(new FactionSubclaimDeleteArgument(plugin));
-        this.arguments.add(new FactionSubclaimDelMemberArgument(plugin));
-        this.arguments.add(new FactionSubclaimListArgument(plugin));
-        this.arguments.add(new FactionSubclaimMembersArgument(plugin));
-        this.arguments.add(new FactionSubclaimRenameArgument(plugin));
-        this.arguments.add(new FactionSubclaimStartArgument());
+        super("subclaim", "Shows the subclaim help page.");
+        this.aliases =  new String[]{"sub", "subland", "subclaimland"};
         this.permission = "hcf.command.faction.argument." + getName();
+        this.plugin = plugin;
+        Map<String, SubCommand> subCommands = new HashMap<>();
+
+        subCommands.put("addmember", new FactionSubclaimAddMemberArgument(plugin));
+        subCommands.put("create", new FactionSubclaimCreateArgument(plugin));
+        subCommands.put("delete", new FactionSubclaimDeleteArgument(plugin));
+        subCommands.put("delmember", new FactionSubclaimDelMemberArgument(plugin));
+        subCommands.put("list", new FactionSubclaimListArgument(plugin));
+        subCommands.put("members", new FactionSubclaimMembersArgument(plugin));
+        subCommands.put("rename", new FactionSubclaimRenameArgument(plugin));
+        subCommands.put("start", new FactionSubclaimStartArgument());
+
+
+        subCommandMap = ImmutableMap.copyOf(subCommands);
+
     }
 
-    @Override
     public String getUsage(String label) {
         return '/' + label + ' ' + getName();
     }
 
-    @Override
-    public boolean onCommand(CommandSender player, Command command, String label, String[] args) {
-        if (args.length < 2) {
-            player.sendMessage(ChatColor.AQUA + "*** Faction Subclaim Help ***");
-            for (CommandArgument argument : arguments) {
-                String permission = argument.getPermission();
-                if (permission == null || player.hasPermission(permission)) {
-                    player.sendMessage(ChatColor.GRAY + argument.getUsage(label) + " - " + argument.getDescription() + '.');
-                }
-            }
 
-            player.sendMessage(ChatColor.GRAY + "/" + label + " map subclaim - Shows the faction subclaim map.");
-            return true;
-        }
-
-        CommandArgument argument = getArgument(arguments, args[1]);
-        String permission = (argument == null) ? null : argument.getPermission();
-
-        if (argument == null || (permission != null && !player.hasPermission(permission))) {
-            player.sendMessage(ChatColor.RED + "Faction subclaim sub-command " + args[1] + " not found.");
-            return true;
-        }
-
-        argument.onCommand(player, command, label, args);
-        return true;
-    }
 
     @Override
-    public List<String> onTabComplete(CommandSender sender, Command command, String label, String[] args) {
-        if (args.length == 2) {
-            List<String> results = new ArrayList<>();
-            for (CommandArgument argument : arguments) {
-                String permission = argument.getPermission();
-                if (permission == null || sender.hasPermission(permission)) {
-                    results.add(argument.getName());
+    public void execute(Player player, Player ignore, String[] args, String label) {
+        String arg = args.length < 2 ? "help" : args[1].toLowerCase();
+        SubCommand subCommand = subCommandMap.get(arg);
+
+        if (subCommand == null) {
+            for (SubCommand loop : subCommandMap.values()) {
+                if (Arrays.stream(loop.getAliases())
+                        .anyMatch(alias -> args[1].equalsIgnoreCase(alias))) {
+                    Player target = args.length > 2 ? plugin.getServer().getPlayer(args[2]) : null;
+                    loop.execute(player, target, args, label);
+                    break;
                 }
             }
-
-            return results;
+        } else {
+            Player target = args.length > 2 ? plugin.getServer().getPlayer(args[2]) : null;
+            subCommand.execute(player, target, args, label);
         }
-
-        CommandArgument argument = getArgument(arguments, args[1]);
-        if (argument != null) {
-            String permission = argument.getPermission();
-            if (permission == null || sender.hasPermission(permission)) {
-                return argument.onTabComplete(sender, command, label, args);
-            }
-        }
-
-        return Collections.emptyList();
-    }
-
-    //TODO: Needs moving into better library
-    private static CommandArgument getArgument(Collection<CommandArgument> arguments, String id) {
-        for (CommandArgument commandArgument : arguments) {
-            if (commandArgument.getName().equalsIgnoreCase(id) || Arrays.asList(commandArgument.getAliases()).contains(id)) {
-                return commandArgument;
-            }
-        }
-
-        return null;
     }
 }

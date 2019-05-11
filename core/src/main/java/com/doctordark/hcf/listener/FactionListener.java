@@ -2,15 +2,7 @@ package com.doctordark.hcf.listener;
 
 import com.doctordark.hcf.HCF;
 import com.doctordark.hcf.eventgame.faction.KothFaction;
-import com.doctordark.hcf.faction.event.CaptureZoneEnterEvent;
-import com.doctordark.hcf.faction.event.CaptureZoneLeaveEvent;
-import com.doctordark.hcf.faction.event.FactionCreateEvent;
-import com.doctordark.hcf.faction.event.FactionRemoveEvent;
-import com.doctordark.hcf.faction.event.FactionRenameEvent;
-import com.doctordark.hcf.faction.event.PlayerClaimEnterEvent;
-import com.doctordark.hcf.faction.event.PlayerJoinFactionEvent;
-import com.doctordark.hcf.faction.event.PlayerLeaveFactionEvent;
-import com.doctordark.hcf.faction.event.PlayerLeftFactionEvent;
+import com.doctordark.hcf.faction.event.*;
 import com.doctordark.hcf.faction.struct.RegenStatus;
 import com.doctordark.hcf.faction.type.Faction;
 import com.doctordark.hcf.faction.type.PlayerFaction;

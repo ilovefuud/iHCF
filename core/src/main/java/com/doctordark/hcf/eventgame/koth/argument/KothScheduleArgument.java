@@ -1,14 +1,16 @@
 package com.doctordark.hcf.eventgame.koth.argument;
 
 import com.doctordark.hcf.HCF;
-import com.doctordark.util.BukkitUtils;
-import com.doctordark.util.command.CommandArgument;
 import org.apache.commons.lang3.text.WordUtils;
 import org.apache.commons.lang3.time.DurationFormatUtils;
 import org.apache.commons.lang3.time.FastDateFormat;
 import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
+import org.bukkit.entity.Player;
+import us.lemin.core.commands.SubCommand;
+import us.lemin.core.player.rank.Rank;
+import us.lemin.core.utils.misc.BukkitUtils;
 
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
@@ -16,9 +18,9 @@ import java.util.*;
 import java.util.regex.Matcher;
 
 /**
- * An {@link CommandArgument} used to view schedules for KingOfTheHill games.
+ * A {@link SubCommand} used to view schedules for KingOfTheHill games.
  */
-public class KothScheduleArgument extends CommandArgument {
+public class KothScheduleArgument extends SubCommand {
 
     private static final String TIME_UNTIL_PATTERN = "d'd' H'h' mm'm'";
 
@@ -29,7 +31,7 @@ public class KothScheduleArgument extends CommandArgument {
     private final HCF plugin;
 
     public KothScheduleArgument(HCF plugin) {
-        super("schedule", "View the schedule for KOTH arenas");
+        super("schedule", "View the schedule for KOTH arenas", Rank.ADMIN);
 
         this.plugin = plugin;
         this.aliases = new String[]{"info", "i", "time"};
@@ -40,13 +42,13 @@ public class KothScheduleArgument extends CommandArgument {
         this.eachKothTimeFormat = FastDateFormat.getInstance("EEE dd '" + Matcher.quoteReplacement("&b") + "'(h:mma)", timeZone, Locale.ENGLISH);
     }
 
-    @Override
     public String getUsage(String label) {
         return '/' + label + ' ' + getName();
     }
 
+
     @Override
-    public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
+    public void execute(CommandSender sender, Player player, String[] args, String label) {
         LocalDateTime now = LocalDateTime.now(plugin.getConfiguration().getServerTimeZoneID());
         int currentDay = now.getDayOfYear();
 
@@ -70,15 +72,14 @@ public class KothScheduleArgument extends CommandArgument {
 
         if (shownEvents.isEmpty()) {
             sender.sendMessage(ChatColor.RED + "There are no event schedules defined.");
-            return true;
+            return;
         }
 
         sender.sendMessage(ChatColor.GRAY + BukkitUtils.STRAIGHT_LINE_DEFAULT);
         sender.sendMessage(ChatColor.GRAY + "Server time is currently " + ChatColor.WHITE + headingTimeFormat.format(System.currentTimeMillis()) + ChatColor.GRAY + '.');
-        sender.sendMessage(shownEvents.toArray(new String[shownEvents.size()]));
+        sender.sendMessage(shownEvents.toArray(new String[0]));
         sender.sendMessage(ChatColor.GRAY + "For more info about King of the Hill, use " + ChatColor.WHITE + '/' + label + " help" + ChatColor.GRAY + '.');
         sender.sendMessage(ChatColor.GRAY + BukkitUtils.STRAIGHT_LINE_DEFAULT);
 
-        return true;
     }
 }

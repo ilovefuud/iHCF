@@ -28,7 +28,6 @@ public class FactionForceJoinArgument extends PlayerSubCommand {
     public FactionForceJoinArgument(HCF plugin) {
         super("forcejoin", "Forcefully join a faction.", Rank.ADMIN);
         this.plugin = plugin;
-        this.permission = "hcf.command.faction.argument." + getName();
     }
 
     public String getUsage(String label) {
@@ -36,40 +35,31 @@ public class FactionForceJoinArgument extends PlayerSubCommand {
     }
 
     @Override
-    protected void execute(Player player, String[] strings) {
+    public void execute(Player player, Player player1, String[] args, String label) {
 
-    }
-
-    @Override
-    public boolean onCommand(CommandSender player, Command command, String label, String[] args) {
-        if (!(player instanceof Player)) {
-            player.sendMessage(ChatColor.RED + "Only players can join factions.");
-            return true;
-        }
 
         if (args.length < 2) {
             player.sendMessage(ChatColor.RED + "Usage: " + getUsage(label));
-            return true;
+            return;
         }
 
-        Player player = (Player) player;
         PlayerFaction playerFaction = plugin.getFactionManager().getPlayerFaction(player);
 
         if (playerFaction != null) {
             player.sendMessage(ChatColor.RED + "You are already in a faction.");
-            return true;
+            return;
         }
 
         Faction faction = plugin.getFactionManager().getContainingFaction(args[1]);
 
         if (faction == null) {
             player.sendMessage(ChatColor.RED + "Faction named or containing member with IGN or UUID " + args[1] + " not found.");
-            return true;
+            return;
         }
 
         if (!(faction instanceof PlayerFaction)) {
             player.sendMessage(ChatColor.RED + "You can only join player factions.");
-            return true;
+            return;
         }
 
         playerFaction = (PlayerFaction) faction;
@@ -77,26 +67,6 @@ public class FactionForceJoinArgument extends PlayerSubCommand {
             playerFaction.broadcast(ChatColor.GOLD.toString() + ChatColor.BOLD + player.getName() + " has forcefully joined the faction.");
         }
 
-        return true;
+
     }
-
-    @Override
-    public List<String> onTabComplete(CommandSender sender, Command command, String label, String[] args) {
-        if (args.length != 2 || !(sender instanceof Player)) {
-            return Collections.emptyList();
-        } else if (args[1].isEmpty()) {
-            return null;
-        } else {
-            Player player = (Player) sender;
-            List<String> results = new ArrayList<>(plugin.getFactionManager().getFactionNameMap().keySet());
-            for (Player target : Bukkit.getOnlinePlayers()) {
-                if (player.canSee(target) && !results.contains(target.getName())) {
-                    results.add(target.getName());
-                }
-            }
-
-            return results;
-        }
-    }
-
 }

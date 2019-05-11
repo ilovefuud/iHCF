@@ -6,8 +6,6 @@ import com.doctordark.hcf.faction.type.ClaimableFaction;
 import com.doctordark.hcf.faction.type.Faction;
 import com.doctordark.hcf.faction.type.RoadFaction;
 import com.doctordark.hcf.timer.Timer;
-import com.doctordark.util.cuboid.Cuboid;
-import net.minecraft.server.v1_8_R3.PacketPlayInFlying;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.World;
@@ -18,14 +16,12 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.event.player.PlayerTeleportEvent;
-import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.util.Vector;
-import us.lemin.spigot.handler.MovementHandler;
+import us.lemin.core.utils.cuboid.Cuboid;
 
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Iterator;
-import java.util.function.Predicate;
 
 public class WallBorderListener implements Listener {
 

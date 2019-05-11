@@ -2,11 +2,13 @@ package com.doctordark.hcf.eventgame.koth.argument;
 
 import com.doctordark.hcf.DateTimeFormats;
 import com.doctordark.hcf.HCF;
-import com.doctordark.util.command.CommandArgument;
 import org.apache.commons.lang3.text.WordUtils;
 import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
+import org.bukkit.entity.Player;
+import us.lemin.core.commands.SubCommand;
+import us.lemin.core.player.rank.Rank;
 
 import java.time.LocalDateTime;
 import java.time.format.TextStyle;
@@ -15,25 +17,23 @@ import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
 /**
- * An {@link CommandArgument} used to check the next running KingOfTheHill event.
+ * A {@link SubCommand} used to check the next running KingOfTheHill event.
  */
-public class KothNextArgument extends CommandArgument {
+public class KothNextArgument extends SubCommand {
 
     private final HCF plugin;
 
     public KothNextArgument(HCF plugin) {
-        super("next", "View the next scheduled KOTH");
+        super("next", "View the next scheduled KOTH", Rank.ADMIN);
         this.plugin = plugin;
-        this.permission = "hcf.command.koth.argument." + getName();
     }
 
-    @Override
     public String getUsage(String label) {
         return '/' + label + ' ' + getName();
     }
 
     @Override
-    public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
+    public void execute(CommandSender sender, Player player, String[] args, String label) {
         long millis = System.currentTimeMillis();
         sender.sendMessage(ChatColor.GOLD + "The server time is currently " + ChatColor.YELLOW + DateTimeFormats.DAY_MTH_HR_MIN_AMPM.format(millis) + ChatColor.GOLD + '.');
 
@@ -41,7 +41,7 @@ public class KothNextArgument extends CommandArgument {
 
         if (scheduleMap.isEmpty()) {
             sender.sendMessage(ChatColor.RED + "There is no event currently scheduled.");
-            return true;
+            return;
         }
 
         LocalDateTime now = LocalDateTime.now(plugin.getConfiguration().getServerTimeZoneID());
@@ -58,10 +58,10 @@ public class KothNextArgument extends CommandArgument {
                     ChatColor.DARK_AQUA + " (" + DateTimeFormats.HR_MIN_AMPM.format(TimeUnit.HOURS.toMillis(scheduleDateTime.getHour()) +
                     TimeUnit.MINUTES.toMillis(scheduleDateTime.getMinute())) + ')');
 
-            return true;
+            return;
         }
 
         sender.sendMessage(ChatColor.RED + "There is no event currently scheduled.");
-        return true;
+        return;
     }
 }

@@ -1,8 +1,7 @@
 package com.doctordark.hcf.eventgame.crate;
 
 import com.doctordark.hcf.eventgame.EventType;
-import com.doctordark.util.Config;
-import com.doctordark.util.InventorySerialisation;
+import com.doctordark.hcf.util.InventorySerialisation;
 import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.Lists;
 import lombok.Getter;
@@ -12,14 +11,10 @@ import org.bukkit.configuration.MemorySection;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
+import us.lemin.core.storage.flatfile.Config;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 
 public class EventKey extends Key {

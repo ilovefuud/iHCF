@@ -60,21 +60,9 @@
 
     <dependencies>
         <dependency>
-            <groupId>us.lemin.spigot</groupId>
-            <artifactId>leminspigot</artifactId>
-            <version>1.8.8-R0.1-SNAPSHOT</version>
-            <scope>provided</scope>
-        </dependency>
-        <dependency>
-            <groupId>us.lemin.spigot</groupId>
-            <artifactId>leminspigot-api</artifactId>
-            <version>1.8.8-R0.1-SNAPSHOT</version>
-            <scope>provided</scope>
-        </dependency>
-        <dependency>
             <groupId>org.projectlombok</groupId>
             <artifactId>lombok</artifactId>
-            <version>1.16.22</version>
+            <version>1.18.6</version>
             <scope>compile</scope>
         </dependency>
         <dependency>

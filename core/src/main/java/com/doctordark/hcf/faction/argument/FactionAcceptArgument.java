@@ -21,6 +21,7 @@ public class FactionAcceptArgument extends PlayerSubCommand {
     public FactionAcceptArgument(HCF plugin) {
         super("accept", "Accept a join request from an existing faction.");
         this.plugin = plugin;
+        this.aliases = new String[]{"join", "a"};
     }
 
     public String getUsage(String label) {

@@ -7,413 +7,187 @@ import gnu.trove.map.hash.TObjectIntHashMap;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.Setter;
-import net.techcable.techutils.config.AnnotationConfig;
-import net.techcable.techutils.config.Setting;
 import org.apache.commons.lang3.time.DurationFormatUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.potion.PotionType;
+import us.lemin.core.storage.flatfile.Config;
 
 import java.time.ZoneId;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.TimeZone;
+import java.util.*;
 import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
 
 @Getter
-public class Configuration extends AnnotationConfig {
+public class Configuration {
 
-    @Setting("kitmap")
-    private boolean kitmap = false;
+    private final Config config;
 
-    @Setting("spawnCannon")
-    private boolean spawnCannon = true;
-
-    @Setting("factions.home.allowTeleportingInEnemyTerritory")
-    private boolean allowTeleportingInEnemyTerritory = true;
-
-    @Setting("handleEntityLimiting")
-    private boolean handleEntityLimiting = true;
-
-    @Setting("chat.handleChat")
-    private boolean handleChat = true;
-
-    @Setting("chat.vault")
-    private boolean vault = false;
-
-    @Setting("chat.essentials")
-    private boolean essentials = true;
-
-    @Setting("removeInfinityArrowsOnLand")
-    private boolean removeInfinityArrowsOnLand = true;
-
-    @Setting("beaconStrengthLevelLimit")
-    private int beaconStrengthLevelLimit = 1;
-
-    @Setting("disableBoatPlacementOnLand")
-    private boolean disableBoatPlacementOnLand = true;
-
-    @Setting("enderpearlGlitching.enabled")
-    private boolean enderpearlGlitchingEnabled = true;
-
-    @Setting("enderpearlGlitching.refund")
-    private boolean enderpearlGlitchingRefund = true;
-
-    @Setting("disableEnderchests")
-    private boolean disableEnderchests = true;
-
-    @Setting("preventPlacingBedsNether")
-    private boolean preventPlacingBedsNether = false;
-
+    private boolean kitmap;
+    private boolean spawnCannon;
+    private boolean handleEntityLimiting;
+    private boolean removeInfinityArrowsOnLand;
+    private int beaconStrengthLevelLimit;
+    private boolean disableBoatPlacementOnLand;
+    private boolean handleChat;
+    private boolean vault;
+    private boolean essentials;
+    private boolean enderpearlGlitchingEnabled;
+    private boolean enderpearlGlitchingRefund;
+    private boolean disableEnderchests;
+    private boolean preventPlacingBedsNether;
     @Getter(AccessLevel.NONE)
-    @Setting("serverTimeZone")
     private String serverTimeZoneName = "EST";
     private TimeZone serverTimeZone;
     private ZoneId serverTimeZoneID;
-
-    @Setting("furnaceCookSpeedMultiplier")
-    private float furnaceCookSpeedMultiplier = 6.0F;
-
-    @Setting("bottledExp")
-    private boolean bottledExp = true;
-
-    @Setting("bookDisenchanting")
-    private boolean bookDisenchanting = true;
-
-    @Setting("deathSigns")
-    private boolean deathSigns = true;
-
-    @Setting("deathLightning")
-    private boolean deathLightning = true;
-
-    @Setting("mapNumber")
-    private int mapNumber = 1;
-
-    @Setting("preventAllyDamage")
-    private boolean preventAllyAttackDamage = true;
-
-    @Setting("economy.startingBalance")
-    private int economyStartingBalance = 250;
-
-    @Setting("spawners.preventBreakingNether")
-    private boolean spawnersPreventBreakingNether = true;
-
-    @Setting("spawners.preventPlacingNether")
-    private boolean spawnersPreventPlacingNether = true;
-
-    @Setting("expMultiplier.global")
-    private float expMultiplierGlobal = 1.0F;
-
-    @Setting("expMultiplier.fishing")
-    private float expMultiplierFishing = 1.0F;
-
-    @Setting("expMultiplier.smelting")
-    private float expMultiplierSmelting = 1.0F;
-
-    @Setting("expMultiplier.lootingPerLevel")
-    private float expMultiplierLootingPerLevel = 1.0F;
-
-    @Setting("expMultiplier.luckPerLevel")
-    private float expMultiplierLuckPerLevel = 1.0F;
-
-    @Setting("expMultiplier.fortunePerLevel")
-    private float expMultiplierFortunePerLevel = 1.0F;
-
-    @Setting("scoreboard.sidebar.title")
-    private String scoreboardSidebarTitle = "&a&lHCF &c[Map {MAP_NUMBER}]";
-
-    @Setting("scoreboard.sidebar.enabled")
-    private boolean scoreboardSidebarEnabled = true;
-
-    @Setting("scoreboard.sidebar.updateRate")
-    private int scoreboardSidebarUpdateRate = 10;
-
-    @Setting("scoreboard.sidebar.kitmap.kills")
-    private String scoreboardSidebarKitmapKills = "&4&lKills: %kills%";
-
-    @Setting("scoreboard.sidebar.kitmap.deaths")
-    private String scoreboardSidebarKitmapDeaths = "&4&lDeaths: %deaths%";
-
-    @Setting("scoreboard.sidebar.kitmap.killstreak")
-    private String scoreboardSidebarKitmapKillstreak = "&4&lKillstreak: %killstreak%";
-
-    @Setting("scoreboard.sidebar.eotw.countdown")
-    private String scoreboardSidebarEotwCountdown = "&4&lEOTW &cstarts in &l%remaining%";
-
-    @Setting("scoreboard.sidebar.eotw.cappable")
-    private String scoreboardSidebarEotwCappable = "&4&lEOTW &ccappable in &l%remaining%";
-
-    @Setting("scoreboard.sidebar.sotw")
-    private String scoreboardSidebarSotw = "&2&lSOTW&7: &6%remaining%";
-
-    @Setting("scoreboard.sidebar.activeKoth")
-    private String scoreboardSidebarActiveKoth = "&a%kothName%&7: &6%remaining%";
-
-    @Setting("scoreboard.sidebar.conquest.activeConquest")
-    private String scoreboardSidebarConquestActiveConquest = "&9&l%conquestName%&7:";
-
-    @Setting("scoreboard.sidebar.conquest.lineOne")
-    private String scoreboardSidebarConquestLineOne = "  &c%redRemaining%&r &e%yellowRemaining%";
-
-    @Setting("scoreboard.sidebar.conquest.lineTwo")
-    private String scoreboardSidebarConquestLineTwo = "  &a%greenRemaining%&r &b%blueRemaining%";
-
-    @Setting("scoreboard.sidebar.conquest.topThree")
-    private String scoreboardSidebarConquestTopThree = "&d&l%factionName%&7: &e%score%";
-
-    @Setting("scoreboard.sidebar.pvpClass.activeClass")
-    private String scoreboardSidebarPvpClassActiveClass = "&eActive Class&7: &a%className%";
-
-    @Setting("scoreboard.sidebar.pvpClass.bard.energy")
-    private String scoreboardSidebarPvpClassBardEnergy = " &5\u00bb &dEnergy&7: &6%energy%";
-
-    @Setting("scoreboard.sidebar.pvpClass.bard.buffDelay")
-    private String scoreboardSidebarPvpClassBardBuffDelay = " &5\u00bb &dBuff Delay&7: &6%buffDelay%";
-
-    @Setting("scoreboard.sidebar.pvpClass.archer.markColorLevel.one")
-    private String scoreboardSidebarPvpClassMarkColorLevelOne = "&a";
-
-    @Setting("scoreboard.sidebar.pvpClass.archer.markColorLevel.two")
-    private String scoreboardSidebarPvpClassMarkColorLevelTwo = "&c";
-
-    @Setting("scoreboard.sidebar.pvpClass.archer.markColorLevel.three")
-    private String scoreboardSidebarPvpClassMarkColorLevelThree = "&e";
-
-    @Setting("scoreboard.sidebar.pvpClass.archer.archerMark")
-    private String scoreboardSidebarPvpClassArcherMark = " &d\u00bb&c %targetName% %levelColor%[Mark %markLevel%]";
-
-    @Setting("scoreboard.sidebar.pvpClass.miner.invisibility.enabled")
-    private String scoreboardSidebarPvpClassMinerInvisibilityEnabled = "&aEnabled";
-
-    @Setting("scoreboard.sidebar.pvpClass.miner.invisibility.disabled")
-    private String scoreboardSidebarPvpClassMinerInvisibilityDisabled = "&cDisabled";
-
-    @Setting("scoreboard.sidebar.pvpClass.miner.invisibility.status")
-    private String scoreboardSidebarPvpClassMinerInvisibilityStatus = " &5\u00bb &dInvisibility&7: %invisibility%";
-
-    @Setting("scoreboard.sidebar.timer")
-    private String scoreboardSidebarTimer = "&b%timer%&7: &6%remaining%";
-
-    @Setting("scoreboard.sidebar.timer.gapplePrefix")
-    private String scoreboardSidebarTimerGapplePrefix = "&e&l";
-
-    @Setting("scoreboard.sidebar.timer.combatPrefix")
-    private String scoreboardSidebarTimerCombatPrefix = "&4&l";
-
-    @Setting("scoreboard.sidebar.timer.pearlPrefix")
-    private String scoreboardSidebarTimerPearlPrefix = "&d&l";
-
-    @Setting("scoreboard.sidebar.timer.invincibilityPrefix")
-    private String scoreboardSidebarTimerInvincibilityPrefix = "&2&l";
-
-    @Setting("scoreboard.sidebar.timer.logoutPrefix")
-    private String scoreboardSidebarTimerLogoutPrefix = "&c&l";
-
-    @Setting("scoreboard.sidebar.timer.classWarmupPrefix")
-    private String scoreboardSidebarTimerClassWarmupPrefix = "&b&l";
-
-    @Setting("scoreboard.sidebar.timer.stuckPrefix")
-    private String scoreboardSidebarTimerStuckPrefix = "&3&l";
-
-    @Setting("scoreboard.sidebar.timer.teleportPrefix")
-    private String scoreboardSidebarTimerTeleportPrefix = "&3&l";
-
-    @Setting("scoreboard.tablist.title")
-    private String scoreboardTablistTitle = "&a&lHCF";
-
-    @Setting("scoreboard.tablist.updateRate")
-    private int scoreboardTablistUpdateRate = 20;
-
-    @Setting("scoreboard.tablist.enabled")
-    private boolean scoreboardTablistEnabled = true;
-
-    @Setting("scoreboard.nametags.enabled")
-    private boolean scoreboardNametagsEnabled = true;
-
-    @Setting("combatlog.enabled")
-    private boolean handleCombatLogging = true;
-
-    @Setting("combatlog.despawnDelayTicks")
-    private int combatlogDespawnDelayTicks = 600;
-
-    @Setting("warzone.radiusOverworld")
-    private int warzoneRadiusOverworld = 800;
-
-    @Setting("warzone.radiusNether")
-    private int warzoneRadiusNether = 800;
-
-    @Setting("factions.conquest.pointLossPerDeath")
-    private int conquestPointLossPerDeath = 20;
-
-    @Setting("factions.conquest.requiredVictoryPoints")
-    private int conquestRequiredVictoryPoints = 300;
-
-    @Setting("factions.conquest.allowNegativePoints")
-    private boolean conquestAllowNegativePoints = true;
-
-    @Setting("factions.roads.allowClaimsBesides")
-    private boolean allowClaimsBesidesRoads = true;
-
+    private float furnaceCookSpeedMultiplier;
+    private boolean bottledExp;
+    private boolean bookDisenchanting;
+    private boolean deathSigns;
+    private boolean deathLightning;
+    private int mapNumber;
+    private boolean preventAllyAttackDamage;
+    private int economyStartingBalance;
+    private boolean spawnersPreventBreakingNether;
+    private boolean spawnersPreventPlacingNether;
+    private float expMultiplierGlobal;
+    private float expMultiplierFishing;
+    private float expMultiplierSmelting;
+    private float expMultiplierLootingPerLevel;
+    private float expMultiplierLuckPerLevel;
+    private float expMultiplierFortunePerLevel;
+    private String scoreboardSidebarTitle;
+    private boolean scoreboardSidebarEnabled;
+    private int scoreboardSidebarUpdateRate;
+    private String scoreboardSidebarKitmapKills;
+    private String scoreboardSidebarKitmapDeaths;
+    private String scoreboardSidebarKitmapKillstreak;
+    private String scoreboardSidebarEotwCountdown;
+    private String scoreboardSidebarEotwCappable;
+    private String scoreboardSidebarSotw;
+    private String scoreboardSidebarActiveKoth;
+    private String scoreboardSidebarConquestActiveConquest;
+    private String scoreboardSidebarConquestLineOne;
+    private String scoreboardSidebarConquestLineTwo;
+    private String scoreboardSidebarConquestTopThree;
+    private String scoreboardSidebarPvpClassActiveClass;
+    private String scoreboardSidebarPvpClassBardEnergy;
+    private String scoreboardSidebarPvpClassBardBuffDelay;
+    private String scoreboardSidebarPvpClassMarkColorLevelOne;
+    private String scoreboardSidebarPvpClassMarkColorLevelTwo;
+    private String scoreboardSidebarPvpClassMarkColorLevelThree;
+    private String scoreboardSidebarPvpClassArcherMark;
+    private String scoreboardSidebarPvpClassMinerInvisibilityEnabled;
+    private String scoreboardSidebarPvpClassMinerInvisibilityDisabled;
+    private String scoreboardSidebarPvpClassMinerInvisibilityStatus;
+    private String scoreboardSidebarTimerFormat;
+    private String scoreboardSidebarTimerGapplePrefix;
+    private String scoreboardSidebarTimerCombatPrefix;
+    private String scoreboardSidebarTimerPearlPrefix;
+    private String scoreboardSidebarTimerInvincibilityPrefix;
+    private String scoreboardSidebarTimerLogoutPrefix;
+    private String scoreboardSidebarTimerClassWarmupPrefix;
+    private String scoreboardSidebarTimerStuckPrefix;
+    private String scoreboardSidebarTimerTeleportPrefix;
+    private String scoreboardTablistTitle;
+    private int scoreboardTablistUpdateRate;
+    private boolean scoreboardTablistEnabled;
+    private boolean scoreboardNametagsEnabled;
+    private boolean handleCombatLogging;
+    private int combatlogDespawnDelayTicks;
+    private int warzoneRadiusOverworld;
+    private int warzoneRadiusNether;
+    private boolean allowCreationDuringEOTW;
+    private int conquestPointLossPerDeath;
+    private int conquestRequiredVictoryPoints;
+    private boolean conquestAllowNegativePoints;
+    private boolean allowClaimsBesideRoads;
     //TODO: CaseInsensitiveList
-    @Setting("factions.disallowedFactionNames")
-    private List<String> factionDisallowedNames = new ArrayList<>();
-
-    @Setting("factions.home.maxHeight")
-    private int maxHeightFactionHome = -1;
-
-    @Setting("factions.home.teleportDelay.NORMAL")
+    private List<String> factionDisallowedNames;
     private int factionHomeTeleportDelayOverworldSeconds;
     private long factionHomeTeleportDelayOverworldMillis;
-
-    @Setting("factions.home.teleportDelay.NETHER")
     private int factionHomeTeleportDelayNetherSeconds;
     private long factionHomeTeleportDelayNetherMillis;
-
-    @Setting("factions.home.teleportDelay.THE_END")
     private int factionHomeTeleportDelayEndSeconds;
     private long factionHomeTeleportDelayEndMillis;
-
-    @Setting("factions.nameMinCharacters")
-    private int factionNameMinCharacters = 3;
-
-    @Setting("factions.nameMaxCharacters")
-    private int factionNameMaxCharacters = 16;
-
-    @Setting("factions.maxMembers")
-    private int factionMaxMembers = 25;
-
-    @Setting("factions.maxClaims")
-    private int factionMaxClaims = 8;
-
-    @Setting("factions.maxAllies")
-    private int factionMaxAllies = 1;
-
-    @Setting("factions.subclaim.nameMinCharacters")
-    private int factionSubclaimNameMinCharacters = 3;
-
-    @Setting("factions.subclaim.nameMaxCharacters")
-    private int factionSubclaimNameMaxCharacters = 16;
-
-    @Setting("factions.dtr.regenFreeze.baseMinutes")
-    private int factionDtrRegenFreezeBaseMinutes = 40;
+    private int maxHeightFactionHome;
+    private boolean allowTeleportingInEnemyTerritory;
+    private int factionNameMinCharacters;
+    private int factionNameMaxCharacters;
+    private int factionMaxMembers;
+    private int factionMaxClaims;
+    private int factionMaxAllies;
+    private int factionSubclaimNameMinCharacters;
+    private int factionSubclaimNameMaxCharacters;
+    private int factionDtrRegenFreezeBaseMinutes;
     private long factionDtrRegenFreezeBaseMilliseconds;
-
     @Getter(AccessLevel.NONE)
-    @Setting("factions.dtr.regenFreeze.minutesPerMember")
-    private int factionDtrRegenFreezeMinutesPerMember = 2;
+    private int factionDtrRegenFreezeMinutesPerMember;
     private long factionDtrRegenFreezeMillisecondsPerMember;
-
-    @Setting("factions.dtr.minimum")
-    private int factionMinimumDtr = -50;
-
-    @Setting("factions.dtr.maximum")
-    private float factionMaximumDtr = 6.0F;
-
-    @Setting("factions.dtr.millisecondsBetweenUpdates")
-    private int factionDtrUpdateMillis = 45000; // 45 seconds
+    private int factionMinimumDtr;
+    private float factionMaximumDtr;
+    private int factionDtrUpdateMillis; // 45 seconds
     private String factionDtrUpdateTimeWords;
-
-    @Setting("factions.dtr.incrementBetweenUpdates")
-    private float factionDtrUpdateIncrement = 0.1F;
-
+    private float factionDtrUpdateIncrement;
     @Getter(AccessLevel.NONE)
-    @Setting("factions.relationColours.warzone")
-    private String relationColourWarzoneName = "LIGHT_PURPLE";
+    private String relationColourWarzoneName;
     private ChatColor relationColourWarzone = ChatColor.LIGHT_PURPLE;
-
     @Getter(AccessLevel.NONE)
-    @Setting("factions.relationColours.wilderness")
-    private String relationColourWildernessName = "DARK_GREEN";
+    private String relationColourWildernessName;
     private ChatColor relationColourWilderness = ChatColor.DARK_GREEN;
-
     @Getter(AccessLevel.NONE)
-    @Setting("factions.relationColours.teammate")
-    private String relationColourTeammateName = "GREEN";
+    private String relationColourTeammateName;
     private ChatColor relationColourTeammate = ChatColor.GREEN;
-
     @Getter(AccessLevel.NONE)
-    @Setting("factions.relationColours.ally")
-    private String relationColourAllyName = "GOLD";
+    private String relationColourAllyName;
     private ChatColor relationColourAlly = ChatColor.GOLD;
-
     @Getter(AccessLevel.NONE)
-    @Setting("factions.relationColours.enemy")
-    private String relationColourEnemyName = "RED";
+    private String relationColourEnemyName;
     private ChatColor relationColourEnemy = ChatColor.RED;
-
     @Getter(AccessLevel.NONE)
-    @Setting("factions.relationColours.neutral")
-    private String relationColourNeutralName = "PINK";
+    private String relationColourNeutralName;
     private ChatColor relationColourNeutral = ChatColor.YELLOW;
-
     @Getter(AccessLevel.NONE)
-    @Setting("factions.relationColours.neutral")
-    private String relationColourFocusName = "LIGHT_PURPLE";
+    private String relationColourFocusName;
     private ChatColor relationColourFocus = ChatColor.LIGHT_PURPLE;
-
     @Getter(AccessLevel.NONE)
-    @Setting("factions.relationColours.road")
-    private String relationColourRoadName = "YELLOW";
+    private String relationColourRoadName;
     private ChatColor relationColourRoad = ChatColor.YELLOW;
-
     @Getter(AccessLevel.NONE)
-    @Setting("factions.relationColours.safezone")
-    private String relationColourSafezoneName = "AQUA";
+    private String relationColourSafezoneName;
     private ChatColor relationColourSafezone = ChatColor.AQUA;
-
     @Setter
-    @Setting("deathban.baseDurationMinutes")
-    private int deathbanBaseDurationMinutes = 60;
-
+    private int deathbanBaseDurationMinutes;
     @Setter
-    @Setting("deathban.respawnScreenSecondsBeforeKick")
-    private int deathbanRespawnScreenSecondsBeforeKick = 15;
+    private int deathbanRespawnScreenSecondsBeforeKick;
     private long deathbanRespawnScreenTicksBeforeKick;
-
-    @Setting("end.open")
-    private boolean endOpen = true;
-
-    @Setting("end.exitLocation")
-    private String endExitLocationRaw = "world,0.5,75,0.5,0,0";
+    private boolean endOpen;
+    private String endExitLocationRaw;
     private PersistableLocation endExitLocation = new PersistableLocation(Bukkit.getWorld("world"), 0.5, 75, 0.5);
-
-    @Setting("end.extinguishFireOnExit")
-    private boolean endExtinguishFireOnExit = true;
-
-    @Setting("end.removeStrengthOnEntrance")
-    private boolean endRemoveStrengthOnEntrance = true;
-
-    @Setting("eotw.chatSymbolPrefix")
-    private String eotwChatSymbolPrefix = " \u2605";
-
-    @Setting("eotw.chatSymbolSuffix")
-    private String eotwChatSymbolSuffix = "";
-
+    private boolean endExtinguishFireOnExit;
+    private boolean endRemoveStrengthOnEntrance;
+    private String eotwChatSymbolPrefix;
+    private String eotwChatSymbolSuffix;
     //TODO: UUID list not UUID string list
-    @Setting("eotw.lastMapCapperUuids")
-    private List<String> eotwLastMapCapperUuids = new ArrayList<>();
-
+    private List<String> eotwLastMapCapperUuids;
     @SuppressWarnings("ALL")
-    @Setting("potionLimits")
-    private final List<String> potionLimitsUnstored = new ArrayList<>();
-
+    private List<String> enchantmentLimitsUnstored = new ArrayList<>();
     @SuppressWarnings("ALL")
-    @Setting("enchantmentLimits")
-    private final List<String> enchantmentLimitsUnstored = new ArrayList<>();
+    private List<String> potionLimitsUnstored = new ArrayList<>();
+    private boolean subclaimSignPrivate;
+    private boolean subclaimSignCaptain;
+    private boolean subclaimSignLeader;
+    private boolean subclaimHopperCheck;
 
-    @Setting("subclaimSigns.private")
-    private boolean subclaimSignPrivate = false;
 
-    @Setting("subclaimSigns.captain")
-    private boolean subclaimSignCaptain = false;
+    public Configuration(HCF plugin) {
+        this.config = new Config(plugin, "config");
 
-    @Setting("subclaimSigns.leader")
-    private boolean subclaimSignLeader = false;
-
-    @Setting("subclaimSigns.hopperCheck")
-    private boolean subclaimHopperCheck = false;
+        updateConfig();
+        loadFromConfig();
+        updateFields();
+    }
 
     private final TObjectIntMap<Enchantment> enchantmentLimits = new TObjectIntHashMap<>(Constants.DEFAULT_CAPACITY, Constants.DEFAULT_LOAD_FACTOR, -1);
     private final TObjectIntMap<PotionType> potionLimits = new TObjectIntHashMap<>(Constants.DEFAULT_CAPACITY, Constants.DEFAULT_LOAD_FACTOR, -1);
@@ -428,6 +202,264 @@ public class Configuration extends AnnotationConfig {
         return maxLevel == potionLimits.getNoEntryValue() ? potionEffectType.getMaxLevel() : maxLevel;
     }
 
+    private void updateConfig() {
+        Map<String, Object> map = new HashMap<>();
+        /*try {
+            for (Field field : this.getClass().getDeclaredFields()) {
+                field.setAccessible(true);
+                if (field.getAnnotation(Setting.class) != null) {
+                    map.put(field.getAnnotation(Setting.class).value(), field.get(this));
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }*/
+        map.put("kitmap", false);
+        map.put("spawnCannon", true);
+        map.put("handleEntityLimiting", true);
+        map.put("removeInfinityArrowsOnLand", true);
+        map.put("beaconStrengthLevelLimit", 1);
+        map.put("disableBoatPlacementOnLand", true);
+        map.put("chat.handleChat", true);
+        map.put("chat.vault", false);
+        map.put("chat.essentials", true);
+        map.put("enderpearlGlitching.enabled", true);
+        map.put("enderpearlGlitching.refund", true);
+        map.put("disableEnderchests", true);
+        map.put("preventPlacingBedsNether", false);
+        map.put("serverTimeZone", "EST");
+        map.put("furnaceCookSpeedMultiplier", 6.0f);
+        map.put("bottledExp", true);
+        map.put("bookDisenchanting", true);
+        map.put("deathSigns", true);
+        map.put("deathLightning", true);
+        map.put("mapNumber", 1);
+        map.put("preventAllyDamage", true);
+        map.put("economy.startingBalance", 250);
+        map.put("spawners.preventBreakingNether", true);
+        map.put("spawners.preventPlacingNether", true);
+        map.put("expMultiplier.global", 1.0F);
+        map.put("expMultiplier.fishing", 1.0F);
+        map.put("expMultiplier.smelting", 1.0F);
+        map.put("expMultiplier.lootingPerLevel", 1.0F);
+        map.put("expMultiplier.luckPerLevel", 1.0F);
+        map.put("expMultiplier.fortunePerLevel", 1.0F);
+        map.put("scoreboard.sidebar.title", "&a&lHCF &c[Map {MAP_NUMBER}]");
+        map.put("scoreboard.sidebar.enabled", true);
+        map.put("scoreboard.sidebar.updateRate", 2);
+        map.put("scoreboard.sidebar.kitmap.kills", "&4&lKills: %kills%");
+        map.put("scoreboard.sidebar.kitmap.deaths", "&4&lDeaths: %deaths%");
+        map.put("scoreboard.sidebar.kitmap.killstreak", "&4&lKillstreak: %killstreak%");
+        map.put("scoreboard.sidebar.eotw.countdown", "&4&lEOTW &cstarts in &l%remaining%");
+        map.put("scoreboard.sidebar.eotw.cappable", "&4&lEOTW &ccappable in &l%remaining%");
+        map.put("scoreboard.sidebar.sotw", "&2&lSOTW&7: &6%remaining%");
+        map.put("scoreboard.sidebar.activeKoth", "&a%kothName%&7: &6%remaining%");
+        map.put("scoreboard.sidebar.conquest.activeConquest", "&9&l%conquestName%&7:");
+        map.put("scoreboard.sidebar.conquest.lineOne", "  &c%redRemaining%&r &e%yellowRemaining%");
+        map.put("scoreboard.sidebar.conquest.lineTwo", "  &a%greenRemaining%&r &b%blueRemaining%");
+        map.put("scoreboard.sidebar.conquest.topThree", "&d&l%factionName%&7: &e%score%");
+        map.put("scoreboard.sidebar.pvpClass.activeClass", "&eActive Class&7: &a%className%");
+        map.put("scoreboard.sidebar.pvpClass.bard.energy", " &5\u00bb &dEnergy&7: &6%energy%");
+        map.put("scoreboard.sidebar.pvpClass.bard.buffDelay", " &5\u00bb &dBuff Delay&7: &6%buffDelay%");
+        map.put("scoreboard.sidebar.pvpClass.archer.markColorLevel.one", "&a");
+        map.put("scoreboard.sidebar.pvpClass.archer.markColorLevel.two", "&c");
+        map.put("scoreboard.sidebar.pvpClass.archer.markColorLevel.three", "&e");
+        map.put("scoreboard.sidebar.pvpClass.archer.archerMark", " &d\u00bb&c %targetName% %levelColor%[Mark %markLevel%]");
+        map.put("scoreboard.sidebar.pvpClass.miner.invisibility.enabled", "&aEnabled");
+        map.put("scoreboard.sidebar.pvpClass.miner.invisibility.disabled", "&cDisabled");
+        map.put("scoreboard.sidebar.pvpClass.miner.invisibility.status", " &5\u00bb &dInvisibility&7: %invisibility%");
+        map.put("scoreboard.sidebar.timer.format", "&b%timer%&7: &6%remaining%");
+        map.put("scoreboard.sidebar.timer.gapplePrefix", "&e&l");
+        map.put("scoreboard.sidebar.timer.combatPrefix", "&4&l");
+        map.put("scoreboard.sidebar.timer.pearlPrefix", "&d&l");
+        map.put("scoreboard.sidebar.timer.invincibilityPrefix", "&2&l");
+        map.put("scoreboard.sidebar.timer.logoutPrefix", "&c&l");
+        map.put("scoreboard.sidebar.timer.classWarmupPrefix", "&b&l");
+        map.put("scoreboard.sidebar.timer.stuckPrefix", "&3&l");
+        map.put("scoreboard.sidebar.timer.teleportPrefix", "&3&l");
+        map.put("scoreboard.tablist.title", "&a&lHCF");
+        map.put("scoreboard.tablist.updateRate", 20);
+        map.put("scoreboard.tablist.enabled", true);
+        map.put("scoreboard.nametags.enabled", true);
+        map.put("combatlog.enabled", true);
+        map.put("combatlog.despawnDelayTicks", 600);
+        map.put("warzone.radiusOverworld", 800);
+        map.put("warzone.radiusNether", 800);
+        map.put("factions.allowCreationDuringEOTW", false);
+        map.put("factions.conquest.pointLossPerDeath", 20);
+        map.put("factions.conquest.requiredVictoryPoints", 300);
+        map.put("factions.conquest.allowNegativePoints", true);
+        map.put("factions.roads.allowClaimsBesideRoads", true);
+        map.put("factions.disallowedFactionNames", new ArrayList<>(Collections.singletonList("nigger")));
+        map.put("factions.home.teleportDelay.NORMAL", 30);
+        map.put("factions.home.teleportDelay.NETHER", -1);
+        map.put("factions.home.teleportDelay.THE_END", 10);
+        map.put("factions.home.maxHeight", -1);
+        map.put("factions.home.allowTeleportingInEnemyTerritory", true);
+        map.put("factions.nameMinCharacters", 3);
+        map.put("factions.nameMaxCharacters", 16);
+        map.put("factions.maxMembers", 25);
+        map.put("factions.maxClaims", 8);
+        map.put("factions.maxAllies", 1);
+        map.put("factions.subclaim.nameMinCharacters", 3);
+        map.put("factions.subclaim.nameMaxCharacters", 16);
+        map.put("factions.dtr.regenFreeze.baseMinutes", 40);
+        map.put("factions.dtr.regenFreeze.minutesPerMember", 2);
+        map.put("factions.dtr.minimum", -50);
+        map.put("factions.dtr.maximum", 6.0F);
+        map.put("factions.dtr.millisecondsBetweenUpdates", 45000);
+        map.put("factions.dtr.incrementBetweenUpdates", 0.1F);
+        map.put("factions.relationColours.warzone", "LIGHT_PURPLE");
+        map.put("factions.relationColours.wilderness", "DARK_GREEN");
+        map.put("factions.relationColours.teammate", "GREEN");
+        map.put("factions.relationColours.enemy", "RED");
+        map.put("factions.relationColours.ally", "GOLD");
+        map.put("factions.relationColours.neutral", "YELLOW");
+        map.put("factions.relationColours.focus", "LIGHT_PURPLE");
+        map.put("factions.relationColours.road", "YELLOW");
+        map.put("factions.relationColours.safezone", "AQUA");
+        map.put("deathban.baseDurationMinutes", 60);
+        map.put("deathban.respawnScreenSecondsBeforeKick", 15);
+        map.put("end.open", true);
+        map.put("end.exitLocation", "world,0.5,75,0.5,0,0");
+        map.put("end.extinguishFireOnExit", true);
+        map.put("end.removeStrengthOnEntrance", true);
+        map.put("eotw.chatSymbolPrefix", " \u2605");
+        map.put("eotw.chatSymbolSuffix", "");
+        map.put("eotw.lastMapCapperUuids", new ArrayList<>());
+        map.put("enchantmentLimits", new ArrayList<>());
+        map.put("potionLimits", new ArrayList<>());
+        map.put("subclaimSigns.private", false);
+        map.put("subclaimSigns.captain", false);
+        map.put("subclaimSigns.leader", false);
+        map.put("subclaimSigns.hopperCheck", false);
+        config.addDefaults(map);
+        config.copyDefaults();
+    }
+
+    private void loadFromConfig() {
+        this.kitmap = (boolean) config.get("kitmap");
+        this.spawnCannon = (boolean) config.get("spawnCannon");
+        this.handleEntityLimiting = (boolean) config.get("handleEntityLimiting");
+        this.removeInfinityArrowsOnLand = (boolean) config.get("removeInfinityArrowsOnLand");
+        this.beaconStrengthLevelLimit = (int) config.get("beaconStrengthLevelLimit");
+        this.disableBoatPlacementOnLand = (boolean) config.get("disableBoatPlacementOnLand");
+        this.handleChat = (boolean) config.get("chat.handleChat");
+        this.vault = (boolean) config.get("chat.vault");
+        this.essentials = (boolean) config.get("chat.essentials");
+        this.enderpearlGlitchingEnabled = (boolean) config.get("enderpearlGlitching.enabled");
+        this.enderpearlGlitchingRefund = (boolean) config.get("enderpearlGlitching.refund");
+        this.disableEnderchests = (boolean) config.get("disableEnderchests");
+        this.preventPlacingBedsNether = (boolean) config.get("preventPlacingBedsNether");
+        this.serverTimeZoneName = (String) config.get("serverTimeZone");
+        this.furnaceCookSpeedMultiplier = Float.valueOf(String.valueOf(config.get("furnaceCookSpeedMultiplier")));
+        this.bottledExp = (boolean) config.get("bottledExp");
+        this.bookDisenchanting = (boolean) config.get("bookDisenchanting");
+        this.deathSigns = (boolean) config.get("deathSigns");
+        this.deathLightning = (boolean) config.get("deathLightning");
+        this.mapNumber = (int) config.get("mapNumber");
+        this.preventAllyAttackDamage = (boolean) config.get("preventAllyDamage");
+        this.economyStartingBalance = (int) config.get("economy.startingBalance");
+        this.spawnersPreventBreakingNether = (boolean) config.get("spawners.preventBreakingNether");
+        this.spawnersPreventPlacingNether = (boolean) config.get("spawners.preventPlacingNether");
+        this.expMultiplierGlobal = Float.valueOf(String.valueOf(config.get("expMultiplier.global")));
+        this.expMultiplierFishing = Float.valueOf(String.valueOf(config.get("expMultiplier.fishing")));
+        this.expMultiplierSmelting = Float.valueOf(String.valueOf(config.get("expMultiplier.smelting")));
+        this.expMultiplierLootingPerLevel = Float.valueOf(String.valueOf(config.get("expMultiplier.lootingPerLevel")));
+        this.expMultiplierLuckPerLevel = Float.valueOf(String.valueOf(config.get("expMultiplier.luckPerLevel")));
+        this.expMultiplierFortunePerLevel = Float.valueOf(String.valueOf(config.get("expMultiplier.fortunePerLevel")));
+        this.scoreboardSidebarTitle = (String) config.get("scoreboard.sidebar.title");
+        this.scoreboardSidebarEnabled = (boolean) config.get("scoreboard.sidebar.enabled");
+        this.scoreboardSidebarUpdateRate = (int) config.get("scoreboard.sidebar.updateRate");
+        this.scoreboardSidebarKitmapKills = (String) config.get("scoreboard.sidebar.kitmap.kills");
+        this.scoreboardSidebarKitmapDeaths = (String) config.get("scoreboard.sidebar.kitmap.deaths");
+        this.scoreboardSidebarKitmapKillstreak = (String) config.get("scoreboard.sidebar.kitmap.killstreak");
+        this.scoreboardSidebarEotwCountdown = (String) config.get("scoreboard.sidebar.eotw.countdown");
+        this.scoreboardSidebarEotwCappable = (String) config.get("scoreboard.sidebar.eotw.cappable");
+        this.scoreboardSidebarSotw = (String) config.get("scoreboard.sidebar.sotw");
+        this.scoreboardSidebarActiveKoth = (String) config.get("scoreboard.sidebar.activeKoth");
+        this.scoreboardSidebarConquestActiveConquest = (String) config.get("scoreboard.sidebar.conquest.activeConquest");
+        this.scoreboardSidebarConquestLineOne = (String) config.get("scoreboard.sidebar.conquest.lineOne");
+        this.scoreboardSidebarConquestLineTwo = (String) config.get("scoreboard.sidebar.conquest.lineTwo");
+        this.scoreboardSidebarConquestTopThree = (String) config.get("scoreboard.sidebar.conquest.topThree");
+        this.scoreboardSidebarPvpClassActiveClass = (String) config.get("scoreboard.sidebar.pvpClass.activeClass");
+        this.scoreboardSidebarPvpClassBardEnergy = (String) config.get("scoreboard.sidebar.pvpClass.bard.energy");
+        this.scoreboardSidebarPvpClassBardBuffDelay = (String) config.get("scoreboard.sidebar.pvpClass.bard.buffDelay");
+        this.scoreboardSidebarPvpClassMarkColorLevelOne = (String) config.get("scoreboard.sidebar.pvpClass.archer.markColorLevel.one");
+        this.scoreboardSidebarPvpClassMarkColorLevelTwo = (String) config.get("scoreboard.sidebar.pvpClass.archer.markColorLevel.two");
+        this.scoreboardSidebarPvpClassMarkColorLevelThree = (String) config.get("scoreboard.sidebar.pvpClass.archer.markColorLevel.three");
+        this.scoreboardSidebarPvpClassArcherMark = (String) config.get("scoreboard.sidebar.pvpClass.archer.archerMark");
+        this.scoreboardSidebarPvpClassMinerInvisibilityEnabled = (String) config.get("scoreboard.sidebar.pvpClass.miner.invisibility.enabled");
+        this.scoreboardSidebarPvpClassMinerInvisibilityDisabled = (String) config.get("scoreboard.sidebar.pvpClass.miner.invisibility.disabled");
+        this.scoreboardSidebarPvpClassMinerInvisibilityStatus = (String) config.get("scoreboard.sidebar.pvpClass.miner.invisibility.status");
+        this.scoreboardSidebarTimerFormat = (String) config.get("scoreboard.sidebar.timer.format");
+        this.scoreboardSidebarTimerGapplePrefix = (String) config.get("scoreboard.sidebar.timer.gapplePrefix");
+        this.scoreboardSidebarTimerCombatPrefix = (String) config.get("scoreboard.sidebar.timer.combatPrefix");
+        this.scoreboardSidebarTimerPearlPrefix = (String) config.get("scoreboard.sidebar.timer.pearlPrefix");
+        this.scoreboardSidebarTimerInvincibilityPrefix = (String) config.get("scoreboard.sidebar.timer.invincibilityPrefix");
+        this.scoreboardSidebarTimerLogoutPrefix = (String) config.get("scoreboard.sidebar.timer.logoutPrefix");
+        this.scoreboardSidebarTimerClassWarmupPrefix = (String) config.get("scoreboard.sidebar.timer.classWarmupPrefix");
+        this.scoreboardSidebarTimerStuckPrefix = (String) config.get("scoreboard.sidebar.timer.stuckPrefix");
+        this.scoreboardSidebarTimerTeleportPrefix = (String) config.get("scoreboard.sidebar.timer.teleportPrefix");
+        this.scoreboardTablistTitle = (String) config.get("scoreboard.tablist.title");
+        this.scoreboardTablistUpdateRate = (int) config.get("scoreboard.tablist.updateRate");
+        this.scoreboardTablistEnabled = (boolean) config.get("scoreboard.tablist.enabled");
+        this.scoreboardNametagsEnabled = (boolean) config.get("scoreboard.nametags.enabled");
+        this.handleCombatLogging = (boolean) config.get("combatlog.enabled");
+        this.combatlogDespawnDelayTicks = (int) config.get("combatlog.despawnDelayTicks");
+        this.warzoneRadiusOverworld = (int) config.get("warzone.radiusOverworld");
+        this.warzoneRadiusNether = (int) config.get("warzone.radiusNether");
+        this.allowCreationDuringEOTW = (boolean) config.get("factions.allowCreationDuringEOTW");
+        this.conquestPointLossPerDeath = (int) config.get("factions.conquest.pointLossPerDeath");
+        this.conquestRequiredVictoryPoints = (int) config.get("factions.conquest.requiredVictoryPoints");
+        this.conquestAllowNegativePoints = (boolean) config.get("factions.conquest.allowNegativePoints");
+        this.allowClaimsBesideRoads = (boolean) config.get("factions.roads.allowClaimsBesideRoads");
+        this.factionDisallowedNames = (List<String>) config.get("factions.disallowedFactionNames");
+        this.factionHomeTeleportDelayOverworldSeconds = (int) config.get("factions.home.teleportDelay.NORMAL");
+        this.factionHomeTeleportDelayNetherSeconds = (int) config.get("factions.home.teleportDelay.NETHER");
+        this.factionHomeTeleportDelayEndSeconds = (int) config.get("factions.home.teleportDelay.THE_END");
+        this.maxHeightFactionHome = (int) config.get("factions.home.maxHeight");
+        this.allowTeleportingInEnemyTerritory = (boolean) config.get("factions.home.allowTeleportingInEnemyTerritory");
+        this.factionNameMinCharacters = (int) config.get("factions.nameMinCharacters");
+        this.factionNameMaxCharacters = (int) config.get("factions.nameMaxCharacters");
+        this.factionMaxMembers = (int) config.get("factions.maxMembers");
+        this.factionMaxClaims = (int) config.get("factions.maxClaims");
+        this.factionMaxAllies = (int) config.get("factions.maxAllies");
+        this.factionSubclaimNameMinCharacters = (int) config.get("factions.subclaim.nameMinCharacters");
+        this.factionSubclaimNameMaxCharacters = (int) config.get("factions.subclaim.nameMaxCharacters");
+        this.factionDtrRegenFreezeBaseMinutes = (int) config.get("factions.dtr.regenFreeze.baseMinutes");
+        this.factionDtrRegenFreezeMinutesPerMember = (int) config.get("factions.dtr.regenFreeze.minutesPerMember");
+        this.factionMinimumDtr = (int) config.get("factions.dtr.minimum");
+        this.factionMaximumDtr = Float.valueOf(String.valueOf(config.get("factions.dtr.maximum")));
+        this.factionDtrUpdateMillis = (int) config.get("factions.dtr.millisecondsBetweenUpdates");
+        this.factionDtrUpdateIncrement = Float.valueOf(String.valueOf(config.get("factions.dtr.incrementBetweenUpdates")));
+        this.relationColourWarzoneName = (String) config.get("factions.relationColours.warzone");
+        this.relationColourWildernessName = (String) config.get("factions.relationColours.wilderness");
+        this.relationColourTeammateName = (String) config.get("factions.relationColours.teammate");
+        this.relationColourAllyName = (String) config.get("factions.relationColours.ally");
+        this.relationColourEnemyName = (String) config.get("factions.relationColours.enemy");
+        this.relationColourNeutralName = (String) config.get("factions.relationColours.neutral");
+        this.relationColourFocusName = (String) config.get("factions.relationColours.focus");
+        this.relationColourRoadName = (String) config.get("factions.relationColours.road");
+        this.relationColourSafezoneName = (String) config.get("factions.relationColours.safezone");
+        this.deathbanBaseDurationMinutes = (int) config.get("deathban.baseDurationMinutes");
+        this.deathbanRespawnScreenSecondsBeforeKick = (int) config.get("deathban.respawnScreenSecondsBeforeKick");
+        this.endOpen = (boolean) config.get("end.open");
+        this.endExitLocationRaw = (String) config.get("end.exitLocation");
+        this.endExtinguishFireOnExit = (boolean) config.get("end.extinguishFireOnExit");
+        this.endRemoveStrengthOnEntrance = (boolean) config.get("end.removeStrengthOnEntrance");
+        this.eotwChatSymbolPrefix = (String) config.get("eotw.chatSymbolPrefix");
+        this.eotwChatSymbolSuffix = (String) config.get("eotw.chatSymbolSuffix");
+        this.eotwLastMapCapperUuids = (List<String>) config.get("eotw.lastMapCapperUuids");
+        this.enchantmentLimitsUnstored = (List<String>) config.get("enchantmentLimits");
+        this.potionLimitsUnstored = (List<String>) config.get("potionLimits");
+        this.subclaimSignPrivate = (boolean) config.get("subclaimSigns.private");
+        this.subclaimSignCaptain = (boolean) config.get("subclaimSigns.captain");
+        this.subclaimSignLeader = (boolean) config.get("subclaimSigns.leader");
+        this.subclaimHopperCheck = (boolean) config.get("subclaimSigns.hopperCheck");
+
+    }
+
     protected void updateFields() {
         serverTimeZone = TimeZone.getTimeZone(serverTimeZoneName);
         serverTimeZoneID = serverTimeZone.toZoneId();
@@ -439,6 +471,8 @@ public class Configuration extends AnnotationConfig {
         relationColourTeammate = ChatColor.valueOf(relationColourTeammateName.replace(" ", "_").toUpperCase());
         relationColourAlly = ChatColor.valueOf(relationColourAllyName.replace(" ", "_").toUpperCase());
         relationColourEnemy = ChatColor.valueOf(relationColourEnemyName.replace(" ", "_").toUpperCase());
+        relationColourNeutral = ChatColor.valueOf(relationColourNeutralName.replace(" ", "_").toUpperCase());
+        relationColourFocus = ChatColor.valueOf(relationColourFocusName.replace(" ", "_").toUpperCase());
         relationColourRoad = ChatColor.valueOf(relationColourRoadName.replace(" ", "_").toUpperCase());
         relationColourSafezone = ChatColor.valueOf(relationColourSafezoneName.replace(" ", "_").toUpperCase());
         factionDtrRegenFreezeBaseMilliseconds = TimeUnit.MINUTES.toMillis(factionDtrRegenFreezeBaseMinutes);

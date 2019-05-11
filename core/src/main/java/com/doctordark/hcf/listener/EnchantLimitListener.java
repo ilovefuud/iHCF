@@ -6,7 +6,6 @@ import net.minecraft.server.v1_8_R3.ItemArmor;
 import org.bukkit.Material;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Entity;
-import org.bukkit.entity.HumanEntity;
 import org.bukkit.entity.Item;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -14,7 +13,6 @@ import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.enchantment.EnchantItemEvent;
 import org.bukkit.event.entity.EntityDeathEvent;
-//import org.bukkit.event.inventory.PrepareAnvilRepairEvent;
 import org.bukkit.event.player.PlayerFishEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.EnchantmentStorageMeta;
@@ -24,6 +22,8 @@ import us.lemin.spigot.constant.EnumToolMaterial;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
+
+//import org.bukkit.event.inventory.PrepareAnvilRepairEvent;
 
 /**
  * Listener that limits the maximum {@link Enchantment} levels for {@link ItemStack}s.

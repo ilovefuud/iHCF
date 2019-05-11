@@ -18,6 +18,7 @@ public class FactionClaimChunkArgument extends PlayerSubCommand {
     public FactionClaimChunkArgument(HCF plugin) {
         super("claimchunk", "Claim a chunk of land in the Wilderness.");
         this.plugin = plugin;
+        this.aliases = new String[]{"chunkclaim"};
     }
 
     public String getUsage(String label) {

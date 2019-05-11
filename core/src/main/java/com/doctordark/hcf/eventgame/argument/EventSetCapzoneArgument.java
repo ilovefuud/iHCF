@@ -11,7 +11,7 @@ import com.doctordark.hcf.eventgame.tracker.KothTracker;
 import com.doctordark.hcf.faction.FactionManager;
 import com.doctordark.hcf.faction.claim.Claim;
 import com.doctordark.hcf.faction.type.Faction;
-import com.doctordark.util.command.CommandArgument;
+import com.doctordark.hcf.util.RegionData;
 import com.sk89q.worldedit.bukkit.WorldEditPlugin;
 import com.sk89q.worldedit.bukkit.selections.Selection;
 import org.bukkit.ChatColor;
@@ -19,6 +19,8 @@ import org.bukkit.World;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
+import us.lemin.core.commands.PlayerSubCommand;
+import us.lemin.core.utils.cuboid.Cuboid;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -27,9 +29,9 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 /**
- * An {@link CommandArgument} used for setting the {@link CaptureZone}s of an {@link EventFaction}.
+ * An {@link PlayerSubCommand} used for setting the {@link CaptureZone}s of an {@link EventFaction}.
  */
-public class EventSetCapzoneArgument extends CommandArgument {
+public class EventSetCapzoneArgument extends PlayerSubCommand {
 
     private final HCF plugin;
 
@@ -40,47 +42,35 @@ public class EventSetCapzoneArgument extends CommandArgument {
         this.permission = "hcf.command.event.argument." + getName();
     }
 
-    @Override
     public String getUsage(String label) {
         return '/' + label + ' ' + getName() + " <eventName>";
     }
 
     @Override
-    public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
-        if (!(sender instanceof Player)) {
-            sender.sendMessage(ChatColor.RED + "Only players can set KOTH arena capture points");
-            return true;
-        }
-
+    public void execute(Player sender, Player target, String[] args, String label) {
         if (args.length < 2) {
             sender.sendMessage(ChatColor.RED + "Usage: " + getUsage(label));
-            return true;
+            return;
         }
 
-        WorldEditPlugin worldEdit = plugin.getWorldEdit();
 
-        if (worldEdit == null) {
-            sender.sendMessage(ChatColor.RED + "WorldEdit must be installed to set KOTH capture points.");
-            return true;
+        RegionData selection = plugin.getRegionManager().getData(sender);
+
+        if (plugin.getRegionManager().isDataValid(sender)) {
+            sender.sendMessage(ChatColor.RED + "You must make a selection to do this.");
+            return;
         }
-
-        Selection selection = worldEdit.getSelection((Player) sender);
-
-        if (selection == null) {
-            sender.sendMessage(ChatColor.RED + "You must make a WorldEdit selection to do this.");
-            return true;
-        }
-
-        if (selection.getWidth() < CaptureZone.MINIMUM_SIZE_AREA || selection.getLength() < CaptureZone.MINIMUM_SIZE_AREA) {
+        Cuboid cuboid = new Cuboid(selection.getA(), selection.getB());
+        if (cuboid.getWidth() < CaptureZone.MINIMUM_SIZE_AREA || cuboid.getLength() < CaptureZone.MINIMUM_SIZE_AREA) {
             sender.sendMessage(ChatColor.RED + "Capture zones must be at least " + CaptureZone.MINIMUM_SIZE_AREA + 'x' + CaptureZone.MINIMUM_SIZE_AREA + '.');
-            return true;
+            return;
         }
 
         Faction faction = plugin.getFactionManager().getFaction(args[1]);
 
         if (!(faction instanceof CapturableFaction)) {
             sender.sendMessage(ChatColor.RED + "There is not a capturable faction named '" + args[1] + "'.");
-            return true;
+            return;
         }
 
         CapturableFaction capturableFaction = (CapturableFaction) faction;
@@ -88,10 +78,10 @@ public class EventSetCapzoneArgument extends CommandArgument {
 
         if (claims.isEmpty()) {
             sender.sendMessage(ChatColor.RED + "Capture zones can only be inside the event claim.");
-            return true;
+            return;
         }
 
-        Claim claim = new Claim(faction, selection.getMinimumPoint(), selection.getMaximumPoint());
+        Claim claim = new Claim(faction, cuboid);
 
         World world = claim.getWorld();
         int minimumX = claim.getMinimumX();
@@ -106,7 +96,7 @@ public class EventSetCapzoneArgument extends CommandArgument {
                 Faction factionAt = factionManager.getFactionAt(world, x, z);
                 if (factionAt != capturableFaction) {
                     sender.sendMessage(ChatColor.RED + "Capture zones can only be inside the event claim.");
-                    return true;
+                    return;
                 }
             }
         }
@@ -115,7 +105,7 @@ public class EventSetCapzoneArgument extends CommandArgument {
         if (capturableFaction instanceof ConquestFaction) {
             if (args.length < 3) {
                 sender.sendMessage(ChatColor.RED + "Usage: /" + label + ' ' + getName() + ' ' + faction.getName() + " <red|blue|green|yellow>");
-                return true;
+                return;
             }
 
             ConquestFaction conquestFaction = (ConquestFaction) capturableFaction;
@@ -123,7 +113,7 @@ public class EventSetCapzoneArgument extends CommandArgument {
             if (conquestZone == null) {
                 sender.sendMessage(ChatColor.RED + "There is no conquest zone named '" + args[2] + "'.");
                 sender.sendMessage(ChatColor.RED + "Did you mean?: " + HCF.COMMA_JOINER.join(ConquestFaction.ConquestZone.getNames()));
-                return true;
+                return;
             }
 
             captureZone = new CaptureZone(conquestZone.getName(), conquestZone.getColor().toString(), claim, ConquestTracker.DEFAULT_CAP_MILLIS);
@@ -132,33 +122,9 @@ public class EventSetCapzoneArgument extends CommandArgument {
             ((KothFaction) capturableFaction).setCaptureZone(captureZone = new CaptureZone(capturableFaction.getName(), claim, KothTracker.DEFAULT_CAP_MILLIS));
         } else {
             sender.sendMessage(ChatColor.RED + "Can only set capture zones for Conquest or KOTH factions.");
-            return true;
+            return;
         }
 
         sender.sendMessage(ChatColor.YELLOW + "Set capture zone " + captureZone.getDisplayName() + ChatColor.YELLOW + " for faction " + faction.getName() + ChatColor.YELLOW + '.');
-        return true;
-    }
-
-    @Override
-    public List<String> onTabComplete(CommandSender sender, Command command, String label, String[] args) {
-        switch (args.length) {
-            case 2:
-                return plugin.getFactionManager().getFactions().stream().filter(faction -> faction instanceof EventFaction).map(Faction::getName).collect(Collectors.toList());
-            case 3:
-                Faction faction = plugin.getFactionManager().getFaction(args[1]);
-                if (faction instanceof ConquestFaction) {
-                    ConquestFaction.ConquestZone zones[] = ConquestFaction.ConquestZone.values();
-                    List<String> results = new ArrayList<>(zones.length);
-                    for (ConquestFaction.ConquestZone zone : zones) {
-                        results.add(zone.name());
-                    }
-
-                    return results;
-                } else {
-                    return Collections.emptyList();
-                }
-            default:
-                return Collections.emptyList();
-        }
     }
 }

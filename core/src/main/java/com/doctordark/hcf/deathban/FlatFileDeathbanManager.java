@@ -2,8 +2,7 @@ package com.doctordark.hcf.deathban;
 
 import com.doctordark.hcf.HCF;
 import com.doctordark.hcf.faction.type.Faction;
-import com.doctordark.util.Config;
-import com.doctordark.util.PersistableLocation;
+import com.doctordark.hcf.util.PersistableLocation;
 import gnu.trove.impl.Constants;
 import gnu.trove.map.TObjectIntMap;
 import gnu.trove.map.hash.TObjectIntHashMap;
@@ -11,6 +10,7 @@ import gnu.trove.procedure.TObjectIntProcedure;
 import org.bukkit.Location;
 import org.bukkit.configuration.MemorySection;
 import org.bukkit.entity.Player;
+import us.lemin.core.storage.flatfile.Config;
 
 import java.util.LinkedHashMap;
 import java.util.Map;

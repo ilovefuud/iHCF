@@ -10,13 +10,17 @@ import org.bukkit.entity.Player;
 import us.lemin.core.commands.SubCommand;
 import us.lemin.core.utils.time.TimeUtil;
 
-@RequiredArgsConstructor
-public class SotwStartCommand implements SubCommand {
+public class SotwStartCommand extends SubCommand {
 
     private final HCF plugin;
 
+    public SotwStartCommand(HCF plugin) {
+        super("start");
+        this.plugin = plugin;
+    }
+
     @Override
-    public void execute(CommandSender sender, Player player, String[] args) {
+    public void execute(CommandSender sender, Player player, String[] args, String label) {
 
         if (args.length != 1) {
             return;

@@ -1,7 +1,6 @@
 package com.doctordark.hcf.faction.argument.subclaim;
 
 import com.doctordark.hcf.HCF;
-import com.doctordark.hcf.faction.FactionArgument;
 import com.doctordark.hcf.faction.claim.Claim;
 import com.doctordark.hcf.faction.claim.Subclaim;
 import com.doctordark.hcf.faction.struct.Role;
@@ -12,6 +11,7 @@ import org.bukkit.OfflinePlayer;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
+import us.lemin.core.commands.PlayerSubCommand;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -23,38 +23,33 @@ import java.util.stream.Collectors;
  * Faction subclaim argument used to list the names of members
  * who have access to a {@link Subclaim}.
  */
-public class FactionSubclaimMembersArgument extends FactionArgument {
+public class FactionSubclaimMembersArgument extends PlayerSubCommand {
 
     private final HCF plugin;
 
     public FactionSubclaimMembersArgument(HCF plugin) {
-        super("listmembers", "List members of a subclaim", new String[]{"listplayers"});
+        super("listmembers", "List members of a subclaim");
         this.plugin = plugin;
+        this.aliases = new String[]{"listplayers"};
     }
 
-    @Override
     public String getUsage(String label) {
         return '/' + label + " subclaim " + getName() + " <subclaimName>";
     }
 
-    @Override
-    public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
-        if (!(sender instanceof Player)) {
-            sender.sendMessage(ChatColor.RED + "This command is only executable by players.");
-            return true;
-        }
 
+    @Override
+    public void execute(Player sender, Player player1, String[] args, String label) {
         if (args.length < 3) {
             sender.sendMessage(ChatColor.RED + "Usage: " + getUsage(label));
-            return true;
+            return;
         }
 
-        Player player = (Player) sender;
-        PlayerFaction playerFaction = plugin.getFactionManager().getPlayerFaction(player);
+        PlayerFaction playerFaction = plugin.getFactionManager().getPlayerFaction(sender);
 
         if (playerFaction == null) {
             sender.sendMessage(ChatColor.RED + "You are not in a faction.");
-            return true;
+            return;
         }
 
         Subclaim subclaim = null;
@@ -66,7 +61,7 @@ public class FactionSubclaimMembersArgument extends FactionArgument {
 
         if (subclaim == null) {
             sender.sendMessage(ChatColor.RED + "Your faction does not have a subclaim named " + args[2] + '.');
-            return true;
+            return;
         }
 
         List<String> memberNames = new ArrayList<>();
@@ -80,26 +75,5 @@ public class FactionSubclaimMembersArgument extends FactionArgument {
                 subclaim.getName() + " (" + memberNames.size() + "): " +
                 ChatColor.AQUA + HCF.COMMA_JOINER.join(memberNames));
 
-        return true;
-    }
-
-    @Override
-    public List<String> onTabComplete(CommandSender sender, Command command, String label, String[] args) {
-        if (args.length != 3 || !(sender instanceof Player)) {
-            return Collections.emptyList();
-        }
-
-        Player player = (Player) sender;
-        PlayerFaction playerFaction = plugin.getFactionManager().getPlayerFaction(player);
-        if (playerFaction == null || playerFaction.getMember(player.getUniqueId()).getRole() == Role.MEMBER) {
-            return Collections.emptyList();
-        }
-
-        List<String> results = new ArrayList<>();
-        for (Claim claim : playerFaction.getClaims()) {
-            results.addAll(claim.getSubclaims().stream().map(Subclaim::getName).collect(Collectors.toList()));
-        }
-
-        return results;
     }
 }

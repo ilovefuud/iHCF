@@ -17,6 +17,7 @@ public class FactionAnnouncementArgument extends PlayerSubCommand {
     public FactionAnnouncementArgument(HCF plugin) {
         super("announcement", "Set your faction announcement.");
         this.plugin = plugin;
+        this.aliases = new String[]{"announce", "motd"};
     }
 
     public String getUsage(String label) {

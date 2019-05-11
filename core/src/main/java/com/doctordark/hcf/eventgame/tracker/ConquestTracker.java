@@ -1,6 +1,5 @@
 package com.doctordark.hcf.eventgame.tracker;
 
-import com.doctordark.base.GuavaCompat;
 import com.doctordark.hcf.HCF;
 import com.doctordark.hcf.eventgame.CaptureZone;
 import com.doctordark.hcf.eventgame.EventTimer;
@@ -11,6 +10,7 @@ import com.doctordark.hcf.faction.event.FactionRemoveEvent;
 import com.doctordark.hcf.faction.type.Faction;
 import com.doctordark.hcf.faction.type.PlayerFaction;
 import com.doctordark.hcf.util.ConcurrentValueOrderedMap;
+import com.doctordark.hcf.util.GuavaCompat;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;

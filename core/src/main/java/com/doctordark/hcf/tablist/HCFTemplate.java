@@ -4,11 +4,10 @@ import com.doctordark.hcf.HCF;
 import com.doctordark.hcf.faction.FactionMember;
 import com.doctordark.hcf.faction.struct.Role;
 import com.doctordark.hcf.faction.type.PlayerFaction;
-import land.pvp.sokudotab.api.TabLines;
-import land.pvp.sokudotab.api.TabTemplate;
 import lombok.RequiredArgsConstructor;
 import org.bukkit.entity.Player;
-import us.lemin.core.utils.player.PlayerList;
+import us.lemin.core.api.tablistapi.api.TabLines;
+import us.lemin.core.api.tablistapi.api.TabTemplate;
 
 import java.util.Comparator;
 import java.util.List;
