@@ -445,7 +445,7 @@ public class ProtectionListener implements Listener {
                 event.setCancelled(true);
             }
         }
-    }
+        }
 
     @EventHandler(ignoreCancelled = true, priority = EventPriority.HIGH)
     public void onBlockBurn(BlockBurnEvent event) {
@@ -698,6 +698,7 @@ public class ProtectionListener implements Listener {
         if (PROTECTION_COOLDOWN_MAP.containsKey(player.getUniqueId())) {
             if (System.currentTimeMillis() - PROTECTION_COOLDOWN_MAP.get(player.getUniqueId()) > 5000) {
                 player.sendMessage(alert);
+                PROTECTION_COOLDOWN_MAP.put(player.getUniqueId(), System.currentTimeMillis());
                 return true;
             }
         } else {

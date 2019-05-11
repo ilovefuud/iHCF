@@ -31,6 +31,7 @@ public class EntityLimitListener implements Listener {
         if (entity instanceof Squid
                 || entity instanceof Rabbit
                 || entity instanceof Guardian
+                || entity instanceof ElderGuardian
                 || entity instanceof Endermite
                 || entity instanceof ArmorStand) {
             event.setCancelled(true);
