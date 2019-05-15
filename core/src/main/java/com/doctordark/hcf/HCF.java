@@ -48,7 +48,6 @@ import com.sk89q.worldedit.bukkit.WorldEditPlugin;
 import lombok.Getter;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandMap;
-import org.bukkit.configuration.InvalidConfigurationException;
 import org.bukkit.configuration.serialization.ConfigurationSerialization;
 import org.bukkit.entity.HumanEntity;
 import org.bukkit.plugin.Plugin;
@@ -58,13 +57,10 @@ import org.bukkit.scheduler.BukkitRunnable;
 import us.lemin.core.api.tablistapi.tab.TabHandler;
 import us.lemin.spigot.LeminSpigot;
 
-import java.io.File;
-import java.io.IOException;
 import java.lang.reflect.Field;
 import java.util.Arrays;
 import java.util.concurrent.ThreadLocalRandom;
 import java.util.concurrent.TimeUnit;
-import java.util.logging.Level;
 
 public class HCF extends JavaPlugin {
 
@@ -361,6 +357,9 @@ public class HCF extends JavaPlugin {
         }
         if (configuration.isSpawnCannon()) {
             registerCommands(new SpawnCannonCommand(this));
+        }
+        if (!configuration.isKitmap()) {
+
         }
     }
 

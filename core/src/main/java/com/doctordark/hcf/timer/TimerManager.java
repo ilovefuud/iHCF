@@ -31,7 +31,7 @@ public class TimerManager implements Listener {
     private final GappleTimer gappleTimer;
 
     @Getter
-    private final InvincibilityTimer invincibilityTimer;
+    private InvincibilityTimer invincibilityTimer;
 
     @Getter
     private final PvpClassWarmupTimer pvpClassWarmupTimer;
@@ -55,7 +55,9 @@ public class TimerManager implements Listener {
         registerTimer(logoutTimer = new LogoutTimer(plugin));
         registerTimer(gappleTimer = new GappleTimer(plugin));
         registerTimer(stuckTimer = new StuckTimer(plugin));
-        registerTimer(invincibilityTimer = new InvincibilityTimer(plugin));
+        if (!plugin.getConfiguration().isKitmap()) {
+            registerTimer(invincibilityTimer = new InvincibilityTimer(plugin));
+        }
         registerTimer(combatTimer = new CombatTimer(plugin));
         registerTimer(teleportTimer = new TeleportTimer(plugin));
         registerTimer(eventTimer = new EventTimer(plugin));

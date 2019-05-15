@@ -34,7 +34,7 @@ public class MinerClass extends PvpClass implements Listener {
     private final HCF plugin;
 
     public MinerClass(HCF plugin) {
-        super("Miner", TimeUnit.SECONDS.toMillis(10L));
+        super(plugin.getConfiguration().isKitmap() ? "Builder" : "Miner", TimeUnit.SECONDS.toMillis(10L));
 
         this.plugin = plugin;
         this.passiveEffects.add(new PotionEffect(PotionEffectType.FAST_DIGGING, Integer.MAX_VALUE, 1));

@@ -1,9 +1,7 @@
 package com.doctordark.hcf.command;
 
 import com.doctordark.hcf.HCF;
-import org.apache.commons.lang3.text.WordUtils;
 import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
 import org.bukkit.DyeColor;
 import org.bukkit.Material;
 import org.bukkit.command.CommandSender;
@@ -24,7 +22,10 @@ import us.lemin.core.utils.item.ItemBuilder;
 import us.lemin.core.utils.message.CC;
 import us.lemin.core.utils.misc.InventoryUtils;
 
-import java.util.*;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.List;
 
 public class MapKitCommand extends PlayerCommand implements Listener {
 
@@ -58,14 +59,17 @@ public class MapKitCommand extends PlayerCommand implements Listener {
         int looting = plugin.getConfiguration().getEnchantmentLimit(Enchantment.LOOT_BONUS_MOBS);
         int power = plugin.getConfiguration().getEnchantmentLimit(Enchantment.ARROW_DAMAGE);
         int flame = plugin.getConfiguration().getEnchantmentLimit(Enchantment.ARROW_FIRE);
-        ItemStack HELMET = new ItemBuilder(Material.DIAMOND_HELMET).enchant(Enchantment.PROTECTION_ENVIRONMENTAL, protection).enchant(Enchantment.DURABILITY, unbreaking).build();ItemStack CHESTPLATE = new ItemBuilder(Material.DIAMOND_CHESTPLATE).enchant(Enchantment.PROTECTION_ENVIRONMENTAL, protection).enchant(Enchantment.DURABILITY, unbreaking).build();
+        ItemStack HELMET = new ItemBuilder(Material.DIAMOND_HELMET).enchant(Enchantment.PROTECTION_ENVIRONMENTAL, protection).enchant(Enchantment.DURABILITY, unbreaking).build();
+        ItemStack CHESTPLATE = new ItemBuilder(Material.DIAMOND_CHESTPLATE).enchant(Enchantment.PROTECTION_ENVIRONMENTAL, protection).enchant(Enchantment.DURABILITY, unbreaking).build();
         ItemStack LEGGINGS = new ItemBuilder(Material.DIAMOND_LEGGINGS).enchant(Enchantment.PROTECTION_ENVIRONMENTAL, protection).enchant(Enchantment.DURABILITY, unbreaking).build();
         ItemStack BOOTS = new ItemBuilder(Material.DIAMOND_BOOTS).enchant(Enchantment.PROTECTION_ENVIRONMENTAL, protection).enchant(Enchantment.DURABILITY, unbreaking).build();
         ItemStack SWORD = new ItemBuilder(Material.DIAMOND_SWORD).enchant(Enchantment.DAMAGE_ALL, sharpness).enchant(Enchantment.LOOT_BONUS_MOBS, looting).enchant(Enchantment.DURABILITY, unbreaking).build();
         ItemStack BOW = new ItemBuilder(Material.BOW).enchant(Enchantment.ARROW_DAMAGE, power).enchant(Enchantment.ARROW_FIRE, flame).enchant(Enchantment.DURABILITY, unbreaking).build();
         int posion = plugin.getConfiguration().getPotionLimit(PotionType.POISON);
-        ItemStack POSION = ItemBuilder.from(new Potion(PotionType.POISON, posion, true, false).toItemStack(1)).lore(CC.YELLOW + "Amplifier: " + posion, CC.YELLOW + "Unextended ").build();
+        boolean poisonExtendable = plugin.getConfiguration().isPotionExtendable(PotionType.POISON);
+        ItemStack POSION = ItemBuilder.from(new Potion(PotionType.POISON, posion, true, false).toItemStack(1)).lore(CC.YELLOW + "Amplifier: " + posion, CC.YELLOW + (poisonExtendable ? "Extendable" : "Unextendable")).build();
         int invisibility = plugin.getConfiguration().getPotionLimit(PotionType.INVISIBILITY);
+        boolean invisibilityExtendable = plugin.getConfiguration().isPotionExtendable(PotionType.INVISIBILITY);
         ItemStack INVIS = ItemBuilder.from(new Potion(PotionType.INVISIBILITY, Math.max(invisibility, 1), false, true).toItemStack(1)).lore(CC.YELLOW + "Enabled").build();
         contents[(9 * 1) + 4] = HELMET.clone();
         contents[(9 * 2) + 3] = POSION.clone();

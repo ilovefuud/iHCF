@@ -179,6 +179,8 @@ public class Configuration {
     private boolean subclaimSignCaptain;
     private boolean subclaimSignLeader;
     private boolean subclaimHopperCheck;
+    private String shopLocationRaw;
+    private PersistableLocation shopLocation = new PersistableLocation(Bukkit.getWorld("world"), 0.5, 75, 0.5);
 
 
     public Configuration(HCF plugin) {
@@ -190,7 +192,8 @@ public class Configuration {
     }
 
     private final TObjectIntMap<Enchantment> enchantmentLimits = new TObjectIntHashMap<>(Constants.DEFAULT_CAPACITY, Constants.DEFAULT_LOAD_FACTOR, -1);
-    private final TObjectIntMap<PotionType> potionLimits = new TObjectIntHashMap<>(Constants.DEFAULT_CAPACITY, Constants.DEFAULT_LOAD_FACTOR, -1);
+
+    private final HashMap<PotionType, PotionLimitData> potionLimits = new HashMap<>();
 
     public int getEnchantmentLimit(Enchantment enchantment) {
         int maxLevel = enchantmentLimits.get(enchantment);
@@ -198,8 +201,17 @@ public class Configuration {
     }
 
     public int getPotionLimit(PotionType potionEffectType) {
-        int maxLevel = potionLimits.get(potionEffectType);
-        return maxLevel == potionLimits.getNoEntryValue() ? potionEffectType.getMaxLevel() : maxLevel;
+        if (potionLimits.get(potionEffectType) == null) {
+            return potionEffectType.getMaxLevel();
+        }
+        return potionLimits.get(potionEffectType).getMaxLevel();
+    }
+
+    public boolean isPotionExtendable(PotionType potionEffectType) {
+        if (potionLimits.get(potionEffectType) == null) {
+            return potionEffectType.isInstant();
+        }
+        return potionLimits.get(potionEffectType).isExtendable();
     }
 
     private void updateConfig() {
@@ -333,6 +345,7 @@ public class Configuration {
         map.put("subclaimSigns.captain", false);
         map.put("subclaimSigns.leader", false);
         map.put("subclaimSigns.hopperCheck", false);
+        map.put("shopLocation", "world,0.5,75,0.5,0,0");
         config.addDefaults(map);
         config.copyDefaults();
     }
@@ -457,6 +470,8 @@ public class Configuration {
         this.subclaimSignCaptain = (boolean) config.get("subclaimSigns.captain");
         this.subclaimSignLeader = (boolean) config.get("subclaimSigns.leader");
         this.subclaimHopperCheck = (boolean) config.get("subclaimSigns.hopperCheck");
+        this.shopLocationRaw = (String) config.get("shopLocation");
+
 
     }
 
@@ -501,17 +516,37 @@ public class Configuration {
             }
         }
 
+        split = endExitLocationRaw.split(",");
+        if (split.length == 6) {
+            try {
+                String worldName = split[0];
+                if (Bukkit.getWorld(worldName) != null) {
+                    Integer x = Integer.parseInt(split[0]);
+                    Integer y = Integer.parseInt(split[1]);
+                    Integer z = Integer.parseInt(split[2]);
+                    Float yaw = Float.parseFloat(split[3]);
+                    Float pitch = Float.parseFloat(split[3]);
+
+                    shopLocation = new PersistableLocation(worldName, x, y, z);
+                    shopLocation.setYaw(yaw);
+                    shopLocation.setPitch(pitch);
+                }
+            } catch (NumberFormatException ignored) {
+            }
+        }
+
         String splitter = " = ";
         for (String entry : potionLimitsUnstored) {
             if (entry.contains(splitter)) {
                 split = entry.split(splitter);
                 String key = split[0];
                 Integer value = Integer.parseInt(split[1]);
+                boolean extended = Boolean.parseBoolean(split[2]);
 
                 PotionType effect = PotionType.valueOf(key);
                 if (effect != null) {
-                    Bukkit.getLogger().log(Level.INFO, "Potion effect limit of " + effect.name() + " set as " + value);
-                    potionLimits.put(effect, value);
+                    Bukkit.getLogger().log(Level.INFO, "Potion effect limit of " + effect.name() + " set as " + value + " and " + (extended ? "extendable" : "nonextendable."));
+                    potionLimits.put(effect, new PotionLimitData(value, extended));
                 } else {
                     Bukkit.getLogger().log(Level.WARNING, "Unknown potion effect '" + key + "'.");
                 }
@@ -532,6 +567,19 @@ public class Configuration {
                     Bukkit.getLogger().log(Level.WARNING, "Unknown enchantment effect '" + key + "'.");
                 }
             }
+        }
+    }
+
+    @Getter
+    @Setter
+    public class PotionLimitData {
+
+        private int maxLevel;
+        private boolean extendable;
+
+        public PotionLimitData(int maxLevel, boolean extendable) {
+            this.maxLevel = maxLevel;
+            this.extendable = extendable;
         }
     }
 }

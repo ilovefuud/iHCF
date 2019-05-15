@@ -13,6 +13,7 @@ import com.doctordark.hcf.util.ConcurrentValueOrderedMap;
 import com.doctordark.hcf.util.GuavaCompat;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
+import org.bukkit.GameMode;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
@@ -165,6 +166,9 @@ public class ConquestTracker implements EventTracker, Listener {
 
     @Override
     public boolean onControlTake(Player player, CaptureZone captureZone, EventFaction eventFaction) {
+        if (player.getGameMode() == GameMode.CREATIVE || player.getAllowFlight() || player.isFlying() || player.isDead() || (!plugin.getConfiguration().isKitmap() && plugin.getTimerManager().getInvincibilityTimer().getRemaining(player) > 0)) {
+            return false;
+        }
         if (plugin.getFactionManager().getPlayerFaction(player.getUniqueId()) == null) {
             player.sendMessage(ChatColor.RED + "You must be in a faction to capture for Conquest.");
             return false;

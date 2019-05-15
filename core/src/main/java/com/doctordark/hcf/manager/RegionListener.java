@@ -51,36 +51,6 @@ public class RegionListener implements Listener {
         }
     }
 
-    /*
-    @EventHandler
-    public void onKothMove(PlayerMoveEvent event) {
-        Player player = event.getPlayer();
-        KitProfile profile = plugin.getPlayerManager().getProfile(player);
-
-        if (profile.getState() != PlayerState.SPAWN) {
-            return;
-        }
-
-        Location to = event.getTo();
-        Location from = event.getFrom();
-
-        if (to.getBlockX() == from.getBlockX() && to.getBlockZ() == from.getBlockZ()) {
-            return;
-        }
-
-        if (!plugin.getSpawnCuboid().contains(to)) {
-            if (profile.getCurrentKit() == null) {
-                if (profile.getLastKit() != null) {
-                    profile.getLastKit().apply(player);
-                } else {
-                    plugin.getKitManager().getDefaultKit().apply(player);
-                }
-            }
-
-            plugin.getPlayerManager().loseSpawnProtection(player);
-        }
-    }
-*/
     @EventHandler
     public void onQuit(PlayerQuitEvent event) {
         Player player = event.getPlayer();

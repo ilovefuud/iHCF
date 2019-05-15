@@ -42,13 +42,15 @@ public class LoggerListener implements Listener {
 
     @EventHandler(priority = EventPriority.LOW)
     public void onQuit(PlayerQuitEvent event) {
-        Player player = event.getPlayer();
-        UUID uuid = player.getUniqueId();
-        boolean result = safelyDisconnected.remove(uuid);
+        boolean result = safelyDisconnected.remove(event.getPlayer().getUniqueId());
 
-        if (!plugin.getConfiguration().isHandleCombatLogging()) {
+        if (!plugin.getConfiguration().isHandleCombatLogging() || plugin.getConfiguration().isKitmap()) {
             return;
         }
+
+        Player player = event.getPlayer();
+        UUID uuid = player.getUniqueId();
+
 
         if (player.getGameMode() != GameMode.CREATIVE && !player.isDead() && !result) {
             // If the player has PVP protection, don't spawn a logger

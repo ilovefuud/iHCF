@@ -6,13 +6,13 @@ import com.doctordark.hcf.faction.FactionMember;
 import com.doctordark.hcf.faction.claim.Claim;
 import com.doctordark.hcf.faction.type.Faction;
 import com.doctordark.hcf.faction.type.PlayerFaction;
+import com.doctordark.hcf.listener.ProtectionListener;
 import com.doctordark.hcf.user.FactionUser;
 import com.google.common.collect.ImmutableList;
 import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
-import us.lemin.core.storage.flatfile.Config;
 
 import java.util.Map;
 import java.util.Set;
@@ -236,5 +236,9 @@ public class HCFAPI {
 
     public static Configuration getConfig() {
         return HCF.getPlugin().getConfiguration();
+    }
+
+    public static void tryAlert(Player player, String string) {
+        ProtectionListener.tryAlert(player, string);
     }
 }
