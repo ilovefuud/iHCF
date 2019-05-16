@@ -31,7 +31,7 @@ public class UserManager implements Listener {
     }
 
     /**
-     * Gets a map of {@link FactionUser} this manager holds.
+     * Gets a map of {@link FactionUser} this notimplemented holds.
      *
      * @return map of user UUID strings to their corresponding {@link FactionUser}.
      */

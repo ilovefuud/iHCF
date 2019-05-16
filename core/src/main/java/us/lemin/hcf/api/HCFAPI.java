@@ -43,7 +43,7 @@ public class HCFAPI {
     }
 
     /**
-     * Gets all the available {@link Faction}s held by this manager.
+     * Gets all the available {@link Faction}s held by this notimplemented.
      *
      * @return an immutable list of {@link Faction}s
      */

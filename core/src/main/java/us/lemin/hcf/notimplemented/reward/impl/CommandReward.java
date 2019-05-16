@@ -1,7 +1,8 @@
-package us.lemin.hcf.manager;
+package us.lemin.hcf.notimplemented.reward.impl;
 
 import org.bukkit.entity.Player;
 import us.lemin.hcf.HCF;
+import us.lemin.hcf.notimplemented.reward.Reward;
 
 public class CommandReward extends Reward {
 

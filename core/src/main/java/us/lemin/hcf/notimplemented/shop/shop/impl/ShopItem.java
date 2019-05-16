@@ -1,22 +1,22 @@
-package us.lemin.hcf.manager.shop.shop.impl;
+package us.lemin.hcf.notimplemented.shop.shop.impl;
 
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import us.lemin.core.utils.message.CC;
-import us.lemin.hcf.manager.shop.shop.ShopEntry;
+import us.lemin.hcf.notimplemented.shop.shop.ShopEntry;
 
 public class ShopItem extends ShopEntry {
     private String name;
     private ItemStack itemStack;
 
-    public ShopItem(ItemStack icon, int cost, boolean sellable) {
-        super(icon, cost, sellable);
+    public ShopItem(ItemStack icon, int cost, boolean sellable, boolean purchasable) {
+        super(icon, cost, sellable, purchasable);
         this.name = icon.getItemMeta().getDisplayName();
     }
 
-    public ShopItem(Material material, int cost, boolean sellable) {
-        this(new ItemStack(material), cost, sellable);
+    public ShopItem(Material material, int cost, boolean sellable, boolean purchasable) {
+        this(new ItemStack(material), cost, sellable, purchasable);
     }
 
 

@@ -11,6 +11,7 @@ import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scheduler.BukkitRunnable;
+import us.lemin.core.api.inventoryapi.InventoryManager;
 import us.lemin.core.api.tablistapi.tab.TabHandler;
 import us.lemin.hcf.combatlog.LoggerListener;
 import us.lemin.hcf.command.*;
@@ -40,8 +41,9 @@ import us.lemin.hcf.faction.claim.*;
 import us.lemin.hcf.faction.type.*;
 import us.lemin.hcf.listener.*;
 import us.lemin.hcf.listener.fixes.*;
-import us.lemin.hcf.manager.RegionListener;
-import us.lemin.hcf.manager.RegionManager;
+import us.lemin.hcf.notimplemented.RegionListener;
+import us.lemin.hcf.notimplemented.RegionManager;
+import us.lemin.hcf.notimplemented.shop.shop.ShopPlayerWrapper;
 import us.lemin.hcf.pvpclass.PvpClassManager;
 import us.lemin.hcf.pvpclass.bard.EffectRestorer;
 import us.lemin.hcf.scoreboard.ScoreboardHandler;
@@ -137,6 +139,9 @@ public class HCF extends JavaPlugin {
 
     @Getter
     private SignHandler signHandler;
+
+    @Getter
+    private InventoryManager inventoryManager;
 
     @Getter
     private boolean paperPatch;
@@ -348,6 +353,8 @@ public class HCF extends JavaPlugin {
         userManager = new UserManager(this);
         visualiseHandler = new VisualiseHandler();
         regionManager = new RegionManager();
+        inventoryManager = new InventoryManager(this);
+        inventoryManager.registerPlayerWrapper(new ShopPlayerWrapper(this));
     }
 
     private void registerOptionals() {

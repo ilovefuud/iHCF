@@ -1,7 +1,8 @@
-package us.lemin.hcf.manager;
+package us.lemin.hcf.notimplemented.reward;
 
 import org.bukkit.entity.Player;
 import us.lemin.hcf.HCF;
+import us.lemin.hcf.notimplemented.reward.impl.CommandReward;
 
 import java.util.LinkedHashMap;
 import java.util.Map;

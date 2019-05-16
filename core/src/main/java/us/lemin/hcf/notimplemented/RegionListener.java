@@ -1,4 +1,4 @@
-package us.lemin.hcf.manager;
+package us.lemin.hcf.notimplemented;
 
 import lombok.RequiredArgsConstructor;
 import org.bukkit.Location;

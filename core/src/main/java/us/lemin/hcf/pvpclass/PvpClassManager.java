@@ -51,7 +51,7 @@ public class PvpClassManager implements Listener {
     }
 
     /**
-     * Gets the {@link PvpClass}es held by this manager
+     * Gets the {@link PvpClass}es held by this notimplemented
      *
      * @return set of {@link PvpClass}es
      */

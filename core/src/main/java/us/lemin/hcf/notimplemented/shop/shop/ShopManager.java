@@ -1,9 +1,13 @@
-package us.lemin.hcf.manager.shop.shop;
+package us.lemin.hcf.notimplemented.shop.shop;
 
-import us.lemin.core.utils.item.ItemBuilder;
+import lombok.Getter;
+import org.bukkit.ChatColor;
+import org.bukkit.Location;
+import org.bukkit.entity.Entity;
+import org.bukkit.entity.EntityType;
 import us.lemin.hcf.HCF;
 import us.lemin.hcf.listener.Crowbar;
-import us.lemin.hcf.manager.shop.shop.impl.ShopItem;
+import us.lemin.hcf.notimplemented.shop.shop.impl.ShopItem;
 
 import java.util.LinkedHashMap;
 import java.util.Map;
@@ -11,14 +15,18 @@ import java.util.Map;
 public class ShopManager {
 
     private final HCF plugin;
+    @Getter
+    private int shopEntityId;
 
     private final Map<String, ShopItem> shopItems = new LinkedHashMap<>();
 
 
     public ShopManager(HCF plugin) {
         this.plugin = plugin;
+
+        registerEntity();
         registerEntries(
-                new ShopItem(ItemBuilder.from(new Crowbar().getItemIfPresent()).lore("Cost: 500").name("Crowbar").durability(1).build(), 500, false)
+                new ShopItem(new Crowbar().getItemIfPresent(), 500, false, true)
         );
     }
 
@@ -39,6 +47,16 @@ public class ShopManager {
 
     public ShopItem getShopItemByName(String string) {
         return shopItems.get(string);
+    }
+
+    private void registerEntity() {
+        Location shopLocation = plugin.getConfiguration().getShopLocation().getLocation();
+
+        Entity villager = shopLocation.getWorld().spawnEntity(shopLocation, EntityType.VILLAGER);
+        villager.setCustomName(ChatColor.GREEN + "Shop");
+        villager.setCustomNameVisible(true);
+
+        this.shopEntityId = villager.getEntityId();
     }
 
 }

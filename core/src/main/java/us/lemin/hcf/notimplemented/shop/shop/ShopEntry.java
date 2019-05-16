@@ -1,4 +1,4 @@
-package us.lemin.hcf.manager.shop.shop;
+package us.lemin.hcf.notimplemented.shop.shop;
 
 import lombok.Getter;
 import org.bukkit.Material;
@@ -10,20 +10,22 @@ import us.lemin.hcf.HCF;
 @Getter
 public abstract class ShopEntry {
 
-    private int cost;
+    private int value;
     private ItemStack icon;
     boolean sellable;
+    boolean purchasable;
 
 
 
-    public ShopEntry(ItemStack icon, int cost, boolean sellable) {
-        this.cost = cost;
+    public ShopEntry(ItemStack icon, int value, boolean sellable, boolean purchasable) {
+        this.value = value;
         this.icon = icon;
         this.sellable = sellable;
+        this.purchasable = purchasable;
     }
 
-    public ShopEntry(Material icon, int cost, boolean sellable){
-        this(new ItemStack(icon), cost, sellable);
+    public ShopEntry(Material icon, int value, boolean sellable, boolean purchasable){
+        this(new ItemStack(icon), value, sellable, purchasable);
     }
 
     protected abstract void purchase(Player player);
@@ -32,14 +34,14 @@ public abstract class ShopEntry {
         HCF plugin = HCF.getPlugin();
 
         int balance  = plugin.getEconomyManager().getBalance(player.getUniqueId());
-        if (balance < cost) {
+        if (balance < value) {
             player.sendMessage(CC.RED + "nigga u broke as hell");
             return false;
         }
         return true;
     }
 
-    public int getCost() {
-        return cost;
+    public int getValue() {
+        return value;
     }
 }
