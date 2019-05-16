@@ -26,7 +26,7 @@ public interface FactionManager {
     Map<String, ?> getFactionNameMap();
 
     /**
-     * Gets all the available {@link Faction}s held by this notimplemented.
+     * Gets all the available {@link Faction}s held by this manager.
      *
      * @return an immutable list of {@link Faction}s
      */
@@ -133,15 +133,15 @@ public interface FactionManager {
     Faction getContainingFaction(String id);
 
     /**
-     * Checks if the notimplemented holds a {@link Faction}.
+     * Checks if the manager holds a {@link Faction}.
      *
      * @param faction the {@link Faction} to check
-     * @return true if notimplemented contains the {@link Faction}
+     * @return true if manager contains the {@link Faction}
      */
     boolean containsFaction(Faction faction);
 
     /**
-     * Creates a {@link Faction} for this notimplemented.
+     * Creates a {@link Faction} for this manager.
      *
      * @param faction the {@link Faction} to add
      * @return true if the {@link Faction} successfully created
@@ -149,7 +149,7 @@ public interface FactionManager {
     boolean createFaction(Faction faction);
 
     /**
-     * Saves a {@link Faction} to this notimplemented by a
+     * Saves a {@link Faction} to this manager by a
      * given {@link CommandSender}.
      *
      * @param sender  the {@link CommandSender} of creations
@@ -159,7 +159,7 @@ public interface FactionManager {
     boolean createFaction(Faction faction, CommandSender sender);
 
     /**
-     * Removes a {@link Faction} from this notimplemented by a
+     * Removes a {@link Faction} from this manager by a
      * given {@link CommandSender}.
      *
      * @param faction the {@link Faction} to remove

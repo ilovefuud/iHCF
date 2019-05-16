@@ -44,7 +44,7 @@ public class KeyManager {
 
     /**
      * Gets the set of {@link Key}s held
-     * by this notimplemented.
+     * by this manager.
      *
      * @return set of {@link Key}s
      */
