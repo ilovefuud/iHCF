@@ -1,10 +1,11 @@
-package us.lemin.hcf.notimplemented.shop.shop.impl;
+package us.lemin.hcf.notimplemented.shop.impl;
 
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import us.lemin.core.utils.message.CC;
-import us.lemin.hcf.notimplemented.shop.shop.ShopEntry;
+import us.lemin.core.utils.misc.InventoryUtils;
+import us.lemin.hcf.notimplemented.shop.ShopEntry;
 
 public class ShopItem extends ShopEntry {
     private String name;
@@ -30,6 +31,16 @@ public class ShopItem extends ShopEntry {
                 player.sendMessage(CC.RED + "Item was dropped at your feet because your inventory was full.");
             }
         }
+    }
+
+    public void trySell(Player player, int amount) {
+        ItemStack clone = this.itemStack.clone();
+        int actualAmount = InventoryUtils.countAmount(player.getInventory(), clone.getType(), clone.getData().getData());
+        if (actualAmount > 32) {
+            actualAmount = 32;
+        }
+        InventoryUtils.removeItem(player.getInventory(), clone.getType(), clone.getData().getData(), amount);
+        sell(player, actualAmount);
     }
 
     public ItemStack getItemStack() {

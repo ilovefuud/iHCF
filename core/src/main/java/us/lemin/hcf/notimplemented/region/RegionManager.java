@@ -1,4 +1,4 @@
-package us.lemin.hcf.notimplemented;
+package us.lemin.hcf.notimplemented.region;
 
 import org.bukkit.entity.Player;
 import us.lemin.hcf.util.RegionData;

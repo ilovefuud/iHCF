@@ -1,4 +1,4 @@
-package us.lemin.hcf.notimplemented.shop.shop;
+package us.lemin.hcf.notimplemented.shop;
 
 import lombok.Getter;
 import org.bukkit.ChatColor;
@@ -7,7 +7,7 @@ import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
 import us.lemin.hcf.HCF;
 import us.lemin.hcf.listener.Crowbar;
-import us.lemin.hcf.notimplemented.shop.shop.impl.ShopItem;
+import us.lemin.hcf.notimplemented.shop.impl.ShopItem;
 
 import java.util.LinkedHashMap;
 import java.util.Map;

@@ -1,4 +1,4 @@
-package us.lemin.hcf.notimplemented.shop.shop;
+package us.lemin.hcf.notimplemented.shop;
 
 import lombok.Getter;
 import org.bukkit.Material;
@@ -38,7 +38,14 @@ public abstract class ShopEntry {
             player.sendMessage(CC.RED + "nigga u broke as hell");
             return false;
         }
+        plugin.getEconomyManager().subtractBalance(player.getUniqueId(), value);
         return true;
+    }
+
+    protected void sell(Player player, int amount) {
+        HCF plugin = HCF.getPlugin();
+
+        plugin.getEconomyManager().addBalance(player.getUniqueId(), (value / 2) * amount);
     }
 
     public int getValue() {

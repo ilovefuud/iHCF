@@ -1,4 +1,4 @@
-package us.lemin.hcf.notimplemented.shop.shop;
+package us.lemin.hcf.notimplemented.shop;
 
 import lombok.RequiredArgsConstructor;
 import org.bukkit.entity.Entity;

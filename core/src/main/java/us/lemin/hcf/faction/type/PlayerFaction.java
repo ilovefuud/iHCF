@@ -617,13 +617,14 @@ public class PlayerFaction extends ClaimableFaction implements Raidable {
         sender.sendMessage(ChatColor.YELLOW + "  Balance: " + ChatColor.RED + EconomyManager.ECONOMY_SYMBOL + balance +
                 ChatColor.YELLOW + ", Total Kills: " + ChatColor.RED + combinedKills);
         sender.sendMessage(ChatColor.YELLOW + "  Founded At: " + ChatColor.RED + DateTimeFormats.DAY_MTH_YR_HR_MIN_AMPM.format(creationMillis));
-        sender.sendMessage(ChatColor.YELLOW + "  Deaths Until Raidable: [" +
-                getRegenStatus().getSymbol() + getDtrColour() + JavaUtils.format(getDeathsUntilRaidable(false)) +
-                ChatColor.YELLOW + '/' + JavaUtils.format(getMaximumDeathsUntilRaidable()) + ']');
-
-        long dtrRegenRemaining = getRemainingRegenerationTime();
-        if (dtrRegenRemaining > 0L) {
-            sender.sendMessage(ChatColor.YELLOW + "  Time Until Regen: " + ChatColor.RED + DurationFormatUtils.formatDurationWords(dtrRegenRemaining, true, true));
+        if (!HCF.getPlugin().getConfiguration().isKitmap()) {
+            sender.sendMessage(ChatColor.YELLOW + "  Deaths Until Raidable: [" +
+                    getRegenStatus().getSymbol() + getDtrColour() + JavaUtils.format(getDeathsUntilRaidable(false)) +
+                    ChatColor.YELLOW + '/' + JavaUtils.format(getMaximumDeathsUntilRaidable()) + ']');
+            long dtrRegenRemaining = getRemainingRegenerationTime();
+            if (dtrRegenRemaining > 0L) {
+                sender.sendMessage(ChatColor.YELLOW + "  Time Until Regen: " + ChatColor.RED + DurationFormatUtils.formatDurationWords(dtrRegenRemaining, true, true));
+            }
         }
 
         sender.sendMessage(ChatColor.GOLD + BukkitUtils.STRAIGHT_LINE_DEFAULT);
