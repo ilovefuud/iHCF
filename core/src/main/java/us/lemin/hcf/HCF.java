@@ -43,7 +43,9 @@ import us.lemin.hcf.listener.*;
 import us.lemin.hcf.listener.fixes.*;
 import us.lemin.hcf.notimplemented.region.RegionListener;
 import us.lemin.hcf.notimplemented.region.RegionManager;
-import us.lemin.hcf.notimplemented.shop.ShopPlayerWrapper;
+import us.lemin.hcf.notimplemented.shop.ShopListener;
+import us.lemin.hcf.notimplemented.shop.ShopManager;
+import us.lemin.hcf.notimplemented.shop.inventory.*;
 import us.lemin.hcf.pvpclass.PvpClassManager;
 import us.lemin.hcf.pvpclass.bard.EffectRestorer;
 import us.lemin.hcf.scoreboard.ScoreboardHandler;
@@ -142,6 +144,10 @@ public class HCF extends JavaPlugin {
 
     @Getter
     private InventoryManager inventoryManager;
+
+    @Getter
+    private ShopManager shopManager;
+
 
     @Getter
     private boolean paperPatch;
@@ -304,6 +310,7 @@ public class HCF extends JavaPlugin {
         manager.registerEvents(new WallBorderListener(this), this);
         manager.registerEvents(new WorldListener(), this);
         manager.registerEvents(new RegionListener(this), this);
+        manager.registerEvents(new ShopListener(this), this);
         manager.registerEvents(signHandler = new SignHandler(this), this);
     }
 
@@ -353,8 +360,14 @@ public class HCF extends JavaPlugin {
         userManager = new UserManager(this);
         visualiseHandler = new VisualiseHandler();
         regionManager = new RegionManager();
+        shopManager = new ShopManager(this);
         inventoryManager = new InventoryManager(this);
-        inventoryManager.registerPlayerWrapper(new ShopPlayerWrapper(this));
+        inventoryManager.registerPlayerWrapper(new ShopHubPlayerWrapper(this));
+        inventoryManager.registerPlayerWrapper(new ShopOrePlayerWrapper(this));
+        inventoryManager.registerPlayerWrapper(new ShopMiscPlayerWrapper(this));
+        inventoryManager.registerPlayerWrapper(new ShopFarmPlayerWrapper(this));
+        inventoryManager.registerPlayerWrapper(new ShopSpawnerPlayerWrapper(this));
+
     }
 
     private void registerOptionals() {

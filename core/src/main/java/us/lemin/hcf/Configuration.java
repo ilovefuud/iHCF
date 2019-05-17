@@ -9,10 +9,10 @@ import lombok.Setter;
 import org.apache.commons.lang3.time.DurationFormatUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
+import org.bukkit.Location;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.potion.PotionType;
 import us.lemin.core.storage.flatfile.Config;
-import us.lemin.hcf.util.PersistableLocation;
 
 import java.time.ZoneId;
 import java.util.*;
@@ -164,7 +164,7 @@ public class Configuration {
     private long deathbanRespawnScreenTicksBeforeKick;
     private boolean endOpen;
     private String endExitLocationRaw;
-    private PersistableLocation endExitLocation = new PersistableLocation(Bukkit.getWorld("world"), 0.5, 75, 0.5);
+    private Location endExitLocation = new Location(Bukkit.getWorld("world"), 0.5, 75, 0.5);
     private boolean endExtinguishFireOnExit;
     private boolean endRemoveStrengthOnEntrance;
     private String eotwChatSymbolPrefix;
@@ -180,7 +180,7 @@ public class Configuration {
     private boolean subclaimSignLeader;
     private boolean subclaimHopperCheck;
     private String shopLocationRaw;
-    private PersistableLocation shopLocation = new PersistableLocation(Bukkit.getWorld("world"), 0.5, 75, 0.5);
+    private Location shopLocation = new Location(Bukkit.getWorld("world"), 0.5, 75, 0.5);
 
 
     public Configuration(HCF plugin) {
@@ -508,7 +508,7 @@ public class Configuration {
                     Float yaw = Float.parseFloat(split[3]);
                     Float pitch = Float.parseFloat(split[3]);
 
-                    endExitLocation = new PersistableLocation(worldName, x, y, z);
+                    endExitLocation = new Location(Bukkit.getWorld(worldName), x, y, z);
                     endExitLocation.setYaw(yaw);
                     endExitLocation.setPitch(pitch);
                 }
@@ -516,7 +516,7 @@ public class Configuration {
             }
         }
 
-        split = endExitLocationRaw.split(",");
+        split = shopLocationRaw.split(",");
         if (split.length == 6) {
             try {
                 String worldName = split[0];
@@ -527,7 +527,7 @@ public class Configuration {
                     Float yaw = Float.parseFloat(split[3]);
                     Float pitch = Float.parseFloat(split[3]);
 
-                    shopLocation = new PersistableLocation(worldName, x, y, z);
+                    shopLocation = new Location(Bukkit.getWorld(worldName), x, y, z);
                     shopLocation.setYaw(yaw);
                     shopLocation.setPitch(pitch);
                 }

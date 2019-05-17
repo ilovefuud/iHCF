@@ -7,6 +7,7 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerInteractEntityEvent;
 import us.lemin.hcf.HCF;
+import us.lemin.hcf.notimplemented.shop.inventory.ShopHubPlayerWrapper;
 
 @RequiredArgsConstructor
 public class ShopListener implements Listener {
@@ -20,10 +21,11 @@ public class ShopListener implements Listener {
             return;
         }
 
-        ShopManager shopManager = new ShopManager(plugin);
+        ShopManager shopManager = plugin.getShopManager();
         if (shopManager.getShopEntityId() == entity.getEntityId()) {
             event.setCancelled(true);
-            // open wrapper
+            plugin.getInventoryManager().getPlayerWrapper(ShopHubPlayerWrapper.class).open(event.getPlayer());
         }
     }
+
 }

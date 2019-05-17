@@ -75,6 +75,12 @@ public class PacketHandler implements us.lemin.spigot.handler.PacketHandler {
                     }
                 }
                 break;
+            case "PacketPlayInUseEntity":
+                PacketPlayInUseEntity packetPlayInUseEntity = (PacketPlayInUseEntity) packet;
+                if (plugin.getShopManager().getShopEntityId() == packetPlayInUseEntity.getA()) {
+
+                }
+                break;
         }
     }
 

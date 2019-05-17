@@ -14,6 +14,7 @@ public class ShopItem extends ShopEntry {
     public ShopItem(ItemStack icon, int cost, boolean sellable, boolean purchasable) {
         super(icon, cost, sellable, purchasable);
         this.name = icon.getItemMeta().getDisplayName();
+        this.itemStack = icon;
     }
 
     public ShopItem(Material material, int cost, boolean sellable, boolean purchasable) {
@@ -22,14 +23,20 @@ public class ShopItem extends ShopEntry {
 
 
     @Override
-    public void purchase(Player player) {
-        if (canPurchase(player)) {
-            if (player.getInventory().firstEmpty() != -1) {
-                player.getInventory().setItem(player.getInventory().firstEmpty(), itemStack);
-            } else {
-                player.getWorld().dropItemNaturally(player.getLocation(), itemStack);
-                player.sendMessage(CC.RED + "Item was dropped at your feet because your inventory was full.");
+    public void tryPurchase(Player player, int amount) {
+        if (canPurchase(player, amount)) {
+            boolean dropped = false;
+            int x = 0;
+            while (x <= amount) {
+                if (player.getInventory().firstEmpty() != -1) {
+                    player.getInventory().setItem(player.getInventory().firstEmpty(), itemStack);
+                } else {
+                    player.getWorld().dropItemNaturally(player.getLocation(), itemStack);
+                    dropped = true;
+                }
+                x++;
             }
+            if (dropped) player.sendMessage(CC.RED + "Item was dropped at your feet because your inventory was full.");
         }
     }
 

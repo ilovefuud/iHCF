@@ -56,7 +56,7 @@ public class PortalListener implements Listener {
             World fromWorld = event.getFrom().getWorld();
             if (fromWorld != null && fromWorld.getEnvironment() == World.Environment.THE_END) {
                 event.useTravelAgent(false);
-                event.setTo(plugin.getConfiguration().getEndExitLocation().getLocation());
+                event.setTo(plugin.getConfiguration().getEndExitLocation());
             }
         }
     }
