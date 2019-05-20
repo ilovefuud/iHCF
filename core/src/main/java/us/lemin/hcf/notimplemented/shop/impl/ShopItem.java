@@ -1,6 +1,7 @@
 package us.lemin.hcf.notimplemented.shop.impl;
 
 import org.bukkit.Material;
+import org.bukkit.craftbukkit.v1_8_R3.inventory.CraftItemStack;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import us.lemin.core.utils.message.CC;
@@ -13,8 +14,9 @@ public class ShopItem extends ShopEntry {
 
     public ShopItem(ItemStack icon, int cost, boolean sellable, boolean purchasable) {
         super(icon, cost, sellable, purchasable);
-        this.name = icon.getItemMeta().getDisplayName();
         this.itemStack = icon;
+        this.name = CraftItemStack.asNMSCopy(itemStack).getName();
+        System.out.println(name + " has been registered in the shop.");
     }
 
     public ShopItem(Material material, int cost, boolean sellable, boolean purchasable) {

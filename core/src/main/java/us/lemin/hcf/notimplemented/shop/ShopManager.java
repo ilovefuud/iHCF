@@ -2,11 +2,16 @@ package us.lemin.hcf.notimplemented.shop;
 
 import com.google.common.collect.ImmutableList;
 import lombok.Getter;
+import net.minecraft.server.v1_8_R3.EntityVillager;
+import net.minecraft.server.v1_8_R3.PacketPlayOutEntityDestroy;
+import net.minecraft.server.v1_8_R3.PacketPlayOutSpawnEntity;
+import net.minecraft.server.v1_8_R3.PacketPlayOutSpawnEntityLiving;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.Material;
-import org.bukkit.entity.Entity;
-import org.bukkit.entity.EntityType;
+import org.bukkit.craftbukkit.v1_8_R3.CraftWorld;
+import org.bukkit.craftbukkit.v1_8_R3.entity.CraftPlayer;
+import org.bukkit.entity.Player;
 import us.lemin.core.utils.item.ItemBuilder;
 import us.lemin.core.utils.message.CC;
 import us.lemin.hcf.HCF;
@@ -22,6 +27,8 @@ public class ShopManager {
 
     private final HCF plugin;
     private int shopEntityId;
+    private EntityVillager villager;
+    private PacketPlayOutSpawnEntity shopPacket;
 
     private static final List<Material> ORES = ImmutableList.of(Material.DIAMOND, Material.IRON_INGOT, Material.GOLD_INGOT,
             Material.COAL, Material.INK_SACK, Material.REDSTONE, Material.EMERALD, Material.COAL_BLOCK, Material.IRON_BLOCK,
@@ -57,18 +64,18 @@ public class ShopManager {
                 new ShopItem(Material.EMERALD, 18, true, false),
                 new ShopItem(Material.BLAZE_ROD, 46, false, true),
                 new ShopItem(Material.SUGAR_CANE, 32, false, true),
-                new ShopItem(Material.POTATO, 32, false, true),
-                new ShopItem(Material.CARROT, 32, false, true),
+                new ShopItem(Material.POTATO_ITEM, 32, false, true),
+                new ShopItem(Material.CARROT_ITEM, 32, false, true),
                 new ShopItem(Material.SPECKLED_MELON, 32, false, true),
                 new ShopItem(Material.MELON_SEEDS, 32, false, true),
-                new ShopItem(Material.NETHER_WARTS, 32, false, true),
+                new ShopItem(Material.NETHER_STALK, 32, false, true),
                 new ShopItem(Material.SLIME_BALL, 32, false, true),
                 new ShopItem(Material.FEATHER, 32, false, true),
                 new ShopItem(new Crowbar().getItemIfPresent(), 500, false, true),
                 new ShopItem(Material.ENDER_PORTAL_FRAME, 5000, false, true),
                 new ShopItem(Material.BEACON, 27500, false, true),
                 new ShopItem(new ItemBuilder(Material.MONSTER_EGG).durability(92).build(), 5, false, true)
-                );
+        );
     }
 
 
@@ -93,14 +100,24 @@ public class ShopManager {
 
     private void registerEntity() {
         Location shopLocation = plugin.getConfiguration().getShopLocation();
-        shopLocation.getWorld().loadChunk(shopLocation.getChunk());
-        Entity villager = shopLocation.getWorld().spawnEntity(shopLocation, EntityType.VILLAGER);
+        EntityVillager villager = new EntityVillager(((CraftWorld) shopLocation.getWorld()).getHandle());
         villager.setCustomName(ChatColor.GREEN + "Shop");
         villager.setCustomNameVisible(true);
-
-        this.shopEntityId = villager.getEntityId();
+        villager.setInvisible(false);
+        villager.setLocation(shopLocation.getX(), shopLocation.getY(), shopLocation.getZ(), shopLocation.getPitch(), shopLocation.getYaw());
+        this.villager = villager;
+        this.shopEntityId = villager.getId();
     }
 
+    public void sendPacket(Player player, boolean remove) {
+        if (remove) {
+            ((CraftPlayer) player).getHandle().playerConnection.sendPacket(new PacketPlayOutEntityDestroy(shopEntityId));
+            player.sendMessage("removed");
+        } else {
+            ((CraftPlayer) player).getHandle().playerConnection.sendPacket(new PacketPlayOutSpawnEntityLiving(villager));
+            player.sendMessage("spawned");
+        }
+    }
 
 
     public ShopItem getShopItemByName(String string) {

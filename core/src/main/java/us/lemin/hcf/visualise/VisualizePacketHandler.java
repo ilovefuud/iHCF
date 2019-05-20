@@ -9,9 +9,10 @@ import org.bukkit.craftbukkit.v1_8_R3.entity.CraftPlayer;
 import org.bukkit.entity.Player;
 import us.lemin.hcf.HCF;
 import us.lemin.hcf.util.NmsUtils;
+import us.lemin.spigot.handler.PacketHandler;
 
 @RequiredArgsConstructor
-public class PacketHandler implements us.lemin.spigot.handler.PacketHandler {
+public class VisualizePacketHandler implements PacketHandler {
 
     private final HCF plugin;
 

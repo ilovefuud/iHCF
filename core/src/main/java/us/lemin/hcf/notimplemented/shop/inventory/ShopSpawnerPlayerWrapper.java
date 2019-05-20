@@ -34,17 +34,17 @@ public class ShopSpawnerPlayerWrapper extends PlayerInventoryWrapper {
         inventoryWrapper.fillBorder(new ItemStack(Material.STAINED_GLASS_PANE, 1, (short) 1));
 
         ShopManager shopManager = plugin.getShopManager();
-        shopManager.getShopSpawners().forEach((string, shopItem) -> {
+        shopManager.getShopSpawners().forEach((name, shopItem) -> {
             boolean sellable = shopItem.isSellable();
             boolean purchasable = shopItem.isPurchasable();
 
             ItemBuilder icon = ItemBuilder.from(shopItem.getItemStack().clone());
-            icon.name(shopItem.getName());
+            icon.name(CC.GOLD + shopItem.getName());
 
-            if (purchasable) icon.loreLine(CC.YELLOW + "Left click to purchase 1 for " + shopItem.getValue() + ".");
-            if (purchasable) icon.loreLine(CC.YELLOW + "Right click to purchase 32 for " + shopItem.getValue() * 32 + ".");
+            if (purchasable) icon.loreLine(CC.YELLOW + "Left click to purchase 1 for $" + shopItem.getValue() + ".");
+            if (purchasable) icon.loreLine(CC.YELLOW + "Right click to purchase 32 for $" + shopItem.getValue() * 32 + ".");
             if (sellable) icon.loreLine(CC.YELLOW + "Left click to sell 1 for $" + (shopItem.getValue() / 2) + " each.");
-            if (sellable) icon.loreLine(CC.YELLOW + "Right click to sell 32 for $" + (shopItem.getValue() / 2) + " each.");
+            if (sellable) icon.loreLine(CC.YELLOW + "Right click to sell 32 for $" + (shopItem.getValue() / 2) * 32 + " each.");
 
             inventoryWrapper.addItem(icon.build(), new PlayerAction((actionPlayer, clickType) -> {
                 if (purchasable && clickType.isLeftClick()) {

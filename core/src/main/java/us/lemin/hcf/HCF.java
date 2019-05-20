@@ -58,8 +58,8 @@ import us.lemin.hcf.user.UserManager;
 import us.lemin.hcf.util.DateTimeFormats;
 import us.lemin.hcf.util.ImageFolder;
 import us.lemin.hcf.util.SignHandler;
-import us.lemin.hcf.visualise.PacketHandler;
 import us.lemin.hcf.visualise.VisualiseHandler;
+import us.lemin.hcf.visualise.VisualizePacketHandler;
 import us.lemin.hcf.visualise.WallBorderListener;
 import us.lemin.spigot.LeminSpigot;
 
@@ -148,6 +148,9 @@ public class HCF extends JavaPlugin {
     @Getter
     private ShopManager shopManager;
 
+    @Getter
+    private ShopListener shopListener;
+
 
     @Getter
     private boolean paperPatch;
@@ -193,7 +196,9 @@ public class HCF extends JavaPlugin {
             }
         }.runTaskTimerAsynchronously(this, dataSaveInterval, dataSaveInterval);
 
-        LeminSpigot.INSTANCE.addPacketHandler(new PacketHandler(this)); // Initialise Visualize Packet Handler
+        LeminSpigot.INSTANCE.addPacketHandler(new VisualizePacketHandler(this)); // Initialise Visualize Packet Handler
+        LeminSpigot.INSTANCE.addPacketHandler(shopListener); // Initialize Shop Interact Packet Handler
+        LeminSpigot.INSTANCE.addMovementHandler(shopListener);
 
 
     }
@@ -310,7 +315,7 @@ public class HCF extends JavaPlugin {
         manager.registerEvents(new WallBorderListener(this), this);
         manager.registerEvents(new WorldListener(), this);
         manager.registerEvents(new RegionListener(this), this);
-        manager.registerEvents(new ShopListener(this), this);
+        manager.registerEvents(shopListener = new ShopListener(this), this);
         manager.registerEvents(signHandler = new SignHandler(this), this);
     }
 

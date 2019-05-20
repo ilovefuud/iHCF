@@ -147,6 +147,7 @@ public class ProtectionListener implements Listener {
         }
     }
 
+
     @EventHandler(ignoreCancelled = true, priority = EventPriority.HIGHEST)
     public void onPlayerMove(PlayerMoveEvent event) {
         this.handleMove(event, PlayerClaimEnterEvent.EnterCause.MOVEMENT);

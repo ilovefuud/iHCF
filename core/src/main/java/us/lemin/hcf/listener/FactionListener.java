@@ -111,15 +111,19 @@ public class FactionListener implements Listener {
     @EventHandler(ignoreCancelled = true, priority = EventPriority.MONITOR)
     private void onPlayerClaimEnter(PlayerClaimEnterEvent event) {
         Faction toFaction = event.getToFaction();
+        Player player = event.getPlayer();
         if (toFaction.isSafezone()) {
-            Player player = event.getPlayer();
             player.setHealth(player.getMaxHealth());
             player.setFoodLevel(20);
             player.setFireTicks(0);
             player.setSaturation(4.0F);
         }
+        if (toFaction.getName().equalsIgnoreCase("Spawn")) {
+            plugin.getShopManager().sendPacket(player, false);
+        } else if (event.getFromFaction().getName().equalsIgnoreCase("Spawn")){
+            plugin.getShopManager().sendPacket(player, true);
+        }
 
-        Player player = event.getPlayer();
         if (this.getLastLandChangedMeta(player) <= 0L) { // delay before re-messaging.
             player.sendMessage(ChatColor.GOLD + "You are now in " + event.getToFaction().getDisplayName(player) + ChatColor.GOLD + ".");
         }
