@@ -49,19 +49,24 @@ public class ArcherClass extends PvpClass implements Listener {
 
     private static final PotionEffect ARCHER_SPEED_EFFECT = new PotionEffect(PotionEffectType.SPEED, 160, 3);
     private static final long ARCHER_SPEED_COOLDOWN_DELAY = TimeUnit.MINUTES.toMillis(1L);
+    private static final PotionEffect ARCHER_JUMP_EFFECT = new PotionEffect(PotionEffectType.JUMP, 160, 3);
+    private static final long ARCHER_JUMP_COOLDOWN_DELAY = TimeUnit.MINUTES.toMillis(1L);
     private final TObjectLongMap<UUID> archerSpeedCooldowns = new TObjectLongHashMap<>();
+    private final TObjectLongMap<UUID> archerJumpCooldowns = new TObjectLongHashMap<>();
+
 
     private final Table<UUID, UUID, ArcherMark> marks = HashBasedTable.create(); // Key of the Players UUID who applied the mark, value as the Mark applied.
     private final Map<Arrow, Float> arrowForces = new WeakHashMap<>();
     private final HCF plugin;
 
     public ArcherClass(HCF plugin) {
-        super("Archer", TimeUnit.SECONDS.toMillis(10L));
+        super("Archer", plugin.getConfiguration().isKitmap() ? 250 : TimeUnit.SECONDS.toMillis(10L));
         this.plugin = plugin;
 
         this.passiveEffects.add(new PotionEffect(PotionEffectType.DAMAGE_RESISTANCE, Integer.MAX_VALUE, 1));
         this.passiveEffects.add(new PotionEffect(PotionEffectType.REGENERATION, Integer.MAX_VALUE, 0));
         this.passiveEffects.add(new PotionEffect(PotionEffectType.SPEED, Integer.MAX_VALUE, 2));
+
     }
 
     public Map<UUID, ArcherMark> getSentMarks(Player player) {
@@ -211,9 +216,34 @@ public class ArcherClass extends PvpClass implements Listener {
                     plugin.getEffectRestorer().setRestoreEffect(player, ARCHER_SPEED_EFFECT);
                     archerSpeedCooldowns.put(event.getPlayer().getUniqueId(), System.currentTimeMillis() + ARCHER_SPEED_COOLDOWN_DELAY);
                 }
+            } else if (event.hasItem() && event.getItem().getType() == Material.FEATHER) {
+                if (plugin.getPvpClassManager().getEquippedClass(event.getPlayer()) != this) {
+                    return;
+                }
+
+                Player player = event.getPlayer();
+                UUID uuid = player.getUniqueId();
+                long timestamp = archerJumpCooldowns.get(uuid);
+                long millis = System.currentTimeMillis();
+                long remaining = timestamp == archerJumpCooldowns.getNoEntryValue() ? -1L : timestamp - millis;
+                if (remaining > 0L) {
+                    player.sendMessage(ChatColor.RED + "Cannot use " + getName() + " jump boost for another " + DurationFormatUtils.formatDurationWords(remaining, true, true) + ".");
+                } else {
+                    ItemStack stack = player.getItemInHand();
+                    if (stack.getAmount() == 1) {
+                        player.setItemInHand(new ItemStack(Material.AIR, 1));
+                    } else {
+                        stack.setAmount(stack.getAmount() - 1);
+                    }
+
+                    plugin.getEffectRestorer().setRestoreEffect(player, ARCHER_JUMP_EFFECT);
+                    archerSpeedCooldowns.put(event.getPlayer().getUniqueId(), System.currentTimeMillis() + ARCHER_JUMP_COOLDOWN_DELAY);
+                }
             }
+
         }
     }
+
 
     @Override
     public boolean isApplicableFor(Player player) {

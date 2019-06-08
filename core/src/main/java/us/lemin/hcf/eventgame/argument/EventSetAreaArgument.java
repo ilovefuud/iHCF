@@ -1,8 +1,9 @@
 package us.lemin.hcf.eventgame.argument;
 
 import org.bukkit.ChatColor;
+import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
-import us.lemin.core.commands.PlayerSubCommand;
+import us.lemin.core.commands.SubCommand;
 import us.lemin.core.utils.cuboid.Cuboid;
 import us.lemin.hcf.HCF;
 import us.lemin.hcf.eventgame.faction.EventFaction;
@@ -10,9 +11,9 @@ import us.lemin.hcf.faction.type.Faction;
 import us.lemin.hcf.util.RegionData;
 
 /**
- * A {@link PlayerSubCommand} used for setting the area of an {@link EventFaction}.
+ * A {@link SubCommand} used for setting the area of an {@link EventFaction}.
  */
-public class EventSetAreaArgument extends PlayerSubCommand {
+public class EventSetAreaArgument extends SubCommand {
 
     private static final int MIN_EVENT_CLAIM_AREA = 8;
 
@@ -23,6 +24,8 @@ public class EventSetAreaArgument extends PlayerSubCommand {
         this.plugin = plugin;
         this.aliases = new String[]{"setclaim", "setclaimarea", "setland"};
         this.permission = "hcf.command.event.argument." + getName();
+        this.playerOnly = true;
+
     }
 
     public String getUsage(String label) {
@@ -30,16 +33,22 @@ public class EventSetAreaArgument extends PlayerSubCommand {
     }
 
     @Override
-    public void execute(Player sender, Player player1, String[] args, String label) {
+    public void execute(CommandSender sender, Player target, String[] args, String label) {
+        Player player;
+        if (sender instanceof Player) {
+            player = (Player) sender;
+        } else{
+            return;
+        }
         if (args.length < 2) {
             sender.sendMessage(ChatColor.RED + "Usage: " + getUsage(label));
             return;
         }
 
 
-        RegionData selection = plugin.getRegionManager().getData(sender);
+        RegionData selection = plugin.getRegionManager().getData(player);
 
-        if (plugin.getRegionManager().isDataValid(sender)) {
+        if (plugin.getRegionManager().isDataValid(player)) {
             sender.sendMessage(ChatColor.RED + "You must make a selection to do this.");
             return;
         }

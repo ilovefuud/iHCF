@@ -3,6 +3,7 @@ package us.lemin.hcf.listener;
 import org.apache.commons.lang3.time.DurationFormatUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
+import org.bukkit.World;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -118,10 +119,20 @@ public class FactionListener implements Listener {
             player.setFireTicks(0);
             player.setSaturation(4.0F);
         }
-        if (toFaction.getName().equalsIgnoreCase("Spawn")) {
-            plugin.getShopManager().sendPacket(player, false);
-        } else if (event.getFromFaction().getName().equalsIgnoreCase("Spawn")){
-            plugin.getShopManager().sendPacket(player, true);
+        if (event.getPlayer().getLocation().getWorld().getEnvironment() == World.Environment.NORMAL) {
+            if (toFaction.getName().equalsIgnoreCase("Spawn")) {
+                if (plugin.getConfiguration().isKitmap()) {
+                    plugin.getKitNPCManager().sendPacket(player, false);
+                } else {
+                    plugin.getShopNPCManager().sendPacket(player, false);
+                }
+            } else if (event.getFromFaction().getName().equalsIgnoreCase("Spawn")){
+                if (plugin.getConfiguration().isKitmap()) {
+                    plugin.getKitNPCManager().sendPacket(player, true);
+                } else {
+                    plugin.getShopNPCManager().sendPacket(player, true);
+                }
+            }
         }
 
         if (this.getLastLandChangedMeta(player) <= 0L) { // delay before re-messaging.

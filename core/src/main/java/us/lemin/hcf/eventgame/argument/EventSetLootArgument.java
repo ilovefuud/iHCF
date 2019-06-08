@@ -2,9 +2,10 @@ package us.lemin.hcf.eventgame.argument;
 
 import com.google.common.primitives.Ints;
 import org.bukkit.ChatColor;
+import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
-import us.lemin.core.commands.PlayerSubCommand;
+import us.lemin.core.commands.SubCommand;
 import us.lemin.hcf.HCF;
 import us.lemin.hcf.eventgame.EventType;
 import us.lemin.hcf.eventgame.crate.EventKey;
@@ -12,9 +13,9 @@ import us.lemin.hcf.eventgame.crate.EventKey;
 import java.util.List;
 
 /**
- * An {@link PlayerSubCommand} used for setting the loot of an {@link EventKey}.
+ * An {@link SubCommand} used for setting the loot of an {@link EventKey}.
  */
-public class EventSetLootArgument extends PlayerSubCommand {
+public class EventSetLootArgument extends SubCommand {
 
     private final HCF plugin;
 
@@ -23,6 +24,8 @@ public class EventSetLootArgument extends PlayerSubCommand {
         this.plugin = plugin;
         this.aliases = new String[]{"setloot"};
         this.permission = "hcf.command.event.argument." + getName();
+        this.playerOnly = true;
+
     }
 
     public String getUsage(String label) {
@@ -31,7 +34,13 @@ public class EventSetLootArgument extends PlayerSubCommand {
 
 
     @Override
-    public void execute(Player sender, Player player1, String[] args, String label) {
+    public void execute(CommandSender sender, Player target, String[] args, String label) {
+        Player player;
+        if (sender instanceof Player) {
+            player = (Player) sender;
+        } else{
+            return;
+        }
         if (args.length < 3) {
             sender.sendMessage(ChatColor.RED + "Usage: " + getUsage(label));
             return;
@@ -66,6 +75,6 @@ public class EventSetLootArgument extends PlayerSubCommand {
             return;
         }
 
-        sender.openInventory(inventories.get(--index));
+        player.openInventory(inventories.get(--index));
     }
 }

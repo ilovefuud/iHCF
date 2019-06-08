@@ -1,8 +1,9 @@
 package us.lemin.hcf.faction.argument;
 
 import org.bukkit.ChatColor;
+import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
-import us.lemin.core.commands.PlayerSubCommand;
+import us.lemin.core.commands.SubCommand;
 import us.lemin.hcf.HCF;
 import us.lemin.hcf.faction.FactionMember;
 import us.lemin.hcf.faction.struct.Relation;
@@ -13,7 +14,7 @@ import us.lemin.hcf.faction.type.PlayerFaction;
 /**
  * Faction argument used to demote players to members in {@link Faction}s.
  */
-public class FactionDemoteArgument extends PlayerSubCommand {
+public class FactionDemoteArgument extends SubCommand {
 
     private final HCF plugin;
 
@@ -21,6 +22,8 @@ public class FactionDemoteArgument extends PlayerSubCommand {
         super("demote", "Demotes a player to a member.");
         this.plugin = plugin;
         this.aliases = new String[]{"uncaptain", "delcaptain", "delofficer"};
+        this.playerOnly = true;
+
     }
 
     public String getUsage(String label) {
@@ -29,7 +32,13 @@ public class FactionDemoteArgument extends PlayerSubCommand {
 
 
     @Override
-    public void execute(Player player, Player player1, String[] args, String label) {
+    public void execute(CommandSender sender, Player target, String[] args, String label) {
+        Player player;
+        if (sender instanceof Player) {
+            player = (Player) sender;
+        } else{
+            return;
+        }
         if (args.length < 2) {
             player.sendMessage(ChatColor.RED + "Usage: " + getUsage(label));
             return;

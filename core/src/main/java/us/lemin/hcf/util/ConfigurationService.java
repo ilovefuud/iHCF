@@ -15,7 +15,7 @@ public final class ConfigurationService {
     public static final Map<World.Environment, Integer> SPAWN_RADIUS_MAP = new EnumMap<>(World.Environment.class);
 
     static {
-        ROAD_LENGTHS.put(World.Environment.NORMAL, 4000);
+        ROAD_LENGTHS.put(World.Environment.NORMAL, 4500);
         ROAD_LENGTHS.put(World.Environment.NETHER, 4000);
 
         SPAWN_RADIUS_MAP.put(World.Environment.NORMAL, 50);

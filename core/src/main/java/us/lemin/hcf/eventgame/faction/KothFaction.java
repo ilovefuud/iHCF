@@ -11,6 +11,7 @@ import us.lemin.core.utils.misc.BukkitUtils;
 import us.lemin.hcf.HCF;
 import us.lemin.hcf.eventgame.CaptureZone;
 import us.lemin.hcf.eventgame.EventType;
+import us.lemin.hcf.eventgame.tracker.KothTracker;
 import us.lemin.hcf.faction.claim.Claim;
 import us.lemin.hcf.faction.type.ClaimableFaction;
 import us.lemin.hcf.faction.type.PlayerFaction;
@@ -32,6 +33,9 @@ public class KothFaction extends CapturableFaction implements ConfigurationSeria
     public KothFaction(Map<String, Object> map) {
         super(map);
         this.captureZone = (CaptureZone) map.get("captureZone");
+        if (HCF.getPlugin().getConfiguration().isKitmap()) {
+            captureZone.setDefaultCaptureMillis(KothTracker.DEFAULT_CAP_MILLIS);
+        }
     }
 
     @Override

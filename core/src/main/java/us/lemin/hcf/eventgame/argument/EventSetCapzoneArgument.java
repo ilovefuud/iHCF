@@ -2,8 +2,9 @@ package us.lemin.hcf.eventgame.argument;
 
 import org.bukkit.ChatColor;
 import org.bukkit.World;
+import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
-import us.lemin.core.commands.PlayerSubCommand;
+import us.lemin.core.commands.SubCommand;
 import us.lemin.core.utils.cuboid.Cuboid;
 import us.lemin.hcf.HCF;
 import us.lemin.hcf.eventgame.CaptureZone;
@@ -21,9 +22,9 @@ import us.lemin.hcf.util.RegionData;
 import java.util.Collection;
 
 /**
- * An {@link PlayerSubCommand} used for setting the {@link CaptureZone}s of an {@link EventFaction}.
+ * An {@link SubCommand} used for setting the {@link CaptureZone}s of an {@link EventFaction}.
  */
-public class EventSetCapzoneArgument extends PlayerSubCommand {
+public class EventSetCapzoneArgument extends SubCommand {
 
     private final HCF plugin;
 
@@ -32,6 +33,8 @@ public class EventSetCapzoneArgument extends PlayerSubCommand {
         this.plugin = plugin;
         this.aliases = new String[]{"setcapturezone", "setcap", "setcappoint", "setcapturepoint", "setcappoint"};
         this.permission = "hcf.command.event.argument." + getName();
+        this.playerOnly = true;
+
     }
 
     public String getUsage(String label) {
@@ -39,16 +42,22 @@ public class EventSetCapzoneArgument extends PlayerSubCommand {
     }
 
     @Override
-    public void execute(Player sender, Player target, String[] args, String label) {
+    public void execute(CommandSender sender, Player target, String[] args, String label) {
+        Player player;
+        if (sender instanceof Player) {
+            player = (Player) sender;
+        } else{
+            return;
+        }
         if (args.length < 2) {
             sender.sendMessage(ChatColor.RED + "Usage: " + getUsage(label));
             return;
         }
 
 
-        RegionData selection = plugin.getRegionManager().getData(sender);
+        RegionData selection = plugin.getRegionManager().getData(player);
 
-        if (plugin.getRegionManager().isDataValid(sender)) {
+        if (plugin.getRegionManager().isDataValid(player)) {
             sender.sendMessage(ChatColor.RED + "You must make a selection to do this.");
             return;
         }

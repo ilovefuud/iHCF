@@ -1,8 +1,9 @@
 package us.lemin.hcf.faction.argument;
 
 import org.bukkit.ChatColor;
+import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
-import us.lemin.core.commands.PlayerSubCommand;
+import us.lemin.core.commands.SubCommand;
 import us.lemin.core.utils.plugin.TaskUtil;
 import us.lemin.core.utils.profile.ProfileUtil;
 import us.lemin.hcf.HCF;
@@ -12,7 +13,7 @@ import us.lemin.hcf.faction.type.PlayerFaction;
 
 import java.util.UUID;
 
-public class FactionLeaderArgument extends PlayerSubCommand {
+public class FactionLeaderArgument extends SubCommand {
 
     private final HCF plugin;
 
@@ -20,6 +21,7 @@ public class FactionLeaderArgument extends PlayerSubCommand {
         super("leader", "Sets the new leader for your faction.");
         this.plugin = plugin;
         this.aliases = new String[]{"setleader", "newleader"};
+        this.playerOnly = true;
     }
 
     public String getUsage(String label) {
@@ -29,7 +31,13 @@ public class FactionLeaderArgument extends PlayerSubCommand {
 
 
     @Override
-    public void execute(Player player, Player target, String[] args, String label) {
+    public void execute(CommandSender sender, Player target, String[] args, String label) {
+        Player player;
+        if (sender instanceof Player) {
+            player = (Player) sender;
+        } else{
+            return;
+        }
         if (args.length < 2) {
             player.sendMessage(ChatColor.RED + "Usage: " + getUsage(label));
             return;

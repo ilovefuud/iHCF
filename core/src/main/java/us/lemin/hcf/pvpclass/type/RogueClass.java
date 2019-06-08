@@ -23,7 +23,7 @@ public class RogueClass extends PvpClass implements Listener {
     private final HCF plugin;
 
     public RogueClass(HCF plugin) {
-        super("Rogue", TimeUnit.SECONDS.toMillis(15L));
+        super("Rogue", plugin.getConfiguration().isKitmap() ? 250 : TimeUnit.SECONDS.toMillis(15L));
 
         this.plugin = plugin;
         this.passiveEffects.add(new PotionEffect(PotionEffectType.DAMAGE_RESISTANCE, Integer.MAX_VALUE, 0));

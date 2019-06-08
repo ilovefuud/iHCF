@@ -29,7 +29,7 @@ public class GappleTimer extends PlayerTimer implements Listener {
     private ImageMessage goppleArtMessage;
 
     public GappleTimer(HCF plugin) {
-        super("Gapple", TimeUnit.HOURS.toMillis(6L));
+        super("Gapple", plugin.getConfiguration().isKitmap() ? TimeUnit.MINUTES.toMillis(10) : TimeUnit.HOURS.toMillis(6L));
 
         this.plugin = plugin;
 

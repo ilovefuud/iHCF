@@ -43,9 +43,12 @@ import us.lemin.hcf.listener.*;
 import us.lemin.hcf.listener.fixes.*;
 import us.lemin.hcf.notimplemented.region.RegionListener;
 import us.lemin.hcf.notimplemented.region.RegionManager;
-import us.lemin.hcf.notimplemented.shop.ShopListener;
-import us.lemin.hcf.notimplemented.shop.ShopManager;
-import us.lemin.hcf.notimplemented.shop.inventory.*;
+import us.lemin.hcf.packetnpcs.kit.KitNPCListener;
+import us.lemin.hcf.packetnpcs.kit.KitNPCManager;
+import us.lemin.hcf.packetnpcs.kit.inventory.KitSelectorWrapper;
+import us.lemin.hcf.packetnpcs.shop.ShopNPCListener;
+import us.lemin.hcf.packetnpcs.shop.ShopNPCManager;
+import us.lemin.hcf.packetnpcs.shop.inventory.*;
 import us.lemin.hcf.pvpclass.PvpClassManager;
 import us.lemin.hcf.pvpclass.bard.EffectRestorer;
 import us.lemin.hcf.scoreboard.ScoreboardHandler;
@@ -57,6 +60,7 @@ import us.lemin.hcf.user.FactionUser;
 import us.lemin.hcf.user.UserManager;
 import us.lemin.hcf.util.DateTimeFormats;
 import us.lemin.hcf.util.ImageFolder;
+import us.lemin.hcf.util.LangUtil;
 import us.lemin.hcf.util.SignHandler;
 import us.lemin.hcf.visualise.VisualiseHandler;
 import us.lemin.hcf.visualise.VisualizePacketHandler;
@@ -146,10 +150,19 @@ public class HCF extends JavaPlugin {
     private InventoryManager inventoryManager;
 
     @Getter
-    private ShopManager shopManager;
+    private ShopNPCManager shopNPCManager;
 
     @Getter
-    private ShopListener shopListener;
+    private ShopNPCListener shopNPCListener;
+
+    @Getter
+    private KitNPCManager kitNPCManager;
+
+    @Getter
+    private KitNPCListener kitNPCListener;
+
+    @Getter
+    private LangUtil langUtil;
 
 
     @Getter
@@ -197,10 +210,7 @@ public class HCF extends JavaPlugin {
         }.runTaskTimerAsynchronously(this, dataSaveInterval, dataSaveInterval);
 
         LeminSpigot.INSTANCE.addPacketHandler(new VisualizePacketHandler(this)); // Initialise Visualize Packet Handler
-        LeminSpigot.INSTANCE.addPacketHandler(shopListener); // Initialize Shop Interact Packet Handler
-        LeminSpigot.INSTANCE.addMovementHandler(shopListener);
-
-
+        langUtil = new LangUtil();
     }
 
     private void saveData() {
@@ -280,6 +290,7 @@ public class HCF extends JavaPlugin {
 
     private void registerListeners() {
         PluginManager manager = getServer().getPluginManager();
+
         manager.registerEvents(new BlockHitFixListener(), this);
         manager.registerEvents(new BlockJumpGlitchFixListener(), this);
         manager.registerEvents(new BoatGlitchFixListener(this), this);
@@ -288,35 +299,30 @@ public class HCF extends JavaPlugin {
         manager.registerEvents(new ClaimWandListener(this), this);
         manager.registerEvents(combatLogListener = new LoggerListener(this), this);
         manager.registerEvents(new CoreListener(this), this);
-        manager.registerEvents(new CrowbarListener(this), this);
         manager.registerEvents(new DeathListener(this), this);
         manager.registerEvents(new DeathbanListener(this), this);
         manager.registerEvents(new EnchantLimitListener(this), this);
         manager.registerEvents(new EnderChestRemovalListener(this), this);
         manager.registerEvents(new EntityLimitListener(this), this);
-        manager.registerEvents(new EotwListener(this), this);
         manager.registerEvents(new EventSignListener(), this);
-        manager.registerEvents(new ExpMultiplierListener(this), this);
         manager.registerEvents(new FactionListener(this), this);
         manager.registerEvents(new FurnaceSmeltSpeedListener(this), this);
         manager.registerEvents(new InfinityArrowFixListener(this), this);
         manager.registerEvents(new KeyListener(this), this);
         manager.registerEvents(new PearlGlitchListener(this), this);
         manager.registerEvents(new PortalListener(this), this);
-        manager.registerEvents(new PotionLimitListener(this), this);
         manager.registerEvents(new ProtectionListener(this), this);
         manager.registerEvents(new SubclaimWandListener(this), this);
         manager.registerEvents(new SignSubclaimListener(this), this);
         manager.registerEvents(new ShopSignListener(this), this);
-        manager.registerEvents(new SkullListener(), this);
         manager.registerEvents(new SotwListener(this), this);
         manager.registerEvents(new BeaconStrengthFixListener(this), this);
         manager.registerEvents(new VoidGlitchFixListener(), this);
         manager.registerEvents(new WallBorderListener(this), this);
         manager.registerEvents(new WorldListener(), this);
         manager.registerEvents(new RegionListener(this), this);
-        manager.registerEvents(shopListener = new ShopListener(this), this);
         manager.registerEvents(signHandler = new SignHandler(this), this);
+        manager.registerEvents(new StrengthFix1_8(), this);
     }
 
     private void registerCommands() {
@@ -365,17 +371,14 @@ public class HCF extends JavaPlugin {
         userManager = new UserManager(this);
         visualiseHandler = new VisualiseHandler();
         regionManager = new RegionManager();
-        shopManager = new ShopManager(this);
+
         inventoryManager = new InventoryManager(this);
-        inventoryManager.registerPlayerWrapper(new ShopHubPlayerWrapper(this));
-        inventoryManager.registerPlayerWrapper(new ShopOrePlayerWrapper(this));
-        inventoryManager.registerPlayerWrapper(new ShopMiscPlayerWrapper(this));
-        inventoryManager.registerPlayerWrapper(new ShopFarmPlayerWrapper(this));
-        inventoryManager.registerPlayerWrapper(new ShopSpawnerPlayerWrapper(this));
+
 
     }
 
     private void registerOptionals() {
+        PluginManager manager = plugin.getServer().getPluginManager();
         if (configuration.isScoreboardTablistEnabled()) {
             tabHandler = new TabHandler(this, configuration.getScoreboardTablistUpdateRate());
         }
@@ -385,7 +388,29 @@ public class HCF extends JavaPlugin {
         if (configuration.isSpawnCannon()) {
             registerCommands(new SpawnCannonCommand(this));
         }
+        if (configuration.isScoreboardTablistEnabled()) {
+            manager.registerEvents(new TabListListener(this), this);
+        }
         if (!configuration.isKitmap()) {
+            manager.registerEvents(new MobStackListener(this), this);
+            manager.registerEvents(new CrowbarListener(this), this);
+            manager.registerEvents(new EotwListener(this), this);
+            manager.registerEvents(new ExpMultiplierListener(this), this);
+            manager.registerEvents(new PotionLimitListener(this), this);
+            manager.registerEvents(new SkullListener(), this);
+            manager.registerEvents(new ShopNPCListener(this), this);
+            shopNPCManager = new ShopNPCManager(this);
+            LeminSpigot.INSTANCE.addPacketHandler(shopNPCListener); // Initialize Shop Interact Packet Handler
+            inventoryManager.registerPlayerWrapper(new ShopHubPlayerWrapper(this));
+            inventoryManager.registerPlayerWrapper(new ShopOrePlayerWrapper(this));
+            inventoryManager.registerPlayerWrapper(new ShopMiscPlayerWrapper(this));
+            inventoryManager.registerPlayerWrapper(new ShopFarmPlayerWrapper(this));
+            inventoryManager.registerPlayerWrapper(new ShopSpawnerPlayerWrapper(this));
+        } else {
+            kitNPCManager = new KitNPCManager(this);
+            manager.registerEvents(kitNPCListener = new KitNPCListener(this), this);
+            LeminSpigot.INSTANCE.addPacketHandler(kitNPCListener);
+            inventoryManager.registerPlayerWrapper(new KitSelectorWrapper(this));
 
         }
     }

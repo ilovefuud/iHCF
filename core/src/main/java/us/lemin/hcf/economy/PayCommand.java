@@ -69,6 +69,5 @@ public class PayCommand extends PlayerCommand {
 
         target.sendMessage(ChatColor.YELLOW + player.getName() + " has sent you " + ChatColor.GOLD + EconomyManager.ECONOMY_SYMBOL + amount + ChatColor.YELLOW + '.');
         player.sendMessage(ChatColor.YELLOW + "You have sent " + ChatColor.GOLD + EconomyManager.ECONOMY_SYMBOL + amount + ChatColor.YELLOW + " to " + target.getName() + '.');
-        return;
     }
 }

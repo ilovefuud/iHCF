@@ -19,7 +19,6 @@ import org.bukkit.potion.PotionType;
 import us.lemin.core.commands.PlayerCommand;
 import us.lemin.core.utils.item.ItemBuilder;
 import us.lemin.core.utils.message.CC;
-import us.lemin.core.utils.misc.InventoryUtils;
 import us.lemin.hcf.HCF;
 
 import java.util.Arrays;
@@ -30,8 +29,8 @@ import java.util.List;
 public class MapKitCommand extends PlayerCommand implements Listener {
 
     //private static final String SEPARATOR_LINE = ChatColor.GRAY.toString() + ChatColor.STRIKETHROUGH.toString() + ChatColor.BOLD.toString() + Strings.repeat('-', 16);
-    private final ItemStack BLANK = new ItemBuilder(Material.STAINED_GLASS_PANE).durability(DyeColor.GRAY.getData()).name("").build();
-    private final ItemStack LIGHTER = new ItemBuilder(Material.STAINED_GLASS_PANE).durability(DyeColor.WHITE.getData()).name("").build();
+    private final ItemStack BLANK = new ItemBuilder(Material.STAINED_GLASS_PANE).durability(DyeColor.YELLOW.getData()).name("").build();
+    private final ItemStack LIGHTER = new ItemBuilder(Material.STAINED_GLASS_PANE).durability(DyeColor.ORANGE.getData()).name("").build();
 
     private Inventory mapkitInventory;
 
@@ -46,7 +45,7 @@ public class MapKitCommand extends PlayerCommand implements Listener {
     }
 
     private void news() {
-        mapkitInventory = Bukkit.createInventory(null, InventoryUtils.getSafestInventorySize(64), !plugin.getConfiguration().isKitmap() ? "Map " + plugin.getConfiguration().getMapNumber() + " Kit" : "KitMap Limits");
+        mapkitInventory = Bukkit.createInventory(null, 54, !plugin.getConfiguration().isKitmap() ? "Map " + plugin.getConfiguration().getMapNumber() + " Kit" : "KitMap Limits");
         ItemStack[] contents = new ItemStack[mapkitInventory.getSize()];
         Arrays.fill(contents, BLANK);
         Arrays.fill(contents, (9 * 1) + 2, (9 * 1) + 7, LIGHTER);
@@ -69,7 +68,6 @@ public class MapKitCommand extends PlayerCommand implements Listener {
         boolean poisonExtendable = plugin.getConfiguration().isPotionExtendable(PotionType.POISON);
         ItemStack POSION = ItemBuilder.from(new Potion(PotionType.POISON, posion, true, false).toItemStack(1)).lore(CC.YELLOW + "Amplifier: " + posion, CC.YELLOW + (poisonExtendable ? "Extendable" : "Unextendable")).build();
         int invisibility = plugin.getConfiguration().getPotionLimit(PotionType.INVISIBILITY);
-        boolean invisibilityExtendable = plugin.getConfiguration().isPotionExtendable(PotionType.INVISIBILITY);
         ItemStack INVIS = ItemBuilder.from(new Potion(PotionType.INVISIBILITY, Math.max(invisibility, 1), false, true).toItemStack(1)).lore(CC.YELLOW + "Enabled").build();
         contents[(9 * 1) + 4] = HELMET.clone();
         contents[(9 * 2) + 3] = POSION.clone();

@@ -112,7 +112,7 @@ public class EconomyCommand extends PlayerCommand {
         }
     }
 
-    private boolean checkSubcommands(Player sender, String [] args, boolean help) {
+    private boolean checkSubcommands(Player sender, String[] args, boolean help) {
         String arg = args.length < 1 ? null : args[0].toLowerCase();
         if (help) arg = "help";
         if (arg == null) {
@@ -122,21 +122,20 @@ public class EconomyCommand extends PlayerCommand {
         SubCommand subCommand = subCommandMap.get(arg);
 
         boolean subCommandFound = false;
+        Player target = args.length > 0 ? plugin.getServer().getPlayer(args[0]) : null;
 
         if (subCommand == null) {
             for (SubCommand loop : subCommandMap.values()) {
                 if (loop.getAliases() == null) continue;
                 if (Arrays.stream(loop.getAliases())
                         .anyMatch(arg::equalsIgnoreCase)) {
-                    Player target = args.length > 0 ? plugin.getServer().getPlayer(args[0]) : null;
-                    loop.execute(sender, target, args, getLabel());
+                    loop.verify(sender, target, args, getLabel());
                     subCommandFound = true;
                     break;
                 }
             }
         } else {
-            Player target = args.length > 0 ? plugin.getServer().getPlayer(args[0]) : null;
-            subCommand.execute(sender, target, args, getLabel());
+            subCommand.verify(sender, target, args, getLabel());
             subCommandFound = true;
         }
         return subCommandFound;

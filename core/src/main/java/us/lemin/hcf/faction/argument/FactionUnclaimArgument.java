@@ -2,8 +2,9 @@ package us.lemin.hcf.faction.argument;
 
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
+import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
-import us.lemin.core.commands.PlayerSubCommand;
+import us.lemin.core.commands.SubCommand;
 import us.lemin.hcf.HCF;
 import us.lemin.hcf.faction.FactionMember;
 import us.lemin.hcf.faction.claim.Claim;
@@ -14,13 +15,14 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 
-public class FactionUnclaimArgument extends PlayerSubCommand {
+public class FactionUnclaimArgument extends SubCommand {
 
     private final HCF plugin;
 
     public FactionUnclaimArgument(HCF plugin) {
         super("unclaim", "Unclaims land from your faction.");
         this.plugin = plugin;
+        this.playerOnly = true;
     }
 
     public String getUsage(String label) {
@@ -30,7 +32,13 @@ public class FactionUnclaimArgument extends PlayerSubCommand {
 
 
     @Override
-    public void execute(Player player, Player player1, String[] args, String label) {
+    public void execute(CommandSender sender, Player target, String[] args, String label) {
+        Player player;
+        if (sender instanceof Player) {
+            player = (Player) sender;
+        } else{
+            return;
+        }
         PlayerFaction playerFaction = plugin.getFactionManager().getPlayerFaction(player);
 
         if (playerFaction == null) {

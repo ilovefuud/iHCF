@@ -1,22 +1,30 @@
 package us.lemin.hcf.command.pvptimer.impl;
 
 import org.bukkit.ChatColor;
+import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
-import us.lemin.core.commands.PlayerSubCommand;
+import us.lemin.core.commands.SubCommand;
 import us.lemin.hcf.HCF;
 import us.lemin.hcf.timer.type.InvincibilityTimer;
 
-public class PvPTimerEnableCommand extends PlayerSubCommand {
+public class PvPTimerEnableCommand extends SubCommand {
 
     private final HCF plugin;
 
     public PvPTimerEnableCommand( HCF plugin) {
         super("enable");
         this.plugin = plugin;
+        this.aliases = new String[] {"off", "remove"};
     }
 
     @Override
-    public void execute(Player player, Player player1, String[] strings, String s) {
+    public void execute(CommandSender sender, Player target, String[] args, String label) {
+        Player player;
+        if (sender instanceof Player) {
+            player = (Player) sender;
+        } else{
+            return;
+        }
         InvincibilityTimer pvpTimer = plugin.getTimerManager().getInvincibilityTimer();
 
         if (pvpTimer.getRemaining(player) <= 0L) {

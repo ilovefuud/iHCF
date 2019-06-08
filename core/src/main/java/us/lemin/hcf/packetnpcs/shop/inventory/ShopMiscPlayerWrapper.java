@@ -1,4 +1,4 @@
-package us.lemin.hcf.notimplemented.shop.inventory;
+package us.lemin.hcf.packetnpcs.shop.inventory;
 
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
@@ -9,13 +9,13 @@ import us.lemin.core.api.inventoryapi.PlayerInventoryWrapper;
 import us.lemin.core.utils.item.ItemBuilder;
 import us.lemin.core.utils.message.CC;
 import us.lemin.hcf.HCF;
-import us.lemin.hcf.notimplemented.shop.ShopManager;
+import us.lemin.hcf.packetnpcs.shop.ShopNPCManager;
 
 
-public class ShopOrePlayerWrapper extends PlayerInventoryWrapper {
+public class ShopMiscPlayerWrapper extends PlayerInventoryWrapper {
     private final HCF plugin;
 
-    public ShopOrePlayerWrapper(HCF plugin) {
+    public ShopMiscPlayerWrapper(HCF plugin) {
         super("Shop", 6);
         this.plugin = plugin;
     }
@@ -33,8 +33,8 @@ public class ShopOrePlayerWrapper extends PlayerInventoryWrapper {
     private void format(Player player, InventoryWrapper inventoryWrapper) {
         inventoryWrapper.fillBorder(new ItemStack(Material.STAINED_GLASS_PANE, 1, (short) 1));
 
-        ShopManager shopManager = plugin.getShopManager();
-        shopManager.getShopOres().forEach((string, shopItem) -> {
+        ShopNPCManager shopNPCManager = plugin.getShopNPCManager();
+        shopNPCManager.getShopMisc().forEach((string, shopItem) -> {
             boolean sellable = shopItem.isSellable();
             boolean purchasable = shopItem.isPurchasable();
 

@@ -10,6 +10,7 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
+import org.bukkit.scheduler.BukkitTask;
 import us.lemin.hcf.HCF;
 import us.lemin.hcf.pvpclass.event.PvpClassUnequipEvent;
 
@@ -55,13 +56,14 @@ public class EffectRestorer implements Listener {
             if (effect.getAmplifier() < active.getAmplifier()) {
                 return;
             } else if (effect.getAmplifier() == active.getAmplifier()) {
+
                 // If the current potion effect has a longer duration, ignore this one.
                 if (effect.getDuration() < active.getDuration()) {
                     return;
                 }
             }
 
-            restores.put(player, active.getType(), new RestoreTask(player, active));
+            restores.put(player, active.getType(), new RestoreTask(player, active, effect));
             shouldCancel = false;
             break;
         }
@@ -78,12 +80,15 @@ public class EffectRestorer implements Listener {
 
         private final int taskId;
         private final WeakReference<Player> player;
-        private final PotionEffect effect;
+        private final PotionEffect previousEffect;
 
-        public RestoreTask(Player player, PotionEffect effect) {
+
+        public RestoreTask(Player player, PotionEffect previousEffect, PotionEffect newEffect) {
             this.player = new WeakReference<>(player);
-            this.effect = effect;
-            taskId = Bukkit.getScheduler().runTaskLater(HCF.getPlugin(), this, effect.getDuration()).getTaskId();
+            this.previousEffect = previousEffect;
+            BukkitTask task = Bukkit.getScheduler().runTaskLater(HCF.getPlugin(), this, newEffect.getDuration());
+
+            taskId = task.getTaskId();
         }
 
         @Override
@@ -93,7 +98,7 @@ public class EffectRestorer implements Listener {
             if (player == null || !player.isOnline()) return;
 
             // Restore players' potion effect.
-            player.addPotionEffect(effect, true);
+            player.addPotionEffect(previousEffect, true);
         }
 
         public void cancel() {

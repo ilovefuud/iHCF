@@ -53,7 +53,7 @@ import java.util.function.Predicate;
 public class InvincibilityTimer extends PlayerTimer implements Listener {
 
     //TODO: Future proof
-    private static final String PVP_COMMAND = "/land.pvp enable";
+    private static final String PVP_COMMAND = "/pvptimer enable";
 
     // The PlayerPickupItemEvent spams if cancelled, needs a delay between messages to look clean.
     private static final long ITEM_PICKUP_DELAY = TimeUnit.SECONDS.toMillis(30L);

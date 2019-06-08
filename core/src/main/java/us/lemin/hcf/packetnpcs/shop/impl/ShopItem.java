@@ -1,4 +1,4 @@
-package us.lemin.hcf.notimplemented.shop.impl;
+package us.lemin.hcf.packetnpcs.shop.impl;
 
 import org.bukkit.Material;
 import org.bukkit.craftbukkit.v1_8_R3.inventory.CraftItemStack;
@@ -6,7 +6,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import us.lemin.core.utils.message.CC;
 import us.lemin.core.utils.misc.InventoryUtils;
-import us.lemin.hcf.notimplemented.shop.ShopEntry;
+import us.lemin.hcf.packetnpcs.shop.ShopEntry;
 
 public class ShopItem extends ShopEntry {
     private String name;
@@ -29,7 +29,7 @@ public class ShopItem extends ShopEntry {
         if (canPurchase(player, amount)) {
             boolean dropped = false;
             int x = 0;
-            while (x <= amount) {
+            while (x < amount) {
                 if (player.getInventory().firstEmpty() != -1) {
                     player.getInventory().setItem(player.getInventory().firstEmpty(), itemStack);
                 } else {
@@ -45,6 +45,9 @@ public class ShopItem extends ShopEntry {
     public void trySell(Player player, int amount) {
         ItemStack clone = this.itemStack.clone();
         int actualAmount = InventoryUtils.countAmount(player.getInventory(), clone.getType(), clone.getData().getData());
+        if (actualAmount < amount) {
+            player.sendMessage(CC.RED + "You don't have enough of that item to sell.");
+        }
         if (actualAmount > 32) {
             actualAmount = 32;
         }

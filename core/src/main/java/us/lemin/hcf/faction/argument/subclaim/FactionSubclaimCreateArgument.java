@@ -1,8 +1,9 @@
 package us.lemin.hcf.faction.argument.subclaim;
 
 import org.bukkit.ChatColor;
+import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
-import us.lemin.core.commands.PlayerSubCommand;
+import us.lemin.core.commands.SubCommand;
 import us.lemin.core.utils.misc.JavaUtils;
 import us.lemin.hcf.HCF;
 import us.lemin.hcf.faction.claim.Claim;
@@ -15,7 +16,7 @@ import us.lemin.hcf.faction.type.PlayerFaction;
 import java.util.Map;
 import java.util.UUID;
 
-public class FactionSubclaimCreateArgument extends PlayerSubCommand {
+public class FactionSubclaimCreateArgument extends SubCommand {
 
     private final HCF plugin;
 
@@ -31,20 +32,25 @@ public class FactionSubclaimCreateArgument extends PlayerSubCommand {
 
 
     @Override
-    public void execute(Player sender, Player player1, String[] args, String label) {
-        if (args.length < 3) {
+    public void execute(CommandSender sender, Player target, String[] args, String label) {
+        Player player;
+        if (sender instanceof Player) {
+            player = (Player) sender;
+        } else{
+            return;
+        }        if (args.length < 3) {
             sender.sendMessage(ChatColor.RED + "Usage: " + getUsage(label));
             return;
         }
 
-        PlayerFaction playerFaction = plugin.getFactionManager().getPlayerFaction(sender);
+        PlayerFaction playerFaction = plugin.getFactionManager().getPlayerFaction(player);
 
         if (playerFaction == null) {
             sender.sendMessage(ChatColor.RED + "You are not in a faction.");
             return;
         }
 
-        UUID uuid = sender.getUniqueId();
+        UUID uuid = player.getUniqueId();
 
         if (playerFaction.getMember(uuid).getRole() == Role.MEMBER) {
             sender.sendMessage(ChatColor.RED + "You must be a faction officer to create subclaims.");
@@ -85,9 +91,9 @@ public class FactionSubclaimCreateArgument extends PlayerSubCommand {
         subclaim.setY1(ClaimHandler.MIN_CLAIM_HEIGHT);
         subclaim.setY2(ClaimHandler.MAX_CLAIM_HEIGHT);
         subclaim.setName(args[2]);
-        if (plugin.getClaimHandler().tryCreatingSubclaim(sender, subclaim)) {
-            plugin.getVisualiseHandler().clearVisualBlock(sender, subclaim.getMinimumPoint());
-            plugin.getVisualiseHandler().clearVisualBlock(sender, subclaim.getMaximumPoint());
+        if (plugin.getClaimHandler().tryCreatingSubclaim(player, subclaim)) {
+            plugin.getVisualiseHandler().clearVisualBlock(player, subclaim.getMinimumPoint());
+            plugin.getVisualiseHandler().clearVisualBlock(player, subclaim.getMaximumPoint());
             selectionMap.remove(uuid);
         }
 

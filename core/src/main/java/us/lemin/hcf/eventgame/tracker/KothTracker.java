@@ -2,6 +2,7 @@ package us.lemin.hcf.eventgame.tracker;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
+import org.bukkit.GameMode;
 import org.bukkit.entity.Player;
 import us.lemin.hcf.HCF;
 import us.lemin.hcf.eventgame.CaptureZone;
@@ -72,6 +73,9 @@ public class KothTracker implements EventTracker {
 
     @Override
     public boolean onControlTake(Player player, CaptureZone captureZone, EventFaction eventFaction) {
+        if (player.getGameMode() == GameMode.CREATIVE || player.getAllowFlight() || player.isFlying() || player.isDead() || (!plugin.getConfiguration().isKitmap() && plugin.getTimerManager().getInvincibilityTimer().getRemaining(player) > 0)) {
+            return false;
+        }
         player.sendMessage(ChatColor.DARK_AQUA + "You are now in control of " + ChatColor.BLUE + captureZone.getDisplayName() + ChatColor.DARK_AQUA + '.');
         Bukkit.broadcastMessage(ChatColor.GOLD + "[" + eventFaction.getEventType().getDisplayName() + "] " +
                 ChatColor.DARK_AQUA + "Someone" + ChatColor.BLUE + " is in control of " +
@@ -86,12 +90,12 @@ public class KothTracker implements EventTracker {
 
         // Only broadcast if the KOTH has been controlled for at least 25 seconds to prevent spam.
         long remainingMillis = captureZone.getRemainingCaptureMillis();
-        // if (remainingMillis > 0L && captureZone.getDefaultCaptureMillis() - remainingMillis > MINIMUM_CONTROL_TIME_ANNOUNCE) {
+         if (remainingMillis > 0L && captureZone.getDefaultCaptureMillis() - remainingMillis > MINIMUM_CONTROL_TIME_ANNOUNCE) {
             Bukkit.broadcastMessage(ChatColor.GOLD + "[" + eventFaction.getEventType().getDisplayName() + "] " +
                     ChatColor.DARK_AQUA + player.getName() + ChatColor.BLUE + " has lost control of " +
                     ChatColor.DARK_AQUA + captureZone.getDisplayName() + ChatColor.BLUE + '.' +
                     ChatColor.RED + " (" + captureZone.getScoreboardRemaining() + ')');
-//        }
+        }
     }
 
     @Override

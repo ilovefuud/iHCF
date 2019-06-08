@@ -21,11 +21,11 @@ import java.util.Map;
 public class RoadFaction extends ClaimableFaction implements ConfigurationSerializable {
 
     // The difference the roads will end from the border.
-    public static final int ROAD_EDGE_DIFF = 1000;
+    public static final int ROAD_EDGE_DIFF = 50;
 
     // Represents how wide the roads are.
-    public static final int ROAD_WIDTH_LEFT = 3;
-    public static final int ROAD_WIDTH_RIGHT = 3;
+    public static final int ROAD_WIDTH_LEFT = 17;
+    public static final int ROAD_WIDTH_RIGHT = 17;
 
     // The minimum and maximum heights for roads.
     public static final int ROAD_MIN_HEIGHT = 0; //50 'this allowed people to claim below the roads, temp disabled;
@@ -125,7 +125,7 @@ public class RoadFaction extends ClaimableFaction implements ConfigurationSerial
 
     @Override
     public String getDisplayName(CommandSender sender) {
-        return HCF.getPlugin().getConfiguration().getRelationColourRoad() + getName();
+        return HCF.getPlugin().getConfiguration().getRelationColourRoad() + getName().replace('_', ' ');
     }
 
     @Override

@@ -76,12 +76,6 @@ public class VisualizePacketHandler implements PacketHandler {
                     }
                 }
                 break;
-            case "PacketPlayInUseEntity":
-                PacketPlayInUseEntity packetPlayInUseEntity = (PacketPlayInUseEntity) packet;
-                if (plugin.getShopManager().getShopEntityId() == packetPlayInUseEntity.getA()) {
-
-                }
-                break;
         }
     }
 

@@ -131,6 +131,10 @@ public class LoggerListener implements Listener {
             return;
         }
 
+        if (plugin.getConfiguration().isKitmap()) {
+            return;
+        }
+
         CombatLogger logger = combatLoggers.get(event.getEntity().getEntityId());
 
         if (logger == null) {
@@ -163,7 +167,9 @@ public class LoggerListener implements Listener {
 
     @EventHandler(priority = EventPriority.LOW)
     public void onLoggerKill(EntityDeathEvent event) {
-        event.getDrops().clear();
+        if (plugin.getConfiguration().isKitmap()) {
+            return;
+        }
 
         Entity entity = event.getEntity();
         CombatLogger logger = combatLoggers.remove(entity.getEntityId());
@@ -180,6 +186,9 @@ public class LoggerListener implements Listener {
         if (calledEvent.isCancelled()) {
             return;
         }
+
+        event.getDrops().clear();
+
 
         for (ItemStack armor : logger.getItems()) {
             entity.getWorld().dropItemNaturally(entity.getLocation(), armor);
@@ -201,6 +210,9 @@ public class LoggerListener implements Listener {
 
     @EventHandler
     public void onLoggerReJoin(PlayerJoinEvent event) {
+        if (plugin.getConfiguration().isKitmap()) {
+            return;
+        }
         Player player = event.getPlayer();
 
         if (killedLoggers.remove(player.getUniqueId())) {
@@ -231,6 +243,9 @@ public class LoggerListener implements Listener {
 
     @EventHandler
     public void onDisable(PluginDisableEvent event) {
+        if (plugin.getConfiguration().isKitmap()) {
+            return;
+        }
         combatLoggers.values().stream().map(CombatLogger::getEntity).forEach(Entity::remove);
     }
 

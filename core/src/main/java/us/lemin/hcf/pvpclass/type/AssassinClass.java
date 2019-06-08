@@ -27,7 +27,7 @@ public class AssassinClass extends PvpClass implements Listener {
     private final HCF plugin;
 
     public AssassinClass(HCF plugin) {
-        super("Assassin", TimeUnit.SECONDS.toMillis(10L));
+        super("Assassin", plugin.getConfiguration().isKitmap() ? 250 : TimeUnit.SECONDS.toMillis(10L));
 
         this.plugin = plugin;
         this.passiveEffects.add(new PotionEffect(PotionEffectType.DAMAGE_RESISTANCE, Integer.MAX_VALUE, 0));

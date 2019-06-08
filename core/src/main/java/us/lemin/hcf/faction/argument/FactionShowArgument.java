@@ -1,19 +1,19 @@
 package us.lemin.hcf.faction.argument;
 
 import org.bukkit.ChatColor;
+import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
-import us.lemin.core.commands.PlayerSubCommand;
+import us.lemin.core.commands.SubCommand;
 import us.lemin.hcf.HCF;
 import us.lemin.hcf.faction.type.Faction;
 
-public class FactionShowArgument extends PlayerSubCommand {
+public class FactionShowArgument extends SubCommand {
 
     private final HCF plugin;
 
     public FactionShowArgument(HCF plugin) {
         super("show", "Get details about a faction.");
-
-
+        this.aliases = new String[]{"info", "who"};
         this.plugin = plugin;
     }
 
@@ -23,7 +23,13 @@ public class FactionShowArgument extends PlayerSubCommand {
 
 
     @Override
-    public void execute(Player player, Player target, String[] args, String label) {
+    public void execute(CommandSender sender, Player target, String[] args, String label) {
+        Player player;
+        if (sender instanceof Player) {
+            player = (Player) sender;
+        } else{
+            return;
+        }
         Faction playerFaction = null;
         Faction namedFaction;
 
@@ -54,6 +60,5 @@ public class FactionShowArgument extends PlayerSubCommand {
             playerFaction.printDetails(player);
         }
 
-        return;
     }
 }

@@ -3,6 +3,6 @@ version: ${project.version}
 description: ${project.description}
 author: Iowa
 main: us.lemin.hcf.HCF
-softdepend: [Essentials, ProtocolLib, WorldEdit]
-depend: [Core, ProtocolSupport]
+softdepend: [Essentials, ProtocolLib, WorldEdit, ProtocolSupport]
+depend: [Core]
 license: MIT

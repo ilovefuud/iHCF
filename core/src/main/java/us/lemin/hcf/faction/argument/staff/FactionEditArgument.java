@@ -1,8 +1,9 @@
 package us.lemin.hcf.faction.argument.staff;
 
 import org.bukkit.ChatColor;
+import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
-import us.lemin.core.commands.PlayerSubCommand;
+import us.lemin.core.commands.SubCommand;
 import us.lemin.core.player.rank.Rank;
 import us.lemin.hcf.HCF;
 import us.lemin.hcf.faction.claim.Claim;
@@ -13,13 +14,14 @@ import us.lemin.hcf.util.RegionData;
 /**
  * Used to claim land for other {@link ClaimableFaction}s.
  */
-public class FactionEditArgument extends PlayerSubCommand {
+public class FactionEditArgument extends SubCommand {
 
     private final HCF plugin;
 
     public FactionEditArgument(HCF plugin) {
         super("edit", "Edit the land of another nonplayer faction.", Rank.ADMIN);
         this.plugin = plugin;
+        this.playerOnly = true;
     }
 
     public String getUsage(String label) {
@@ -27,7 +29,13 @@ public class FactionEditArgument extends PlayerSubCommand {
     }
 
     @Override
-    public void execute(Player player, Player player1, String[] args, String label) {
+    public void execute(CommandSender sender, Player target, String[] args, String label) {
+        Player player;
+        if (sender instanceof Player) {
+            player = (Player) sender;
+        } else{
+            return;
+        }
         if (args.length < 1) {
             player.sendMessage(ChatColor.RED + "Usage: " + getUsage(label));
             return;

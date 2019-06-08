@@ -1,8 +1,9 @@
 package us.lemin.hcf.faction.argument;
 
 import org.bukkit.ChatColor;
+import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
-import us.lemin.core.commands.PlayerSubCommand;
+import us.lemin.core.commands.SubCommand;
 import us.lemin.hcf.HCF;
 import us.lemin.hcf.faction.FactionMember;
 import us.lemin.hcf.faction.struct.ChatChannel;
@@ -12,7 +13,7 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.Objects;
 
-public class FactionChatArgument extends PlayerSubCommand {
+public class FactionChatArgument extends SubCommand {
 
     private final HCF plugin;
 
@@ -20,6 +21,8 @@ public class FactionChatArgument extends PlayerSubCommand {
         super("chat", "Switch between different chat modes.");
         this.plugin = plugin;
         this.aliases = new String[]{"c"};
+        this.playerOnly = true;
+
     }
 
     public String getUsage(String label) {
@@ -28,7 +31,13 @@ public class FactionChatArgument extends PlayerSubCommand {
 
 
     @Override
-    public void execute(Player player, Player player1, String[] args, String label) {
+    public void execute(CommandSender sender, Player target, String[] args, String label) {
+        Player player;
+        if (sender instanceof Player) {
+            player = (Player) sender;
+        } else{
+            return;
+        }
         PlayerFaction playerFaction = plugin.getFactionManager().getPlayerFaction(player);
 
         if (playerFaction == null) {

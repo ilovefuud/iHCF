@@ -10,8 +10,7 @@ import us.lemin.hcf.faction.FactionMember;
 import us.lemin.hcf.faction.struct.Role;
 import us.lemin.hcf.faction.type.PlayerFaction;
 
-public class FactionForceKickArgument extends SubCommand
-{
+public class FactionForceKickArgument extends SubCommand {
 
     private final HCF plugin;
 
@@ -23,8 +22,6 @@ public class FactionForceKickArgument extends SubCommand
     public String getUsage(String label) {
         return '/' + label + ' ' + getName() + " <playerName>";
     }
-
-
 
     @Override
     public void execute(CommandSender commandSender, Player player, String[] args, String label) {

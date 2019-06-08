@@ -34,7 +34,7 @@ public class CombatTimer extends PlayerTimer implements Listener {
     private final HCF plugin;
 
     public CombatTimer(HCF plugin) {
-        super("Combat", TimeUnit.SECONDS.toMillis(45L));
+        super("Combat", TimeUnit.SECONDS.toMillis(30));
         this.plugin = plugin;
     }
 

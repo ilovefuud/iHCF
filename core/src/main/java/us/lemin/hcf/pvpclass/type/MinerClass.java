@@ -34,11 +34,17 @@ public class MinerClass extends PvpClass implements Listener {
     private final HCF plugin;
 
     public MinerClass(HCF plugin) {
-        super(plugin.getConfiguration().isKitmap() ? "Builder" : "Miner", TimeUnit.SECONDS.toMillis(10L));
+        super(plugin.getConfiguration().isKitmap() ? "Builder" : "Miner", plugin.getConfiguration().isKitmap() ? 250 : TimeUnit.SECONDS.toMillis(10L));
 
         this.plugin = plugin;
         this.passiveEffects.add(new PotionEffect(PotionEffectType.FAST_DIGGING, Integer.MAX_VALUE, 1));
+        this.passiveEffects.add(new PotionEffect(PotionEffectType.FIRE_RESISTANCE, Integer.MAX_VALUE, 0));
         this.passiveEffects.add(new PotionEffect(PotionEffectType.NIGHT_VISION, Integer.MAX_VALUE, 0));
+        if (plugin.getConfiguration().isKitmap()) {
+            this.passiveEffects.add(new PotionEffect(PotionEffectType.WEAKNESS, Integer.MAX_VALUE, 0));
+            this.passiveEffects.add(new PotionEffect(PotionEffectType.SPEED, Integer.MAX_VALUE, 0));
+            this.passiveEffects.add(new PotionEffect(PotionEffectType.DAMAGE_RESISTANCE, Integer.MAX_VALUE, 0));
+        }
     }
 
     private void removeInvisibilitySafely(Player player) {

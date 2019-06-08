@@ -52,7 +52,7 @@ public class KeyListener implements Listener {
     public void onInventoryClose(InventoryCloseEvent event) {
         Inventory inventory = event.getInventory();
         Inventory topInventory = event.getView().getTopInventory();
-        if (inventory != null && topInventory != null && topInventory.equals(inventory) && topInventory.getTitle().endsWith(" Key Reward")) { //TODO: More reliable
+        if (inventory != null && topInventory != null && topInventory.equals(inventory) && topInventory.getTitle().endsWith(" Key Reward")) { //TODO: More reliable DUPE GLITCH FIX REMOVE KEY REWARD TITLE
             Player player = (Player) event.getPlayer();
             Location location = player.getLocation();
             World world = player.getWorld();

@@ -2,8 +2,9 @@ package us.lemin.hcf.faction.argument;
 
 import org.apache.commons.lang3.time.DurationFormatUtils;
 import org.bukkit.ChatColor;
+import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
-import us.lemin.core.commands.PlayerSubCommand;
+import us.lemin.core.commands.SubCommand;
 import us.lemin.core.utils.misc.JavaUtils;
 import us.lemin.hcf.HCF;
 import us.lemin.hcf.faction.struct.Role;
@@ -11,7 +12,7 @@ import us.lemin.hcf.faction.type.PlayerFaction;
 
 import java.util.concurrent.TimeUnit;
 
-public class FactionRenameArgument extends PlayerSubCommand {
+public class FactionRenameArgument extends SubCommand {
 
     private static final long FACTION_RENAME_DELAY_MILLIS = TimeUnit.SECONDS.toMillis(15L);
     private static final String FACTION_RENAME_DELAY_WORDS = DurationFormatUtils.formatDurationWords(FACTION_RENAME_DELAY_MILLIS, true, true);
@@ -22,6 +23,7 @@ public class FactionRenameArgument extends PlayerSubCommand {
         super("rename", "Change the name of your faction.");
         this.plugin = plugin;
         this.aliases = new String[]{"changename", "setname"};
+        this.playerOnly = true;
     }
 
 
@@ -31,7 +33,13 @@ public class FactionRenameArgument extends PlayerSubCommand {
 
 
     @Override
-    public void execute(Player player, Player player1, String[] args, String label) {
+    public void execute(CommandSender sender, Player target, String[] args, String label) {
+        Player player;
+        if (sender instanceof Player) {
+            player = (Player) sender;
+        } else{
+            return;
+        }
         if (args.length < 2) {
             player.sendMessage(ChatColor.RED + "Usage: " + getUsage(label));
             return;

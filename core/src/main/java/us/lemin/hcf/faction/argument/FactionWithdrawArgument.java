@@ -1,8 +1,9 @@
 package us.lemin.hcf.faction.argument;
 
 import org.bukkit.ChatColor;
+import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
-import us.lemin.core.commands.PlayerSubCommand;
+import us.lemin.core.commands.SubCommand;
 import us.lemin.core.utils.misc.JavaUtils;
 import us.lemin.hcf.HCF;
 import us.lemin.hcf.economy.EconomyManager;
@@ -12,13 +13,14 @@ import us.lemin.hcf.faction.type.PlayerFaction;
 
 import java.util.UUID;
 
-public class FactionWithdrawArgument extends PlayerSubCommand {
+public class FactionWithdrawArgument extends SubCommand {
 
     private final HCF plugin;
 
     public FactionWithdrawArgument(HCF plugin) {
         super("withdraw", "Withdraws money from the faction balance.");
         this.plugin = plugin;
+        this.playerOnly = true;
     }
 
     public String getUsage(String label) {
@@ -26,7 +28,13 @@ public class FactionWithdrawArgument extends PlayerSubCommand {
     }
 
     @Override
-    public void execute(Player player, Player player1, String[] args, String label) {
+    public void execute(CommandSender sender, Player target, String[] args, String label) {
+        Player player;
+        if (sender instanceof Player) {
+            player = (Player) sender;
+        } else{
+            return;
+        }
         if (args.length < 2) {
             player.sendMessage(ChatColor.RED + "Usage: " + getUsage(label));
             return;

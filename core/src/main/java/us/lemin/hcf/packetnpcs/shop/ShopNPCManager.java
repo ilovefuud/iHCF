@@ -1,10 +1,9 @@
-package us.lemin.hcf.notimplemented.shop;
+package us.lemin.hcf.packetnpcs.shop;
 
 import com.google.common.collect.ImmutableList;
 import lombok.Getter;
 import net.minecraft.server.v1_8_R3.EntityVillager;
 import net.minecraft.server.v1_8_R3.PacketPlayOutEntityDestroy;
-import net.minecraft.server.v1_8_R3.PacketPlayOutSpawnEntity;
 import net.minecraft.server.v1_8_R3.PacketPlayOutSpawnEntityLiving;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
@@ -16,19 +15,16 @@ import us.lemin.core.utils.item.ItemBuilder;
 import us.lemin.core.utils.message.CC;
 import us.lemin.hcf.HCF;
 import us.lemin.hcf.listener.Crowbar;
-import us.lemin.hcf.notimplemented.shop.impl.ShopItem;
+import us.lemin.hcf.packetnpcs.shop.impl.ShopItem;
 
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 @Getter
-public class ShopManager {
+public class ShopNPCManager {
 
     private final HCF plugin;
-    private int shopEntityId;
-    private EntityVillager villager;
-    private PacketPlayOutSpawnEntity shopPacket;
+    private Map<UUID, EntityVillager> villagerMap = new HashMap<>();
+    private Map<UUID, Integer> villagerIdMap = new HashMap<>();
 
     private static final List<Material> ORES = ImmutableList.of(Material.DIAMOND, Material.IRON_INGOT, Material.GOLD_INGOT,
             Material.COAL, Material.INK_SACK, Material.REDSTONE, Material.EMERALD, Material.COAL_BLOCK, Material.IRON_BLOCK,
@@ -45,10 +41,9 @@ public class ShopManager {
     private final Map<String, ShopItem> shopOres = new LinkedHashMap<>();
 
 
-    public ShopManager(HCF plugin) {
+    public ShopNPCManager(HCF plugin) {
         this.plugin = plugin;
 
-        registerEntity();
         registerEntries(
                 new ShopItem(new ItemBuilder(Material.MOB_SPAWNER).name(CC.YELLOW + "Zombie Spawner").loreLine(CC.WHITE + "Zombie").build(), 27500, false, true),
                 new ShopItem(new ItemBuilder(Material.MOB_SPAWNER).name(CC.YELLOW + "Skeleton Spawner").loreLine(CC.WHITE + "Skeleton").build(), 27500, false, true),
@@ -98,24 +93,21 @@ public class ShopManager {
     }
 
 
-    private void registerEntity() {
-        Location shopLocation = plugin.getConfiguration().getShopLocation();
-        EntityVillager villager = new EntityVillager(((CraftWorld) shopLocation.getWorld()).getHandle());
-        villager.setCustomName(ChatColor.GREEN + "Shop");
-        villager.setCustomNameVisible(true);
-        villager.setInvisible(false);
-        villager.setLocation(shopLocation.getX(), shopLocation.getY(), shopLocation.getZ(), shopLocation.getPitch(), shopLocation.getYaw());
-        this.villager = villager;
-        this.shopEntityId = villager.getId();
-    }
-
     public void sendPacket(Player player, boolean remove) {
         if (remove) {
-            ((CraftPlayer) player).getHandle().playerConnection.sendPacket(new PacketPlayOutEntityDestroy(shopEntityId));
-            player.sendMessage("removed");
+            ((CraftPlayer) player).getHandle().playerConnection.sendPacket(new PacketPlayOutEntityDestroy(villagerIdMap.get(player.getUniqueId())));
+            villagerIdMap.remove(player.getUniqueId());
+            villagerMap.remove(player.getUniqueId());
         } else {
+            Location shopLocation = plugin.getConfiguration().getShopLocation();
+            EntityVillager villager = new EntityVillager(((CraftWorld) shopLocation.getWorld()).getHandle());
+            villager.setCustomName(ChatColor.GREEN + "Shop");
+            villager.setCustomNameVisible(true);
+            villager.setInvisible(false);
+            villager.setLocation(shopLocation.getX(), shopLocation.getY(), shopLocation.getZ(), shopLocation.getPitch(), shopLocation.getYaw());
+            villagerIdMap.put(player.getUniqueId(), villager.getId());
+            villagerMap.put(player.getUniqueId(), villager);
             ((CraftPlayer) player).getHandle().playerConnection.sendPacket(new PacketPlayOutSpawnEntityLiving(villager));
-            player.sendMessage("spawned");
         }
     }
 
@@ -138,5 +130,13 @@ public class ShopManager {
 
     public ShopItem getOresItemByName(String string) {
         return shopOres.get(string);
+    }
+
+    public EntityVillager getVillagerByUUID(UUID uuid) {
+        return this.villagerMap.get(uuid);
+    }
+
+    public int getVillagerIdByUUID(UUID uuid) {
+        return this.villagerIdMap.get(uuid);
     }
 }

@@ -85,9 +85,9 @@ public class PearlGlitchListener implements Listener {
                 return;
             }
 
-            to.setX(to.getBlockX() + 0.5);
+            /*to.setX(to.getBlockX() + 0.5);
             to.setZ(to.getBlockZ() + 0.5);
-            event.setTo(to);
+            event.setTo(to);*/
         }
     }
 }

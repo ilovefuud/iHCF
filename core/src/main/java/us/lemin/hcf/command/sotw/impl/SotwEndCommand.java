@@ -13,6 +13,7 @@ public class SotwEndCommand extends SubCommand {
     public SotwEndCommand(HCF plugin) {
         super("end");
         this.plugin = plugin;
+        this.aliases = new String[] {"cancel"};
     }
 
     @Override

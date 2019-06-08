@@ -1,8 +1,9 @@
 package us.lemin.hcf.faction.argument;
 
 import org.bukkit.ChatColor;
+import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
-import us.lemin.core.commands.PlayerSubCommand;
+import us.lemin.core.commands.SubCommand;
 import us.lemin.hcf.HCF;
 import us.lemin.hcf.faction.struct.Role;
 import us.lemin.hcf.faction.type.PlayerFaction;
@@ -10,7 +11,7 @@ import us.lemin.hcf.faction.type.PlayerFaction;
 import java.util.Arrays;
 
 
-public class FactionAnnouncementArgument extends PlayerSubCommand {
+public class FactionAnnouncementArgument extends SubCommand {
 
     private final HCF plugin;
 
@@ -18,6 +19,8 @@ public class FactionAnnouncementArgument extends PlayerSubCommand {
         super("announcement", "Set your faction announcement.");
         this.plugin = plugin;
         this.aliases = new String[]{"announce", "motd"};
+        this.playerOnly = true;
+
     }
 
     public String getUsage(String label) {
@@ -25,7 +28,13 @@ public class FactionAnnouncementArgument extends PlayerSubCommand {
     }
 
     @Override
-    public void execute(Player player, Player player1, String[] args, String label) {
+    public void execute(CommandSender sender, Player target, String[] args, String label) {
+        Player player;
+        if (sender instanceof Player) {
+            player = (Player) sender;
+        } else{
+            return;
+        }
         if (args.length < 2) {
             player.sendMessage(ChatColor.RED + "Usage: " + getUsage(label));
             return;

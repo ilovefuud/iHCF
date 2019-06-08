@@ -93,7 +93,7 @@ public enum VisualType {
                 }
 
                 Faction faction = HCF.getPlugin().getFactionManager().getFactionAt(location);
-                return new VisualBlockData(Material.STAINED_GLASS, (faction != null ? faction.getRelation(player) : Relation.ENEMY).toDyeColour().getData());
+                return new VisualBlockData(Material.STAINED_GLASS, (faction != null ? faction.getRelation(player) : Relation.NEUTRAL).toDyeColour().getData());
             }
 
             @Override

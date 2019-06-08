@@ -87,7 +87,8 @@ public class WallBorderListener implements Listener {
         if (flag = (plugin.getTimerManager().getCombatTimer().getRemaining(player) > 0L)) {
             visualType = VisualType.SPAWN_BORDER;
             relevantTimer = plugin.getTimerManager().getCombatTimer();
-        } else if (plugin.getTimerManager().getInvincibilityTimer().getRemaining(player) > 0L) {
+        // this might be fucked up below the kitmap part
+        } else if (!plugin.getConfiguration().isKitmap() && plugin.getTimerManager().getInvincibilityTimer().getRemaining(player) > 0L) {
             visualType = VisualType.CLAIM_BORDER;
             relevantTimer = plugin.getTimerManager().getInvincibilityTimer();
         } else {

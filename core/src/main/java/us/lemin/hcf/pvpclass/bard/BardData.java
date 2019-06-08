@@ -2,6 +2,7 @@ package us.lemin.hcf.pvpclass.bard;
 
 import com.google.common.base.Preconditions;
 import lombok.Getter;
+import lombok.Setter;
 import org.bukkit.scheduler.BukkitTask;
 
 /**
@@ -18,7 +19,8 @@ public class BardData {
     private long buffCooldown;
 
     @Getter
-    protected BukkitTask heldTask; //TODO: find a way to make private
+    @Setter
+    private BukkitTask heldTask;
 
     private long energyStart;
 

@@ -1,8 +1,9 @@
 package us.lemin.hcf.faction.argument;
 
 import org.bukkit.ChatColor;
+import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
-import us.lemin.core.commands.PlayerSubCommand;
+import us.lemin.core.commands.SubCommand;
 import us.lemin.hcf.HCF;
 import us.lemin.hcf.faction.LandMap;
 import us.lemin.hcf.faction.claim.Claim;
@@ -15,13 +16,14 @@ import java.util.UUID;
 /**
  * Faction argument used to view a interactive map of {@link Claim}s.
  */
-public class FactionMapArgument extends PlayerSubCommand {
+public class FactionMapArgument extends SubCommand {
 
     private final HCF plugin;
 
     public FactionMapArgument(HCF plugin) {
         super("map", "View all claims around your chunk.");
         this.plugin = plugin;
+        this.playerOnly = true;
     }
 
     public String getUsage(String label) {
@@ -30,7 +32,13 @@ public class FactionMapArgument extends PlayerSubCommand {
 
 
     @Override
-    public void execute(Player player, Player player1, String[] args, String label) {
+    public void execute(CommandSender sender, Player target, String[] args, String label) {
+        Player player;
+        if (sender instanceof Player) {
+            player = (Player) sender;
+        } else{
+            return;
+        }
 
         UUID uuid = player.getUniqueId();
 

@@ -61,7 +61,7 @@ public class LivesReviveArgument extends SubCommand {
                 return;
             }
 
-            Relation relation = Relation.ENEMY;
+            Relation relation = Relation.NEUTRAL;
             if (sender instanceof Player) {
                 if (!sender.hasPermission(REVIVE_BYPASS_PERMISSION)) {
                     if (plugin.getEotwHandler().isEndOfTheWorld()) {
@@ -81,7 +81,7 @@ public class LivesReviveArgument extends SubCommand {
 
                 plugin.getDeathbanManager().setLives(playerUUID, selfLives - 1);
                 PlayerFaction playerFaction = plugin.getFactionManager().getPlayerFaction(playerSender);
-                relation = playerFaction == null ? Relation.ENEMY : playerFaction.getFactionRelation(plugin.getFactionManager().getPlayerFaction(targetUUID));
+                relation = playerFaction == null ? Relation.NEUTRAL : playerFaction.getFactionRelation(plugin.getFactionManager().getPlayerFaction(targetUUID));
                 sender.sendMessage(ChatColor.YELLOW + "You have used a life to revive " + relation.toChatColour() + profile.getName() + ChatColor.YELLOW + '.');
             } else {
                 sender.sendMessage(ChatColor.YELLOW + "You have revived " + plugin.getConfiguration().getRelationColourTeammate() + profile.getName() + ChatColor.YELLOW + '.');

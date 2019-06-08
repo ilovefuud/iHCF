@@ -5,6 +5,9 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.CreatureSpawnEvent;
+import org.bukkit.event.entity.ItemSpawnEvent;
+import org.bukkit.event.player.PlayerDropItemEvent;
+import org.bukkit.scheduler.BukkitRunnable;
 import us.lemin.hcf.HCF;
 
 /**
@@ -23,6 +26,9 @@ public class EntityLimitListener implements Listener {
 
     @EventHandler(ignoreCancelled = true, priority = EventPriority.HIGH)
     public void onCreatureSpawn(CreatureSpawnEvent event) {
+        if (plugin.getConfiguration().isKitmap()) {
+            event.setCancelled(true);
+        }
         if (!plugin.getConfiguration().isHandleEntityLimiting()) {
             return;
         }
@@ -52,6 +58,30 @@ public class EntityLimitListener implements Listener {
                 default:
                     break;
             }
+        }
+    }
+
+    @EventHandler(ignoreCancelled = true, priority = EventPriority.MONITOR)
+    public void onPlayerDropItem(PlayerDropItemEvent event) {
+        Item item = event.getItemDrop();
+        if (item != null) {
+            new BukkitRunnable() {
+                public void run() {
+                    item.remove();
+                }
+            }.runTaskLater(plugin, (20 * 5));
+        }
+    }
+
+    @EventHandler(ignoreCancelled = true, priority = EventPriority.MONITOR)
+    public void onItemSpawn(ItemSpawnEvent event) {
+        Item item = event.getEntity();
+        if (item != null) {
+            new BukkitRunnable() {
+                public void run() {
+                    item.remove();
+                }
+            }.runTaskLater(plugin, (20 * 15));
         }
     }
 }

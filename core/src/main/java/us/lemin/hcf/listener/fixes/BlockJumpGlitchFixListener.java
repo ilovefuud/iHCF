@@ -28,7 +28,7 @@ public class BlockJumpGlitchFixListener implements Listener {
                     Vector vector = player.getVelocity();
                     vector.setX(-0.1);
                     vector.setZ(-0.1);
-                    player.setVelocity(vector.setY(vector.getY() - 0.41999998688697815D)); // Magic number acquired from EntityLiving#bj()
+                    player.setVelocity(vector.setY(vector.getY() - 0.42F)); // Magic number acquired from EntityLiving#bj()
                 }
             }
         }

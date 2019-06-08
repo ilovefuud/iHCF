@@ -1,8 +1,9 @@
 package us.lemin.hcf.faction.argument;
 
 import org.bukkit.ChatColor;
+import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
-import us.lemin.core.commands.PlayerSubCommand;
+import us.lemin.core.commands.SubCommand;
 import us.lemin.hcf.HCF;
 import us.lemin.hcf.faction.FactionMember;
 import us.lemin.hcf.faction.struct.ChatChannel;
@@ -14,7 +15,7 @@ import us.lemin.hcf.faction.type.PlayerFaction;
 /**
  * Faction argument used to accept invitations from {@link Faction}s.
  */
-public class FactionAcceptArgument extends PlayerSubCommand {
+public class FactionAcceptArgument extends SubCommand {
 
     private final HCF plugin;
 
@@ -22,6 +23,7 @@ public class FactionAcceptArgument extends PlayerSubCommand {
         super("accept", "Accept a join request from an existing faction.");
         this.plugin = plugin;
         this.aliases = new String[]{"join", "a"};
+        this.playerOnly = true;
     }
 
     public String getUsage(String label) {
@@ -30,7 +32,13 @@ public class FactionAcceptArgument extends PlayerSubCommand {
 
 
     @Override
-    public void execute(Player player, Player target, String[] args, String label) {
+    public void execute(CommandSender sender, Player target, String[] args, String label) {
+        Player player;
+        if (sender instanceof Player) {
+            player = (Player) sender;
+        } else{
+            return;
+        }
         if (args.length < 2) {
             player.sendMessage(ChatColor.RED + "Usage: " + getUsage(label));
             return;

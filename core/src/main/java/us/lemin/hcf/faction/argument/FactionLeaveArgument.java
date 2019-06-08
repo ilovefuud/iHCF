@@ -1,8 +1,9 @@
 package us.lemin.hcf.faction.argument;
 
 import org.bukkit.ChatColor;
+import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
-import us.lemin.core.commands.PlayerSubCommand;
+import us.lemin.core.commands.SubCommand;
 import us.lemin.hcf.HCF;
 import us.lemin.hcf.faction.struct.Relation;
 import us.lemin.hcf.faction.struct.Role;
@@ -10,13 +11,14 @@ import us.lemin.hcf.faction.type.PlayerFaction;
 
 import java.util.UUID;
 
-public class FactionLeaveArgument extends PlayerSubCommand {
+public class FactionLeaveArgument extends SubCommand {
 
     private final HCF plugin;
 
     public FactionLeaveArgument(HCF plugin) {
         super("leave", "Leave your current faction.");
         this.plugin = plugin;
+        this.playerOnly = true;
     }
 
     public String getUsage(String label) {
@@ -25,7 +27,13 @@ public class FactionLeaveArgument extends PlayerSubCommand {
 
 
     @Override
-    public void execute(Player player, Player target, String[] args, String label) {
+    public void execute(CommandSender sender, Player target, String[] args, String label) {
+        Player player;
+        if (sender instanceof Player) {
+            player = (Player) sender;
+        } else{
+            return;
+        }
         PlayerFaction playerFaction = plugin.getFactionManager().getPlayerFaction(player.getUniqueId());
 
         if (playerFaction == null) {
@@ -43,7 +51,7 @@ public class FactionLeaveArgument extends PlayerSubCommand {
 
         if (playerFaction.removeMember(player, player, player.getUniqueId(), false, false)) {
             player.sendMessage(ChatColor.YELLOW + "Successfully left the faction.");
-            playerFaction.broadcast(Relation.ENEMY.toChatColour() + player.getName() + ChatColor.YELLOW + " has left the faction.");
+            playerFaction.broadcast(Relation.NEUTRAL.toChatColour() + player.getName() + ChatColor.YELLOW + " has left the faction.");
         }
 
     }

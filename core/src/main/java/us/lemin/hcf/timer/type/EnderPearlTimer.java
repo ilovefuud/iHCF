@@ -1,44 +1,29 @@
 package us.lemin.hcf.timer.type;
 
-import net.minecraft.server.v1_8_R3.ItemEnderPearl;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
-import org.bukkit.entity.EnderPearl;
-import org.bukkit.entity.HumanEntity;
 import org.bukkit.entity.Player;
-import org.bukkit.entity.Projectile;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
-import org.bukkit.event.entity.ProjectileLaunchEvent;
-import org.bukkit.event.inventory.InventoryClickEvent;
-import org.bukkit.event.player.PlayerItemHeldEvent;
+import org.bukkit.event.block.Action;
+import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerKickEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
-import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.projectiles.ProjectileSource;
-import org.bukkit.scheduler.BukkitRunnable;
 import us.lemin.core.storage.flatfile.Config;
 import us.lemin.hcf.HCF;
 import us.lemin.hcf.timer.PlayerTimer;
 import us.lemin.hcf.timer.TimerCooldown;
 import us.lemin.hcf.util.DurationFormatter;
-import us.lemin.hcf.util.NmsUtils;
 
 import javax.annotation.Nullable;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 
 public class EnderPearlTimer extends PlayerTimer implements Listener {
 
-    private static final long REFRESH_DELAY_TICKS = 2L;      // time in ticks it will update the remaining time on the Enderpearl.
-    private static final long REFRESH_DELAY_TICKS_18 = 20L;  // time in ticks it will update the remaining time on the Enderpearl for a 1.8 client.
 
-    private final Map<UUID, PearlNameFaker> itemNameFakes = new HashMap<>();
     private final HCF plugin;
 
     public EnderPearlTimer(HCF plugin) {
@@ -59,10 +44,6 @@ public class EnderPearlTimer extends PlayerTimer implements Listener {
     @Override
     public void onDisable(Config config) {
         super.onDisable(config);
-        for (Iterator<PearlNameFaker> iterator = itemNameFakes.values().iterator(); iterator.hasNext(); ) {
-            iterator.next().cancel();
-            iterator.remove();
-        }
     }
 
     @EventHandler(ignoreCancelled = true, priority = EventPriority.MONITOR)
@@ -80,98 +61,25 @@ public class EnderPearlTimer extends PlayerTimer implements Listener {
         clearCooldown(player, player.getUniqueId());
     }
 
-    @EventHandler(ignoreCancelled = true, priority = EventPriority.MONITOR)
-    public void onProjectileLaunch(ProjectileLaunchEvent event) {
-        Projectile projectile = event.getEntity();
-        if (projectile instanceof EnderPearl) {
-            EnderPearl enderPearl = (EnderPearl) projectile;
-            ProjectileSource source = enderPearl.getShooter();
-            if (source instanceof Player) {
-                Player shooter = (Player) source;
-                long remaining = getRemaining(shooter);
-                if (remaining > 0L) {
-                    shooter.sendMessage(ChatColor.RED + "You still have a " + getDisplayName()
-                            + ChatColor.RED + " cooldown for another " + ChatColor.BOLD + DurationFormatter.getRemaining(remaining, true, false) + ChatColor.RED + '.');
-
-                    event.setCancelled(true);
-                    return;
-                }
-
-                if (setCooldown(shooter, shooter.getUniqueId(), defaultCooldown, true)) {
-                    PearlNameFaker pearlNameFaker = new PearlNameFaker(this, shooter);
-                    itemNameFakes.put(shooter.getUniqueId(), pearlNameFaker);
-                    pearlNameFaker.runTaskTimerAsynchronously(plugin, 20, 20);
-                }
-            }
+    @EventHandler(priority = EventPriority.MONITOR)
+    public void onPearl(PlayerInteractEvent event) {
+        if (!event.hasItem() || event.getItem().getType() != Material.ENDER_PEARL
+                || event.getAction() == Action.LEFT_CLICK_AIR || event.getAction() == Action.LEFT_CLICK_BLOCK) {
+            return;
         }
+        final Player player = event.getPlayer();
+
+        long remaining = getRemaining(player);
+        if (remaining > 0L) {
+            player.sendMessage(ChatColor.RED + "You still have a " + getDisplayName()
+                    + ChatColor.RED + " cooldown for another " + ChatColor.BOLD + DurationFormatter.getRemaining(remaining, true, false) + ChatColor.RED + '.');
+
+            event.setCancelled(true);
+            return;
+        }
+        setCooldown(player, player.getUniqueId(), defaultCooldown, true);
     }
 
-    @EventHandler(ignoreCancelled = true, priority = EventPriority.MONITOR)
-    public void onPlayerItemHeld(PlayerItemHeldEvent event) {
-        Player player = event.getPlayer();
-        PearlNameFaker pearlNameFaker = itemNameFakes.get(player.getUniqueId());
-        if (pearlNameFaker != null) {
-            int previousSlot = event.getPreviousSlot();
-            net.minecraft.server.v1_8_R3.ItemStack stack = NmsUtils.getCleanItem(player, previousSlot);
-            if (stack != null && stack.getItem() instanceof ItemEnderPearl) {
-                NmsUtils.sendItemPacketAtSlot(player, stack, previousSlot);
-            }
-        }
-    }
-
-    @EventHandler(ignoreCancelled = true, priority = EventPriority.MONITOR)
-    public void onInventoryClick(InventoryClickEvent event) {
-        HumanEntity humanEntity = event.getWhoClicked();
-        if (humanEntity instanceof Player) {
-            Player player = (Player) humanEntity;
-            PearlNameFaker pearlNameFaker = itemNameFakes.get(player.getUniqueId());
-            if (pearlNameFaker != null) {
-                Inventory clickedInventory = event.getClickedInventory();
-                int heldSlot = player.getInventory().getHeldItemSlot();
-                int slot = event.getSlot();
-                int hotbarButton = event.getHotbarButton();
-                if (hotbarButton != -1) {
-                    if (hotbarButton == heldSlot && slot != hotbarButton) {
-                        NmsUtils.sendItemPacketAtSlot(player, NmsUtils.getCleanItem(clickedInventory, hotbarButton), slot);
-                        NmsUtils.sendItemPacketAtSlot(player, NmsUtils.getCleanItem(clickedInventory, slot), hotbarButton);
-                    }
-                } else if (slot == heldSlot) {
-                    NmsUtils.sendItemPacketAtSlot(player, NmsUtils.getCleanItem(clickedInventory, slot), slot);
-                }
-            }
-        }
-    }
-
-    /**
-     * Runnable to show remaining Enderpearl cooldown on held item.
-     */
-    public static class PearlNameFaker extends BukkitRunnable {
-
-        private final PlayerTimer timer;
-        private final Player player;
-
-        public PearlNameFaker(PlayerTimer timer, Player player) {
-            this.timer = timer;
-            this.player = player;
-        }
-
-        @Override
-        public void run() {
-            net.minecraft.server.v1_8_R3.ItemStack stack = NmsUtils.getCleanHeldItem(player);
-            if (stack != null && stack.getItem() instanceof ItemEnderPearl) {
-                stack = stack.cloneItemStack();
-                stack.c(ChatColor.GOLD + "Enderpearl Cooldown: " + ChatColor.RED +
-                        DurationFormatter.getRemaining(timer.getRemaining(player), true, true));
-                NmsUtils.sendItemPacketAtHeldSlot(player, stack);
-            }
-        }
-
-        @Override
-        public synchronized void cancel() throws IllegalStateException {
-            super.cancel();
-            NmsUtils.resendHeldItemPacket(player);
-        }
-    }
 
     @Override
     public void handleExpiry(@Nullable Player player, UUID playerUUID) {
@@ -180,13 +88,6 @@ public class EnderPearlTimer extends PlayerTimer implements Listener {
 
     @Override
     public TimerCooldown clearCooldown(@Nullable Player player, UUID playerUUID) {
-        TimerCooldown cooldown = super.clearCooldown(player, playerUUID);
-
-        PearlNameFaker pearlNameFaker = itemNameFakes.remove(playerUUID);
-        if (pearlNameFaker != null) {
-            pearlNameFaker.cancel();
-        }
-
-        return cooldown;
+        return super.clearCooldown(player, playerUUID);
     }
 }

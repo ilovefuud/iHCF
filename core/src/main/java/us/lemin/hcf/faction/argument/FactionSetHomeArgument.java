@@ -2,21 +2,23 @@ package us.lemin.hcf.faction.argument;
 
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
+import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
-import us.lemin.core.commands.PlayerSubCommand;
+import us.lemin.core.commands.SubCommand;
 import us.lemin.hcf.HCF;
 import us.lemin.hcf.faction.FactionMember;
 import us.lemin.hcf.faction.claim.Claim;
 import us.lemin.hcf.faction.struct.Role;
 import us.lemin.hcf.faction.type.PlayerFaction;
 
-public class FactionSetHomeArgument extends PlayerSubCommand {
+public class FactionSetHomeArgument extends SubCommand {
 
     private final HCF plugin;
 
     public FactionSetHomeArgument(HCF plugin) {
         super("sethome", "Sets the faction home location.");
         this.plugin = plugin;
+        this.playerOnly = true;
     }
 
     public String getUsage(String label) {
@@ -24,7 +26,13 @@ public class FactionSetHomeArgument extends PlayerSubCommand {
     }
 
     @Override
-    public void execute(Player player, Player player1, String[] strings, String s) {
+    public void execute(CommandSender sender, Player target, String[] args, String label) {
+        Player player;
+        if (sender instanceof Player) {
+            player = (Player) sender;
+        } else{
+            return;
+        }
 
         if (plugin.getConfiguration().getMaxHeightFactionHome() != -1 && player.getLocation().getY() > plugin.getConfiguration().getMaxHeightFactionHome()) {
             player.sendMessage(ChatColor.RED + "You can not set your faction home above y " + plugin.getConfiguration().getMaxHeightFactionHome() + ".");

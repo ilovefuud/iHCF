@@ -307,11 +307,11 @@ public class ProtectionListener implements Listener {
                 Faction attackerFactionAt = plugin.getFactionManager().getFactionAt(attacker.getLocation());
                 if (attackerFactionAt.isSafezone()) {
                     event.setCancelled(true);
-                    tryAlert(player, ChatColor.RED + "You cannot attack players whilst in safe-zones.");
+                    tryAlert(attacker, ChatColor.RED + "You cannot attack players whilst in safe-zones.");
                     return;
                 } else if (playerFactionAt.isSafezone()) {
                     // it's already cancelled above.
-                    tryAlert(player, ChatColor.RED + "You cannot attack players that are in safe-zones.");
+                    tryAlert(attacker, ChatColor.RED + "You cannot attack players that are in safe-zones.");
                     return;
                 }
 

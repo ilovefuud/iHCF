@@ -45,7 +45,7 @@ public class PortalListener implements Listener {
             World toWorld = event.getTo().getWorld();
             if (toWorld != null && toWorld.getEnvironment() == World.Environment.THE_END) {
                 event.useTravelAgent(false);
-                event.setTo(toWorld.getSpawnLocation().clone().add(0.5, 0, 0.5));
+                event.setTo(plugin.getConfiguration().getEndSpawnLocation());
                 if (plugin.getConfiguration().isEndExtinguishFireOnExit()) {
                     event.getPlayer().setFireTicks(0);
                 }
@@ -103,14 +103,16 @@ public class PortalListener implements Listener {
                 return;
             }
 
-            // Prevent entering the end if the player is PVP Protected.
-            timer = plugin.getTimerManager().getInvincibilityTimer();
-            if ((remaining = timer.getRemaining(player)) > 0L) {
-                message(player, ChatColor.RED + "You cannot enter the End whilst your " + timer.getDisplayName() +
-                        ChatColor.RED + " timer is active [" + ChatColor.BOLD + DurationFormatter.getRemaining(remaining, true, false) + ChatColor.RED + " remaining]");
+            if (!plugin.getConfiguration().isKitmap()) {
+                // Prevent entering the end if the player is PVP Protected.
+                timer = plugin.getTimerManager().getInvincibilityTimer();
+                if ((remaining = timer.getRemaining(player)) > 0L) {
+                    message(player, ChatColor.RED + "You cannot enter the End whilst your " + timer.getDisplayName() +
+                            ChatColor.RED + " timer is active [" + ChatColor.BOLD + DurationFormatter.getRemaining(remaining, true, false) + ChatColor.RED + " remaining]");
 
-                event.setCancelled(true);
-                return;
+                    event.setCancelled(true);
+                    return;
+                }
             }
 
             event.useTravelAgent(false);

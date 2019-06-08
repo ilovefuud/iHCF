@@ -9,7 +9,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
-import us.lemin.core.commands.PlayerSubCommand;
+import us.lemin.core.commands.SubCommand;
 import us.lemin.core.player.rank.Rank;
 import us.lemin.hcf.HCF;
 import us.lemin.hcf.faction.event.FactionChatEvent;
@@ -23,7 +23,7 @@ import java.util.HashSet;
 import java.util.Set;
 import java.util.UUID;
 
-public class FactionChatSpyArgument extends PlayerSubCommand implements Listener {
+public class FactionChatSpyArgument extends SubCommand implements Listener {
 
     private static final UUID ALL_UUID = UUID.fromString("5a3ed6d1-0239-4e24-b4a9-8cd5b3e5fc72");
 
@@ -78,7 +78,14 @@ public class FactionChatSpyArgument extends PlayerSubCommand implements Listener
     private static final ImmutableList<String> COMPLETIONS = ImmutableList.of("list", "add", "del", "clear");
 
     @Override
-    public void execute(Player player, Player player1, String[] args, String label) {
+    public void execute(CommandSender sender, Player target, String[] args, String label) {
+        Player player;
+        if (sender instanceof Player) {
+            player = (Player) sender;
+        } else{
+            return;
+        }
+
         if (args.length < 2) {
             player.sendMessage(ChatColor.RED + "Usage: " + getUsage(label));
             return;

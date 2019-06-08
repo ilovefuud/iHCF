@@ -30,6 +30,7 @@ public class FactionClearClaimsArgument extends SubCommand {
                 withTimeout(10).
                 withModality(false).
                 withLocalEcho(true);
+        this.consoleOnly = true;
     }
 
     public String getUsage(String label) {

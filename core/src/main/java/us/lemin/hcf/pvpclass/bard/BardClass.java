@@ -35,7 +35,7 @@ public class BardClass extends PvpClass implements Listener {
 
     private static final long BUFF_COOLDOWN_MILLIS = TimeUnit.SECONDS.toMillis(8L); // time in milliseconds for Bard buff cooldowns
     private static final int TEAMMATE_NEARBY_RADIUS = 25;
-    private static final long HELD_REAPPLY_TICKS = 20L;
+    private static final long HELD_REAPPLY_TICKS = 5L;
 
     private final Map<UUID, BardData> bardDataMap = new HashMap<>();
     private final Map<Material, BardEffect> bardEffects = new EnumMap<>(Material.class);
@@ -43,7 +43,7 @@ public class BardClass extends PvpClass implements Listener {
     private final HCF plugin;
 
     public BardClass(HCF plugin) {
-        super("Bard", TimeUnit.SECONDS.toMillis(10L));
+        super("Bard", plugin.getConfiguration().isKitmap() ? 250 : TimeUnit.SECONDS.toMillis(10L));
         this.plugin = plugin;
 
         this.passiveEffects.add(new PotionEffect(PotionEffectType.DAMAGE_RESISTANCE, Integer.MAX_VALUE, 1));
@@ -54,7 +54,7 @@ public class BardClass extends PvpClass implements Listener {
                 new PotionEffect(PotionEffectType.SPEED, 120, 2),
                 new PotionEffect(PotionEffectType.SPEED, HELD_EFFECT_DURATION_TICKS, 1)));
         this.bardEffects.put(Material.BLAZE_POWDER, new BardEffect(50,
-                new PotionEffect(PotionEffectType.INCREASE_DAMAGE, 120, 0),
+                new PotionEffect(PotionEffectType.INCREASE_DAMAGE, 120, 1),
                 new PotionEffect(PotionEffectType.INCREASE_DAMAGE, HELD_EFFECT_DURATION_TICKS, 0)));
         this.bardEffects.put(Material.IRON_INGOT, new BardEffect(35,
                 new PotionEffect(PotionEffectType.DAMAGE_RESISTANCE, 80, 2),
@@ -69,7 +69,7 @@ public class BardClass extends PvpClass implements Listener {
 
     @Override
     public boolean onEquip(Player player) {
-        if (plugin.getTimerManager().getInvincibilityTimer().getRemaining(player) > 0L) {
+        if (!plugin.getConfiguration().isKitmap() && plugin.getTimerManager().getInvincibilityTimer().getRemaining(player) > 0L) {
             player.sendMessage(ChatColor.RED + "You cannot equip the " + getName() + " PVP Class whilst PVP Protected or eligible for it.");
             return false;
         }
@@ -81,7 +81,7 @@ public class BardClass extends PvpClass implements Listener {
         BardData bardData = new BardData();
         bardDataMap.put(player.getUniqueId(), bardData);
         bardData.startEnergyTracking();
-        bardData.heldTask = new BukkitRunnable() {
+        bardData.setHeldTask(new BukkitRunnable() {
             int lastEnergy;
 
             @Override
@@ -117,10 +117,10 @@ public class BardClass extends PvpClass implements Listener {
                 // the -1 check is for offsets with the energy per millisecond
                 if (energy != 0 && energy != lastEnergy && (energy % 10 == 0 || lastEnergy - energy - 1 > 0 || energy == BardData.MAX_ENERGY)) {
                     lastEnergy = energy;
-                    player.sendMessage(ChatColor.GOLD + name + " energy is now at " + ChatColor.RED + energy + ChatColor.GOLD + '.');
+                    player.sendMessage(ChatColor.AQUA + name + ChatColor.YELLOW + " energy is now at " + ChatColor.AQUA + energy + ChatColor.YELLOW + '.');
                 }
             }
-        }.runTaskTimer(plugin, 0L, HELD_REAPPLY_TICKS);
+        }.runTaskTimer(plugin, 0L, HELD_REAPPLY_TICKS));
         return true;
     }
 
@@ -170,10 +170,12 @@ public class BardClass extends PvpClass implements Listener {
             BardEffect bardEffect = bardEffects.get(newStack.getType());
             if (bardEffect != null) {
                 msgCooldowns.put(uuid, millis + 1500L);
-                player.sendMessage(ChatColor.RED + " Bard Effect: " + ChatColor.GOLD + MARK);
+                player.sendMessage(ChatColor.AQUA + " Bard Effect: " + ChatColor.GRAY + MARK);
                 player.sendMessage(ChatColor.YELLOW + "  Clickable Effect: " + ChatColor.AQUA +
-                        bardEffect.clickable.getType().getName() + ' ' + (bardEffect.clickable.getAmplifier() + 1) +
+                        plugin.getLangUtil().getByPotion(bardEffect.clickable.getType()) + ' ' + (bardEffect.clickable.getAmplifier() + 1) +
                         ChatColor.GRAY + " (" + (bardEffect.clickable.getDuration() / 20) + "s)");
+                player.sendMessage(ChatColor.YELLOW + "  Holdable Effect: " + ChatColor.AQUA +
+                        plugin.getLangUtil().getByPotion(bardEffect.heldable.getType()) + ' ' + (bardEffect.heldable.getAmplifier() + 1));
                 player.sendMessage(ChatColor.YELLOW + "  Energy Cost: " + ChatColor.AQUA + bardEffect.energyCost);
             }
         }
@@ -227,8 +229,7 @@ public class BardClass extends PvpClass implements Listener {
                 double newEnergy = this.setEnergy(player, bardData.getEnergy() - bardEffect.energyCost);
                 player.sendMessage(ChatColor.YELLOW + "You have just used " + name + " buff " + ChatColor.AQUA +
                         bardEffect.clickable.getType().getName() + ' ' + (bardEffect.clickable.getAmplifier() + 1) + ChatColor.YELLOW + " costing you " +
-                        ChatColor.BOLD + bardEffect.energyCost + ChatColor.YELLOW + " energy. " +
-                        "Your energy is now " + ChatColor.GREEN + ((newEnergy * 10.0) / 10.0)/*TODO:neeeded?*/ + ChatColor.YELLOW + '.');
+                        ChatColor.AQUA + bardEffect.energyCost + ChatColor.YELLOW + " energy. ");
             }
         }
     }

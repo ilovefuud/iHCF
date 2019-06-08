@@ -60,6 +60,7 @@ public class Configuration {
     private String scoreboardSidebarTitle;
     private boolean scoreboardSidebarEnabled;
     private int scoreboardSidebarUpdateRate;
+    private String scoreboardSidebarKitmapStats;
     private String scoreboardSidebarKitmapKills;
     private String scoreboardSidebarKitmapDeaths;
     private String scoreboardSidebarKitmapKillstreak;
@@ -163,6 +164,8 @@ public class Configuration {
     private int deathbanRespawnScreenSecondsBeforeKick;
     private long deathbanRespawnScreenTicksBeforeKick;
     private boolean endOpen;
+    private String endSpawnLocationRaw;
+    private Location endSpawnLocation = new Location(Bukkit.getWorld("world_the_end"), 0.5, 75, .5);
     private String endExitLocationRaw;
     private Location endExitLocation = new Location(Bukkit.getWorld("world"), 0.5, 75, 0.5);
     private boolean endExtinguishFireOnExit;
@@ -181,6 +184,10 @@ public class Configuration {
     private boolean subclaimHopperCheck;
     private String shopLocationRaw;
     private Location shopLocation = new Location(Bukkit.getWorld("world"), 0.5, 75, 0.5);
+    private String kitSelectorLocationRaw;
+    private Location kitSelectorLocation = new Location(Bukkit.getWorld("world"), 5.5, 75, 5.5);
+    private String spawnLocationRaw;
+    private Location spawnLocation = new Location(Bukkit.getWorld("world"), 0.5, 75, 0.5);
 
 
     public Configuration(HCF plugin) {
@@ -216,16 +223,6 @@ public class Configuration {
 
     private void updateConfig() {
         Map<String, Object> map = new HashMap<>();
-        /*try {
-            for (Field field : this.getClass().getDeclaredFields()) {
-                field.setAccessible(true);
-                if (field.getAnnotation(Setting.class) != null) {
-                    map.put(field.getAnnotation(Setting.class).value(), field.get(this));
-                }
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }*/
         map.put("kitmap", false);
         map.put("spawnCannon", true);
         map.put("handleEntityLimiting", true);
@@ -259,9 +256,10 @@ public class Configuration {
         map.put("scoreboard.sidebar.title", "&a&lHCF &c[Map {MAP_NUMBER}]");
         map.put("scoreboard.sidebar.enabled", true);
         map.put("scoreboard.sidebar.updateRate", 2);
-        map.put("scoreboard.sidebar.kitmap.kills", "&4&lKills: %kills%");
-        map.put("scoreboard.sidebar.kitmap.deaths", "&4&lDeaths: %deaths%");
-        map.put("scoreboard.sidebar.kitmap.killstreak", "&4&lKillstreak: %killstreak%");
+        map.put("scoreboard.sidebar.kitmap.stats", "&4&lYour Stats");
+        map.put("scoreboard.sidebar.kitmap.kills", " &4&lKills: %kills%");
+        map.put("scoreboard.sidebar.kitmap.deaths", " &4&lDeaths: %deaths%");
+        map.put("scoreboard.sidebar.kitmap.killstreak", " &4&lKillstreak: %killstreak%");
         map.put("scoreboard.sidebar.eotw.countdown", "&4&lEOTW &cstarts in &l%remaining%");
         map.put("scoreboard.sidebar.eotw.cappable", "&4&lEOTW &ccappable in &l%remaining%");
         map.put("scoreboard.sidebar.sotw", "&2&lSOTW&7: &6%remaining%");
@@ -333,6 +331,7 @@ public class Configuration {
         map.put("deathban.baseDurationMinutes", 60);
         map.put("deathban.respawnScreenSecondsBeforeKick", 15);
         map.put("end.open", true);
+        map.put("end.spawnLocation", "world_the_end,0.5,75,0.5,0,0");
         map.put("end.exitLocation", "world,0.5,75,0.5,0,0");
         map.put("end.extinguishFireOnExit", true);
         map.put("end.removeStrengthOnEntrance", true);
@@ -346,6 +345,8 @@ public class Configuration {
         map.put("subclaimSigns.leader", false);
         map.put("subclaimSigns.hopperCheck", false);
         map.put("shopLocation", "world,0.5,75,0.5,0,0");
+        map.put("kitSelectorLocation", "world,5.5,75,5.5,0,0");
+        map.put("spawnLocation", "world,0.5,73,0.5,0,0");
         config.addDefaults(map);
         config.copyDefaults();
     }
@@ -384,6 +385,7 @@ public class Configuration {
         this.scoreboardSidebarTitle = (String) config.get("scoreboard.sidebar.title");
         this.scoreboardSidebarEnabled = (boolean) config.get("scoreboard.sidebar.enabled");
         this.scoreboardSidebarUpdateRate = (int) config.get("scoreboard.sidebar.updateRate");
+        this.scoreboardSidebarKitmapStats = (String) config.get("scoreboard.sidebar.kitmap.stats");
         this.scoreboardSidebarKitmapKills = (String) config.get("scoreboard.sidebar.kitmap.kills");
         this.scoreboardSidebarKitmapDeaths = (String) config.get("scoreboard.sidebar.kitmap.deaths");
         this.scoreboardSidebarKitmapKillstreak = (String) config.get("scoreboard.sidebar.kitmap.killstreak");
@@ -458,6 +460,7 @@ public class Configuration {
         this.deathbanBaseDurationMinutes = (int) config.get("deathban.baseDurationMinutes");
         this.deathbanRespawnScreenSecondsBeforeKick = (int) config.get("deathban.respawnScreenSecondsBeforeKick");
         this.endOpen = (boolean) config.get("end.open");
+        this.endSpawnLocationRaw = (String) config.get("end.spawnLocation");
         this.endExitLocationRaw = (String) config.get("end.exitLocation");
         this.endExtinguishFireOnExit = (boolean) config.get("end.extinguishFireOnExit");
         this.endRemoveStrengthOnEntrance = (boolean) config.get("end.removeStrengthOnEntrance");
@@ -471,8 +474,8 @@ public class Configuration {
         this.subclaimSignLeader = (boolean) config.get("subclaimSigns.leader");
         this.subclaimHopperCheck = (boolean) config.get("subclaimSigns.hopperCheck");
         this.shopLocationRaw = (String) config.get("shopLocation");
-
-
+        this.kitSelectorLocationRaw = (String) config.get("kitSelectorLocation");
+        this.spawnLocationRaw = (String) config.get("spawnLocation");
     }
 
     protected void updateFields() {
@@ -497,22 +500,43 @@ public class Configuration {
         factionHomeTeleportDelayEndMillis = TimeUnit.SECONDS.toMillis(factionHomeTeleportDelayEndSeconds);
         deathbanRespawnScreenTicksBeforeKick = TimeUnit.SECONDS.toMillis(deathbanRespawnScreenSecondsBeforeKick) / 50L;
 
-        String[] split = endExitLocationRaw.split(",");
+        String[] split = endSpawnLocationRaw.split(",");
         if (split.length == 6) {
             try {
                 String worldName = split[0];
                 if (Bukkit.getWorld(worldName) != null) {
-                    Integer x = Integer.parseInt(split[0]);
-                    Integer y = Integer.parseInt(split[1]);
-                    Integer z = Integer.parseInt(split[2]);
-                    Float yaw = Float.parseFloat(split[3]);
-                    Float pitch = Float.parseFloat(split[3]);
+                    Double x = Double.parseDouble(split[1]);
+                    Double y = Double.parseDouble(split[2]);
+                    Double z = Double.parseDouble(split[3]);
+                    Float yaw = Float.parseFloat(split[4]);
+                    Float pitch = Float.parseFloat(split[5]);
+
+                    endSpawnLocation = new Location(Bukkit.getWorld(worldName), x, y, z);
+                    endSpawnLocation.setYaw(yaw);
+                    endSpawnLocation.setPitch(pitch);
+                }
+            } catch (NumberFormatException ignored) {
+                ignored.printStackTrace();
+            }
+        }
+
+        split = endExitLocationRaw.split(",");
+        if (split.length == 6) {
+            try {
+                String worldName = split[0];
+                if (Bukkit.getWorld(worldName) != null) {
+                    Double x = Double.parseDouble(split[1]);
+                    Double y = Double.parseDouble(split[2]);
+                    Double z = Double.parseDouble(split[3]);
+                    Float yaw = Float.parseFloat(split[4]);
+                    Float pitch = Float.parseFloat(split[5]);
 
                     endExitLocation = new Location(Bukkit.getWorld(worldName), x, y, z);
                     endExitLocation.setYaw(yaw);
                     endExitLocation.setPitch(pitch);
                 }
             } catch (NumberFormatException ignored) {
+                ignored.printStackTrace();
             }
         }
 
@@ -521,17 +545,58 @@ public class Configuration {
             try {
                 String worldName = split[0];
                 if (Bukkit.getWorld(worldName) != null) {
-                    Integer x = Integer.parseInt(split[0]);
-                    Integer y = Integer.parseInt(split[1]);
-                    Integer z = Integer.parseInt(split[2]);
-                    Float yaw = Float.parseFloat(split[3]);
-                    Float pitch = Float.parseFloat(split[3]);
+                    Double x = Double.parseDouble(split[1]);
+                    Double y = Double.parseDouble(split[2]);
+                    Double z = Double.parseDouble(split[3]);
+                    Float yaw = Float.parseFloat(split[4]);
+                    Float pitch = Float.parseFloat(split[5]);
 
                     shopLocation = new Location(Bukkit.getWorld(worldName), x, y, z);
                     shopLocation.setYaw(yaw);
                     shopLocation.setPitch(pitch);
                 }
             } catch (NumberFormatException ignored) {
+                ignored.printStackTrace();
+
+            }
+        }
+        split = kitSelectorLocationRaw.split(",");
+        if (split.length == 6) {
+            try {
+                String worldName = split[0];
+                if (Bukkit.getWorld(worldName) != null) {
+                    Double x = Double.parseDouble(split[1]);
+                    Double y = Double.parseDouble(split[2]);
+                    Double z = Double.parseDouble(split[3]);
+                    Float yaw = Float.parseFloat(split[4]);
+                    Float pitch = Float.parseFloat(split[5]);
+
+                    kitSelectorLocation = new Location(Bukkit.getWorld(worldName), x, y, z);
+                    kitSelectorLocation.setYaw(yaw);
+                    kitSelectorLocation.setPitch(pitch);
+                }
+            } catch (NumberFormatException ignored) {
+                ignored.printStackTrace();
+            }
+        }
+
+        split = spawnLocationRaw.split(",");
+        if (split.length == 6) {
+            try {
+                String worldName = split[0];
+                if (Bukkit.getWorld(worldName) != null) {
+                    Double x = Double.parseDouble(split[1]);
+                    Double y = Double.parseDouble(split[2]);
+                    Double z = Double.parseDouble(split[3]);
+                    Float yaw = Float.parseFloat(split[4]);
+                    Float pitch = Float.parseFloat(split[5]);
+
+                    spawnLocation = new Location(Bukkit.getWorld(worldName), x, y, z);
+                    spawnLocation.setYaw(yaw);
+                    spawnLocation.setPitch(pitch);
+                }
+            } catch (NumberFormatException ignored) {
+                ignored.printStackTrace();
             }
         }
 

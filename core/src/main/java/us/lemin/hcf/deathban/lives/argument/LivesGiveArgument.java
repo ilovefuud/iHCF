@@ -60,6 +60,7 @@ public class LivesGiveArgument extends SubCommand {
 
                     if (amount > ownedLives) {
                         sender.sendMessage(ChatColor.RED + "You tried to give " + profile.getName() + ' ' + CC.YELLOW + amount + CC.RED + " lives, but you only have " + CC.YELLOW + ownedLives + CC.RED + '.');
+                        return;
                     }
                 }
 

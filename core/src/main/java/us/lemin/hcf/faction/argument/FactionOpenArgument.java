@@ -1,20 +1,22 @@
 package us.lemin.hcf.faction.argument;
 
 import org.bukkit.ChatColor;
+import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
-import us.lemin.core.commands.PlayerSubCommand;
+import us.lemin.core.commands.SubCommand;
 import us.lemin.hcf.HCF;
 import us.lemin.hcf.faction.FactionMember;
 import us.lemin.hcf.faction.struct.Role;
 import us.lemin.hcf.faction.type.PlayerFaction;
 
-public class FactionOpenArgument extends PlayerSubCommand {
+public class FactionOpenArgument extends SubCommand {
 
     private final HCF plugin;
 
     public FactionOpenArgument(HCF plugin) {
         super("open", "Opens the faction to the public.");
         this.plugin = plugin;
+        this.playerOnly = true;
     }
 
     public String getUsage(String label) {
@@ -22,7 +24,13 @@ public class FactionOpenArgument extends PlayerSubCommand {
     }
 
     @Override
-    public void execute(Player player, Player player1, String[] strings, String s) {
+    public void execute(CommandSender sender, Player target, String[] args, String label) {
+        Player player;
+        if (sender instanceof Player) {
+            player = (Player) sender;
+        } else{
+            return;
+        }
         PlayerFaction playerFaction = plugin.getFactionManager().getPlayerFaction(player.getUniqueId());
 
         if (playerFaction == null) {

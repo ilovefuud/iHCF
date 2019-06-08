@@ -7,7 +7,6 @@ import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import us.lemin.core.CorePlugin;
-import us.lemin.core.commands.PlayerSubCommand;
 import us.lemin.core.commands.SubCommand;
 import us.lemin.core.player.CoreProfile;
 import us.lemin.core.utils.misc.BukkitUtils;
@@ -46,15 +45,16 @@ public class FactionHelpArgument extends SubCommand {
 
             CoreProfile profile = isPlayer ? CorePlugin.getInstance().getProfileManager().getProfile((Player) player) : null;
 
-            for (SubCommand argument : executor.subCommandMap.values()) {
+            for (SubCommand argument : executor.getSubCommandMap().values()) {
                 if (argument == this) continue;
 
                 // Check the permission and if the player can access.
                 // String permission = argument.getPermission();
                 // if (permission != null && !player.hasPermission(permission)) continue;
-
-                if (isPlayer && !profile.hasRank(argument.getRequiredRank())) continue;
-                if (argument.getClass().isAssignableFrom(PlayerSubCommand.class) && !isPlayer) continue;
+                if (isPlayer && !profile.hasRank(argument.getRequiredRank())) {
+                    continue;
+                }
+                if (argument.getClass().isAssignableFrom(SubCommand.class) && !isPlayer) continue;
 
                 count++;
                 pages.get(val).add(ChatColor.BLUE + "/" + label + ' ' + argument.getName() + " > " + ChatColor.GRAY + argument.getDescription());

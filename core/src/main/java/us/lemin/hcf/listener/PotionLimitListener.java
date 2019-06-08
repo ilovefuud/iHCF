@@ -72,14 +72,20 @@ public class PotionLimitListener implements Listener {
                     continue;
                 }
 
-                // TODO: More configurable if 33 second splash poison is allowed
-                if (type == PotionType.POISON && !potion.hasExtendedDuration() && potion.getLevel() == 1) {
-                    continue;
-                }
-
                 if (potion.getLevel() > plugin.getConfiguration().getPotionLimit(type)) {
                     return false;
                 }
+
+                if (type == PotionType.POISON) {
+                    return plugin.getConfiguration().isPotionExtendable(type);
+                }
+
+                /*// TODO: More configurable if 33 second splash poison is allowed
+                if (type == PotionType.POISON && !potion.hasExtendedDuration() && potion.getLevel() == 1) {
+                    continue;
+                }*/
+
+
             }
         }
 

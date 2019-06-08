@@ -1,8 +1,9 @@
 package us.lemin.hcf.faction.argument.subclaim;
 
 import org.bukkit.ChatColor;
+import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
-import us.lemin.core.commands.PlayerSubCommand;
+import us.lemin.core.commands.SubCommand;
 import us.lemin.hcf.HCF;
 import us.lemin.hcf.faction.FactionMember;
 import us.lemin.hcf.faction.claim.Claim;
@@ -10,7 +11,7 @@ import us.lemin.hcf.faction.claim.Subclaim;
 import us.lemin.hcf.faction.struct.Role;
 import us.lemin.hcf.faction.type.PlayerFaction;
 
-public class FactionSubclaimAddMemberArgument extends PlayerSubCommand {
+public class FactionSubclaimAddMemberArgument extends SubCommand {
 
     private final HCF plugin;
 
@@ -25,7 +26,7 @@ public class FactionSubclaimAddMemberArgument extends PlayerSubCommand {
 
 
     @Override
-    public void execute(Player sender, Player player1, String[] args, String label) {
+    public void execute(CommandSender sender, Player target, String[] args, String label) {
         if (args.length < 4) {
             sender.sendMessage(ChatColor.RED + "Usage: " + getUsage(label));
             return;

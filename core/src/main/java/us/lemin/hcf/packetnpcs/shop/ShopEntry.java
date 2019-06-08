@@ -1,4 +1,4 @@
-package us.lemin.hcf.notimplemented.shop;
+package us.lemin.hcf.packetnpcs.shop;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -41,7 +41,10 @@ public abstract class ShopEntry {
             player.sendMessage(CC.RED + "You can't afford that.");
             return false;
         }
+        int purchaseAmount = value * amount;
         plugin.getEconomyManager().subtractBalance(player.getUniqueId(), value * amount);
+        player.sendMessage(CC.YELLOW + "$" + purchaseAmount + CC.GREEN + " has been subtracted from your balance.");
+
         return true;
     }
 

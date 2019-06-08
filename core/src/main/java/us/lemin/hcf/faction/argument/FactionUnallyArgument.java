@@ -2,8 +2,9 @@ package us.lemin.hcf.faction.argument;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
+import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
-import us.lemin.core.commands.PlayerSubCommand;
+import us.lemin.core.commands.SubCommand;
 import us.lemin.hcf.HCF;
 import us.lemin.hcf.faction.event.FactionRelationRemoveEvent;
 import us.lemin.hcf.faction.struct.Relation;
@@ -14,7 +15,7 @@ import us.lemin.hcf.faction.type.PlayerFaction;
 import java.util.Collection;
 import java.util.HashSet;
 
-public class FactionUnallyArgument extends PlayerSubCommand {
+public class FactionUnallyArgument extends SubCommand {
 
     private final HCF plugin;
 
@@ -22,6 +23,7 @@ public class FactionUnallyArgument extends PlayerSubCommand {
         super("unally", "Remove an ally pact with other factions.");
         this.plugin = plugin;
         this.aliases = new String[]{"unalliance", "neutral"};
+        this.playerOnly = true;
     }
 
     public String getUsage(String label) {
@@ -31,7 +33,13 @@ public class FactionUnallyArgument extends PlayerSubCommand {
 
 
     @Override
-    public void execute(Player player, Player player1, String[] args, String label) {
+    public void execute(CommandSender sender, Player target, String[] args, String label) {
+        Player player;
+        if (sender instanceof Player) {
+            player = (Player) sender;
+        } else{
+            return;
+        }
         if (plugin.getConfiguration().getFactionMaxAllies() <= 0) {
             player.sendMessage(ChatColor.RED + "Allies are disabled this map.");
             return;

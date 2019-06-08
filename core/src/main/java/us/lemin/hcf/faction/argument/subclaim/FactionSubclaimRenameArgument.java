@@ -1,15 +1,16 @@
 package us.lemin.hcf.faction.argument.subclaim;
 
 import org.bukkit.ChatColor;
+import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
-import us.lemin.core.commands.PlayerSubCommand;
+import us.lemin.core.commands.SubCommand;
 import us.lemin.hcf.HCF;
 import us.lemin.hcf.faction.claim.Claim;
 import us.lemin.hcf.faction.claim.Subclaim;
 import us.lemin.hcf.faction.struct.Role;
 import us.lemin.hcf.faction.type.PlayerFaction;
 
-public class FactionSubclaimRenameArgument extends PlayerSubCommand {
+public class FactionSubclaimRenameArgument extends SubCommand {
 
     private final HCF plugin;
 
@@ -17,6 +18,7 @@ public class FactionSubclaimRenameArgument extends PlayerSubCommand {
         super("rename", "Renames a subclaim");
         this.plugin = plugin;
         this.aliases = new String[]{"changename"};
+        this.playerOnly = true;
     }
 
     public String getUsage(String label) {
@@ -24,13 +26,13 @@ public class FactionSubclaimRenameArgument extends PlayerSubCommand {
     }
 
     @Override
-    public void execute(Player sender, Player player1, String[] args, String label) {
-        if (args.length < 4) {
-            sender.sendMessage(ChatColor.RED + "Usage: " + getUsage(label));
+    public void execute(CommandSender sender, Player target, String[] args, String label) {
+        Player player;
+        if (sender instanceof Player) {
+            player = (Player) sender;
+        } else{
             return;
         }
-
-        Player player = (Player) sender;
         PlayerFaction playerFaction = plugin.getFactionManager().getPlayerFaction(player);
 
         if (playerFaction == null) {

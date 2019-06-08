@@ -2,8 +2,9 @@ package us.lemin.hcf.faction.argument;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
+import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
-import us.lemin.core.commands.PlayerSubCommand;
+import us.lemin.core.commands.SubCommand;
 import us.lemin.hcf.HCF;
 import us.lemin.hcf.faction.event.FactionRelationCreateEvent;
 import us.lemin.hcf.faction.struct.Relation;
@@ -18,7 +19,7 @@ import java.util.UUID;
  * Faction argument used to request or accept ally {@link Relation} invitations from a {@link Faction}.
  */
 
-public class FactionAllyArgument extends PlayerSubCommand {
+public class FactionAllyArgument extends SubCommand {
 
     private static final Relation RELATION = Relation.ALLY;
 
@@ -28,6 +29,8 @@ public class FactionAllyArgument extends PlayerSubCommand {
         super("ally", "Make an ally pact with other factions.");
         this.plugin = plugin;
         this.aliases = new String[]{"alliance"};
+        this.playerOnly = true;
+
     }
 
     public String getUsage(String label) {
@@ -36,7 +39,13 @@ public class FactionAllyArgument extends PlayerSubCommand {
 
 
     @Override
-    public void execute(Player player, Player player1, String[] args, String label) {
+    public void execute(CommandSender sender, Player target, String[] args, String label) {
+        Player player;
+        if (sender instanceof Player) {
+            player = (Player) sender;
+        } else{
+            return;
+        }
         if (plugin.getConfiguration().getFactionMaxAllies() <= 0) {
             player.sendMessage(ChatColor.RED + "Allies are disabled this map.");
             return;

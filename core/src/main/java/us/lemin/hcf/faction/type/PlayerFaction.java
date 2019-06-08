@@ -406,7 +406,7 @@ public class PlayerFaction extends ClaimableFaction implements Raidable {
 
     @Override
     public boolean isRaidable() {
-        return deathsUntilRaidable <= 0;
+        return HCF.getPlugin().getConfiguration().isKitmap() ? HCF.getPlugin().getEotwHandler().isEndOfTheWorld() : deathsUntilRaidable <= 0;
     }
 
     public String getFocusedName() {

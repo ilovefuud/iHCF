@@ -1,8 +1,9 @@
 package us.lemin.hcf.faction.argument.subclaim;
 
 import org.bukkit.ChatColor;
+import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
-import us.lemin.core.commands.PlayerSubCommand;
+import us.lemin.core.commands.SubCommand;
 import us.lemin.hcf.HCF;
 import us.lemin.hcf.faction.FactionMember;
 import us.lemin.hcf.faction.claim.Claim;
@@ -13,7 +14,7 @@ import us.lemin.hcf.faction.type.PlayerFaction;
 /**
  * Faction subclaim argument used to remove a members access to a {@link Subclaim}.
  */
-public class FactionSubclaimDelMemberArgument extends PlayerSubCommand {
+public class FactionSubclaimDelMemberArgument extends SubCommand {
 
     private final HCF plugin;
 
@@ -28,20 +29,26 @@ public class FactionSubclaimDelMemberArgument extends PlayerSubCommand {
     }
 
     @Override
-    public void execute(Player sender, Player player1, String[] args, String label) {
+    public void execute(CommandSender sender, Player target, String[] args, String label) {
+        Player player;
+        if (sender instanceof Player) {
+            player = (Player) sender;
+        } else {
+            return;
+        }
         if (args.length < 4) {
             sender.sendMessage(ChatColor.RED + "Usage: " + getUsage(label));
             return;
         }
 
-        PlayerFaction playerFaction = plugin.getFactionManager().getPlayerFaction(sender);
+        PlayerFaction playerFaction = plugin.getFactionManager().getPlayerFaction(player);
 
         if (playerFaction == null) {
             sender.sendMessage(ChatColor.RED + "You are not in a faction.");
             return;
         }
 
-        if (playerFaction.getMember(sender.getUniqueId()).getRole() == Role.MEMBER) {
+        if (playerFaction.getMember(player.getUniqueId()).getRole() == Role.MEMBER) {
             sender.sendMessage(ChatColor.RED + "You must be a faction officer to edit subclaims.");
             return;
         }

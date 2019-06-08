@@ -1,8 +1,9 @@
 package us.lemin.hcf.faction.argument.staff;
 
 import org.bukkit.ChatColor;
+import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
-import us.lemin.core.commands.PlayerSubCommand;
+import us.lemin.core.commands.SubCommand;
 import us.lemin.core.player.rank.Rank;
 import us.lemin.hcf.HCF;
 import us.lemin.hcf.faction.FactionMember;
@@ -14,13 +15,14 @@ import us.lemin.hcf.faction.type.PlayerFaction;
 /**
  * Faction argument used to forcefully join {@link Faction}s.
  */
-public class FactionForceJoinArgument extends PlayerSubCommand {
+public class FactionForceJoinArgument extends SubCommand {
 
     private final HCF plugin;
 
     public FactionForceJoinArgument(HCF plugin) {
         super("forcejoin", "Forcefully join a faction.", Rank.ADMIN);
         this.plugin = plugin;
+        this.playerOnly = true;
     }
 
     public String getUsage(String label) {
@@ -28,7 +30,13 @@ public class FactionForceJoinArgument extends PlayerSubCommand {
     }
 
     @Override
-    public void execute(Player player, Player player1, String[] args, String label) {
+    public void execute(CommandSender sender, Player target, String[] args, String label) {
+        Player player;
+        if (sender instanceof Player) {
+            player = (Player) sender;
+        } else{
+            return;
+        }
 
 
         if (args.length < 2) {
@@ -62,4 +70,5 @@ public class FactionForceJoinArgument extends PlayerSubCommand {
 
 
     }
+
 }

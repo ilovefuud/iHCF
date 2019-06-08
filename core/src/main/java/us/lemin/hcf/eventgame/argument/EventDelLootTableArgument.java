@@ -1,9 +1,10 @@
 package us.lemin.hcf.eventgame.argument;
 
 import org.bukkit.ChatColor;
+import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
-import us.lemin.core.commands.PlayerSubCommand;
+import us.lemin.core.commands.SubCommand;
 import us.lemin.core.utils.misc.JavaUtils;
 import us.lemin.hcf.HCF;
 import us.lemin.hcf.eventgame.EventType;
@@ -11,9 +12,9 @@ import us.lemin.hcf.eventgame.EventType;
 import java.util.List;
 
 /**
- * An {@link PlayerSubCommand} used to delete a loot table for an {@link EventType}.
+ * An {@link SubCommand} used to delete a loot table for an {@link EventType}.
  */
-public class EventDelLootTableArgument extends PlayerSubCommand {
+public class EventDelLootTableArgument extends SubCommand {
 
     private final HCF plugin;
 
@@ -21,6 +22,8 @@ public class EventDelLootTableArgument extends PlayerSubCommand {
         super("delloottable", "Deletes a loot table at a specific slot for a type");
         this.plugin = plugin;
         this.permission = "hcf.command.event.argument." + getName();
+        this.playerOnly = true;
+
     }
 
     public String getUsage(String label) {
@@ -29,7 +32,13 @@ public class EventDelLootTableArgument extends PlayerSubCommand {
 
 
     @Override
-    public void execute(Player sender, Player player1, String[] args, String label) {
+    public void execute(CommandSender sender, Player target, String[] args, String label) {
+        Player player;
+        if (sender instanceof Player) {
+            player = (Player) sender;
+        } else{
+            return;
+        }
         if (args.length < 2) {
             sender.sendMessage(ChatColor.RED + "Usage: " + getUsage(label));
             return;

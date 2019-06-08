@@ -1,6 +1,5 @@
 package us.lemin.hcf.listener;
 
-import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.World;
@@ -29,7 +28,7 @@ public class CoreListener implements Listener {
 
     @EventHandler(ignoreCancelled = true, priority = EventPriority.HIGH)
     public void onPlayerRespawn(PlayerRespawnEvent event) {
-        event.setRespawnLocation(Bukkit.getWorld(CoreListener.DEFAULT_WORLD_NAME).getSpawnLocation().add(0.5, 0, 0.5));
+        event.setRespawnLocation(plugin.getConfiguration().getSpawnLocation());
     }
 
     @EventHandler(ignoreCancelled = true, priority = EventPriority.NORMAL)
@@ -37,7 +36,7 @@ public class CoreListener implements Listener {
         Player player = event.getPlayer();
         if (!player.hasPlayedBefore()) {
             plugin.getEconomyManager().addBalance(player.getUniqueId(), plugin.getConfiguration().getEconomyStartingBalance());
-            event.setSpawnLocation(Bukkit.getWorld(CoreListener.DEFAULT_WORLD_NAME).getSpawnLocation().add(0.5, 0, 0.5));
+            event.setSpawnLocation(plugin.getConfiguration().getSpawnLocation());
         }
     }
 

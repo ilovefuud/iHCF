@@ -1,7 +1,6 @@
 package us.lemin.hcf.scoreboard;
 
 import com.google.common.collect.Iterables;
-import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
@@ -32,13 +31,11 @@ public class ScoreboardHandler implements Listener {
         }
 
         // Give all online players a scoreboard.
-        Collection<? extends Player> players = Bukkit.getOnlinePlayers();
-        for (Player player : players) {
-            applyBoard(player).addUpdates(players);
-        }
+        Collection<? extends Player> players = plugin.getServer().getOnlinePlayers();
+        players.forEach(player -> applyBoard(player).addUpdates(players));
     }
 
-    @EventHandler(ignoreCancelled = true, priority = EventPriority.LOWEST)
+    @EventHandler(ignoreCancelled = true, priority = EventPriority.MONITOR)
     public void onPlayerJoin(PlayerJoinEvent event) {
         Player player = event.getPlayer();
 
@@ -47,10 +44,10 @@ public class ScoreboardHandler implements Listener {
             board.addUpdate(player);
         }
 
-        applyBoard(player).addUpdates(Bukkit.getOnlinePlayers());
+        applyBoard(player).addUpdates(plugin.getServer().getOnlinePlayers());
     }
 
-    @EventHandler(ignoreCancelled = true, priority = EventPriority.LOWEST)
+    @EventHandler(ignoreCancelled = true, priority = EventPriority.MONITOR)
     public void onPlayerQuit(PlayerQuitEvent event) {
         playerBoards.remove(event.getPlayer().getUniqueId()).remove();
     }
@@ -112,7 +109,7 @@ public class ScoreboardHandler implements Listener {
     }
 
     public PlayerBoard applyBoard(Player player) {
-        PlayerBoard board = new PlayerBoard(plugin, player, scoreboardApi == null);
+        PlayerBoard board = new PlayerBoard(plugin, player);
         PlayerBoard previous = playerBoards.put(player.getUniqueId(), board);
         if (previous != null) {
             previous.remove();

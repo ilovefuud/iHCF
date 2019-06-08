@@ -1,8 +1,9 @@
 package us.lemin.hcf.faction.argument.subclaim;
 
 import org.bukkit.ChatColor;
+import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
-import us.lemin.core.commands.PlayerSubCommand;
+import us.lemin.core.commands.SubCommand;
 import us.lemin.hcf.HCF;
 import us.lemin.hcf.faction.claim.Claim;
 import us.lemin.hcf.faction.claim.Subclaim;
@@ -12,7 +13,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
-public class FactionSubclaimListArgument extends PlayerSubCommand {
+public class FactionSubclaimListArgument extends SubCommand {
 
     private final HCF plugin;
 
@@ -27,8 +28,14 @@ public class FactionSubclaimListArgument extends PlayerSubCommand {
     }
 
     @Override
-    public void execute(Player sender, Player player1, String[] args, String label) {
-        PlayerFaction playerFaction = plugin.getFactionManager().getPlayerFaction(sender);
+    public void execute(CommandSender sender, Player target, String[] args, String label) {
+        Player player;
+        if (sender instanceof Player) {
+            player = (Player) sender;
+        } else {
+            return;
+        }
+        PlayerFaction playerFaction = plugin.getFactionManager().getPlayerFaction(player);
 
         if (playerFaction == null) {
             sender.sendMessage(ChatColor.RED + "You are not in a faction.");

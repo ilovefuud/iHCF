@@ -6,7 +6,6 @@ import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import us.lemin.core.commands.PlayerCommand;
-import us.lemin.core.commands.PlayerSubCommand;
 import us.lemin.core.commands.SubCommand;
 import us.lemin.core.utils.misc.BukkitUtils;
 import us.lemin.hcf.HCF;
@@ -22,18 +21,15 @@ import java.util.*;
 public class PvpTimerCommand extends PlayerCommand {
 
     private final HCF plugin;
-    private final Map<String, PlayerSubCommand> subCommandMap;
+    private final Map<String, SubCommand> subCommandMap;
 
 
     public PvpTimerCommand(HCF plugin) {
         super("pvptimer");
-        Map<String, PlayerSubCommand> subCommands = new HashMap<>();
+        Map<String, SubCommand> subCommands = new HashMap<>();
 
-        PvPTimerEnableCommand enableCommand = new PvPTimerEnableCommand(plugin);
 
-        subCommands.put("enable", enableCommand);
-        subCommands.put("off", enableCommand);
-        subCommands.put("remove", enableCommand);
+        subCommands.put("enable", new PvPTimerEnableCommand(plugin));
         subCommands.put("remaining", new PvPTimerRemainingCommand(plugin));
 
         subCommandMap = ImmutableMap.copyOf(subCommands);
@@ -55,27 +51,27 @@ public class PvpTimerCommand extends PlayerCommand {
         sender.sendMessage(ChatColor.GRAY + "/lives - Life and deathban related commands.");
     }
 
+
     @Override
     public void execute(Player sender, String[] args) {
         String arg = args.length < 1 ? "help" : args[0].toLowerCase();
         SubCommand subCommand = subCommandMap.get(arg);
 
         InvincibilityTimer pvpTimer = plugin.getTimerManager().getInvincibilityTimer();
+        Player target = args.length > 1 ? plugin.getServer().getPlayer(args[1]) : null;
 
         if (subCommand == null) {
             for (SubCommand loop : subCommandMap.values()) {
                 if (loop.getAliases() == null) continue;
                 if (Arrays.stream(loop.getAliases())
                         .anyMatch(arg::equalsIgnoreCase)) {
-                    Player target = args.length > 1 ? plugin.getServer().getPlayer(args[1]) : null;
-                    loop.execute(sender, target, args, getLabel());
+                    loop.verify(sender, target, args, getLabel());
                     return;
                 }
             }
             printUsage(sender, pvpTimer);
         } else {
-            Player target = args.length > 1 ? plugin.getServer().getPlayer(args[1]) : null;
-            subCommand.execute(sender, target, args, getLabel());
+            subCommand.verify(sender, target, args, getLabel());
         }
 
 

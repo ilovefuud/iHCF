@@ -2,16 +2,17 @@ package us.lemin.hcf.tablist;
 
 import lombok.RequiredArgsConstructor;
 import org.bukkit.entity.Player;
+import us.lemin.core.CorePlugin;
 import us.lemin.core.api.tablistapi.api.TabLines;
 import us.lemin.core.api.tablistapi.api.TabTemplate;
+import us.lemin.core.player.CoreProfile;
+import us.lemin.core.player.rank.Rank;
+import us.lemin.core.utils.player.PlayerList;
 import us.lemin.hcf.HCF;
 import us.lemin.hcf.faction.FactionMember;
 import us.lemin.hcf.faction.struct.Role;
-import us.lemin.hcf.faction.type.PlayerFaction;
 
 import java.util.Comparator;
-import java.util.List;
-import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
 public class HCFTemplate implements TabTemplate {
@@ -27,26 +28,34 @@ public class HCFTemplate implements TabTemplate {
     @Override
     public TabLines getLines(Player player) {
         TabLines lines = new TabLines(player);
-        PlayerFaction faction = plugin.getFactionManager().getPlayerFaction(player.getUniqueId());
-        List<FactionMember> sortedList = faction.getMembers().values().stream().sorted(factionRankOrder).collect(Collectors.toList());
+        PlayerList list = PlayerList.newList().sortedByRank();
 
-        lines.middle(1, plugin.getConfiguration().getScoreboardTablistTitle());
+        lines.middle(1, "&e&lLemin &6&lKitPvP");
+        lines.left(3, "&6&nStaff");
+        lines.middle(3, "&a&nPremium");
+        lines.right(3, "&2&nVoters");
 
+        int staffCount = 5;
+        int rankedMembersCount = 5;
+        int votersCount = 5;
 
+        int regularPlayersRow = 14;
+        int regularPlayersCount = 1;
 
-        lines.left(2, "Faction");
-        lines.left(3, faction.getName());
+        for (Player sortedPlayer : list.getOnlinePlayers()) {
+            CoreProfile profile = CorePlugin.getInstance().getProfileManager().getProfile(sortedPlayer.getUniqueId());
+            String name = profile.getRank().getColor() + profile.getName();
 
-        lines.middle(2, "Members");
-
-        int memberCount = 3;
-        for (FactionMember member : sortedList) {
-            while (memberCount < 19) {
-                lines.middle(memberCount++, member.getRole().getAstrix() + member.getName());
+            if (profile.hasStaff()) {
+                lines.left(staffCount++, name);
+            } else if (profile.hasRank(Rank.PREMIUM)) {
+                lines.middle(rankedMembersCount++, name);
+            } else if (profile.hasRank(Rank.VOTER)){
+                lines.right(votersCount++, name);
+            } else {
+                lines.addAfter(regularPlayersCount, regularPlayersRow, name);
             }
         }
-
-
 
         return lines;
     }

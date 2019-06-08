@@ -43,7 +43,6 @@ public class DeathbanListener implements Listener {
 
     @EventHandler(ignoreCancelled = true, priority = EventPriority.MONITOR)
     public void onPlayerJoin(PlayerJoinEvent event) {
-
         event.getPlayer().spigot().respawn(); // Method already checks if player is dead first
     }
 

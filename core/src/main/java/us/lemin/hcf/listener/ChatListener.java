@@ -27,7 +27,7 @@ import java.util.Collection;
 import java.util.Set;
 import java.util.regex.Matcher;
 
-public class ChatListener implements Listener {
+public class    ChatListener implements Listener {
 
     private Essentials essentials;
     private Chat vaultChatApi;
@@ -105,13 +105,13 @@ public class ChatListener implements Listener {
         } else if (this.vaultChatApi != null) {
             String primaryGroup = vaultChatApi.getPrimaryGroup(player);
             String prefix = vaultChatApi.getGroupPrefix(player.getWorld(), primaryGroup);
-            result = ChatColor.GOLD + "[" + factionTag + ChatColor.GOLD + "] " + capperTag + prefix + "%1$s" + ChatColor.GRAY + ": " + ChatColor.WHITE + "%2$s";
+            result = ChatColor.GOLD + "[" + factionTag + ChatColor.GOLD + "] " + capperTag + prefix + "%1$s" + ChatColor.RESET + ": %2$s";
         } else {
             if (CorePlugin.getInstance() != null) {
                 CoreProfile coreProfile = CorePlugin.getInstance().getProfileManager().getProfile(player);
-                result = ChatColor.GOLD + "[" + factionTag + ChatColor.GOLD + "] " + capperTag + coreProfile.getChatFormat() + ChatColor.GRAY + ": " + ChatColor.WHITE + "%2$s";
+                result = ChatColor.GOLD + "[" + factionTag + ChatColor.GOLD + "] " + capperTag + coreProfile.getChatFormat() + ChatColor.RESET + ": %2$s";
             } else {
-                result = ChatColor.GOLD + "[" + factionTag + ChatColor.GOLD + "] " + capperTag + "%1$s" + ChatColor.GRAY + ": " + ChatColor.WHITE + "%2$s";
+                result = ChatColor.GOLD + "[" + factionTag + ChatColor.GOLD + "] " + capperTag + "%1$s" + ChatColor.RESET + ": %2$s";
             }
         }
         return result;

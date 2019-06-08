@@ -116,13 +116,17 @@ public abstract class Faction implements ConfigurationSerializable {
             if (playerFaction.getAllied().contains(uniqueID)) {
                 return Relation.ALLY;
             }
+
+            if (playerFaction.getEnemied().contains(uniqueID)) {
+                return Relation.ENEMY;
+            }
         }
 
-        return Relation.ENEMY;
+        return Relation.NEUTRAL;
     }
 
     public Relation getRelation(CommandSender sender) {
-        return sender instanceof Player ? getFactionRelation(HCF.getPlugin().getFactionManager().getPlayerFaction((Player) sender)) : Relation.ENEMY;
+        return sender instanceof Player ? getFactionRelation(HCF.getPlugin().getFactionManager().getPlayerFaction((Player) sender)) : Relation.NEUTRAL;
     }
 
     /**

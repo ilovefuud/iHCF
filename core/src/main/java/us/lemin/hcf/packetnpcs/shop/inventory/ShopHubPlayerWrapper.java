@@ -1,4 +1,4 @@
-package us.lemin.hcf.notimplemented.shop.inventory;
+package us.lemin.hcf.packetnpcs.shop.inventory;
 
 import org.bukkit.Material;
 import org.bukkit.entity.Player;

@@ -1,16 +1,17 @@
 package us.lemin.hcf.faction.argument;
 
 import org.bukkit.ChatColor;
+import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.PlayerInventory;
-import us.lemin.core.commands.PlayerSubCommand;
+import us.lemin.core.commands.SubCommand;
 import us.lemin.hcf.HCF;
 import us.lemin.hcf.faction.claim.ClaimHandler;
 import us.lemin.hcf.faction.type.PlayerFaction;
 
 import java.util.UUID;
 
-public class FactionClaimArgument extends PlayerSubCommand {
+public class FactionClaimArgument extends SubCommand {
 
     private final HCF plugin;
 
@@ -18,6 +19,8 @@ public class FactionClaimArgument extends PlayerSubCommand {
         super("claim", "Claim land in the Wilderness.");
         this.plugin = plugin;
         this.aliases = new String[]{"claimland"};
+        this.playerOnly = true;
+
     }
 
     public String getUsage(String label) {
@@ -25,7 +28,13 @@ public class FactionClaimArgument extends PlayerSubCommand {
     }
 
     @Override
-    public void execute(Player player, Player player1, String[] strings, String label) {
+    public void execute(CommandSender sender, Player target, String[] args, String label) {
+        Player player;
+        if (sender instanceof Player) {
+            player = (Player) sender;
+        } else{
+            return;
+        }
         UUID uuid = player.getUniqueId();
 
         PlayerFaction playerFaction = plugin.getFactionManager().getPlayerFaction(uuid);

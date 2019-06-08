@@ -15,8 +15,6 @@ import java.util.concurrent.atomic.AtomicBoolean;
 
 public class PlayerBoard {
 
-    @Getter
-    private boolean sidebarVisible = false;
 
     private final AtomicBoolean removed = new AtomicBoolean(false);
     private final Team members;
@@ -33,13 +31,13 @@ public class PlayerBoard {
 
     private final HCF plugin;
 
-    public PlayerBoard(HCF plugin, Player player, boolean createNewScoreboard) {
+    public PlayerBoard(HCF plugin, Player player) { ;
         this.plugin = plugin;
         this.player = player;
 
         Configuration configuration = plugin.getConfiguration();
 
-        this.scoreboard = createNewScoreboard ? plugin.getServer().getScoreboardManager().getNewScoreboard() : player.getScoreboard();
+        this.scoreboard = player.getScoreboard();
 
         this.members = scoreboard.registerNewTeam("members");
         this.members.setPrefix(configuration.getRelationColourTeammate().toString());
@@ -118,7 +116,7 @@ public class PlayerBoard {
                         members.addEntry(update.getName());
                     } else if (playerFaction.getAllied().contains(targetFaction.getUniqueID())) {
                         allies.addEntry(update.getName());
-                    } else if (playerFaction.getFocusedName().equalsIgnoreCase(update.getName())) {
+                    } else if (playerFaction.getFocusedName() != null && playerFaction.getFocusedName().equalsIgnoreCase(update.getName())) {
                         focus.addEntry(update.getName());
                     } else if (playerFaction.getEnemied().contains(targetFaction.getUniqueID())) {
                         enemies.addEntry(update.getName());

@@ -1,17 +1,20 @@
 package us.lemin.hcf.faction.argument;
 
 import org.bukkit.ChatColor;
+import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
-import us.lemin.core.commands.PlayerSubCommand;
+import us.lemin.core.commands.SubCommand;
 import us.lemin.core.utils.misc.JavaUtils;
 import us.lemin.hcf.HCF;
 import us.lemin.hcf.faction.type.Faction;
 import us.lemin.hcf.faction.type.PlayerFaction;
 
+import java.util.Collections;
+
 /**
  * Faction argument used to create a new {@link Faction}.
  */
-public class FactionCreateArgument extends PlayerSubCommand {
+public class FactionCreateArgument extends SubCommand {
 
     private final HCF plugin;
 
@@ -19,6 +22,8 @@ public class FactionCreateArgument extends PlayerSubCommand {
         super("create", "Create a faction.");
         this.plugin = plugin;
         this.aliases = new String[]{"make", "define"};
+        this.playerOnly = true;
+
     }
 
     public String getUsage(String label) {
@@ -27,7 +32,13 @@ public class FactionCreateArgument extends PlayerSubCommand {
 
 
     @Override
-    public void execute(Player player, Player player1, String[] args, String label) {
+    public void execute(CommandSender sender, Player target, String[] args, String label) {
+        Player player;
+        if (sender instanceof Player) {
+            player = (Player) sender;
+        } else{
+            return;
+        }
         if (args.length < 2) {
             player.sendMessage(ChatColor.RED + "Usage: " + getUsage(label));
             return;
@@ -35,9 +46,11 @@ public class FactionCreateArgument extends PlayerSubCommand {
 
         String name = args[1];
 
-        if (plugin.getConfiguration().getFactionDisallowedNames().contains(name.toLowerCase())) {
-            player.sendMessage(ChatColor.RED + "'" + name + "' is a blocked faction name.");
-            return;
+        for (String factionDisallowedName : plugin.getConfiguration().getFactionDisallowedNames()) {
+            if (JavaUtils.containsIgnoreCase(Collections.singletonList(name), factionDisallowedName)) {
+                player.sendMessage(ChatColor.RED + "'" + name + "' is a blocked faction name.");
+                return;
+            }
         }
 
         int value = plugin.getConfiguration().getFactionNameMinCharacters();
